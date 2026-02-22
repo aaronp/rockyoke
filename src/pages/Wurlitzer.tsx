@@ -149,9 +149,9 @@ export default function Wurlitzer() {
             <motion.div
               className="absolute"
               style={{
-                right: 15,
+                right: 5,
                 // Vertically aligned with final record position (reduced lift)
-                bottom: 12 + recordStackY + 30 + 20,
+                bottom: 12 + recordStackY + 110,
                 zIndex: 50,
                 transformOrigin: 'right center',
               }}
@@ -160,7 +160,7 @@ export default function Wurlitzer() {
               transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.2 }}
             >
               {/* Arm extends to the left toward record */}
-              <div className="h-1.5 w-32 rounded-full bg-amber-500" />
+              <div className="h-1.5 w-20 rounded-full bg-amber-500" />
               {/* Headshell at left end */}
               <div className="absolute -top-1 left-0 h-3 w-4 rounded-sm bg-amber-400" />
               {/* Pivot base at right */}
@@ -234,9 +234,8 @@ function Record({ isActive = false, spinning = false, rotation = 0 }: { isActive
 
       {/* Label */}
       <div
-        className={`absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full ${
-          isActive ? "bg-gradient-to-br from-rose-600 to-rose-800" : "bg-gradient-to-br from-amber-700 to-amber-900"
-        }`}
+        className={`absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full ${isActive ? "bg-gradient-to-br from-rose-600 to-rose-800" : "bg-gradient-to-br from-amber-700 to-amber-900"
+          }`}
       >
         {/* Label detail - off-center dot */}
         <div
