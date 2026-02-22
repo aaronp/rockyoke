@@ -15,3 +15,17 @@ body {
   min-width: 320px;
   min-height: 100vh;
 }
+
+/* Spin animation for tilted record */
+@keyframes spin-record {
+  from {
+    transform: rotateX(65deg) rotateZ(0deg);
+  }
+  to {
+    transform: rotateX(65deg) rotateZ(360deg);
+  }
+}
+
+.animate-spin-record > div {
+  animation: spin-record 1.5s linear infinite;
+}

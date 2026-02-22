@@ -104,16 +104,9 @@ export default function Wurlitzer() {
                   exit={{ opacity: 0 }}
                   transition={{ type: "spring", stiffness: 50, damping: 12 }}
                 >
-                  <motion.div
-                    animate={playState === "playing" ? { rotate: 360 } : {}}
-                    transition={
-                      playState === "playing"
-                        ? { repeat: Infinity, duration: 1.5, ease: "linear" }
-                        : {}
-                    }
-                  >
+                  <div className={playState === "playing" ? "animate-spin-record" : ""}>
                     <Record isActive spinning={playState === "playing"} />
-                  </motion.div>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
@@ -135,28 +128,42 @@ export default function Wurlitzer() {
             >
               {/* Lift column underneath the platter */}
               <div
-                className="absolute left-1/2 top-full h-48 w-6 -translate-x-1/2 rounded-b-lg bg-gradient-to-b from-neutral-500 via-neutral-600 to-neutral-700"
+                className="absolute left-1/2 top-1/2 h-48 w-6 -translate-x-1/2 rounded-b-lg bg-gradient-to-b from-neutral-500 via-neutral-600 to-neutral-700"
                 style={{ boxShadow: "inset 2px 0 4px rgba(255,255,255,0.1), inset -2px 0 4px rgba(0,0,0,0.3)" }}
               />
-              {/* Platter */}
+              {/* Platter - tilted to match records */}
               <div
                 className="relative h-36 w-36 rounded-full bg-gradient-to-b from-neutral-600 to-neutral-800"
-                style={{ boxShadow: "0 6px 24px rgba(0,0,0,0.6)" }}
+                style={{
+                  boxShadow: "0 6px 24px rgba(0,0,0,0.6)",
+                  transform: "rotateX(65deg)",
+                  transformStyle: "preserve-3d",
+                }}
               >
                 <div className="absolute inset-2 rounded-full bg-neutral-700" />
                 <div className="absolute left-1/2 top-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-amber-500" />
               </div>
             </motion.div>
 
-            {/* Tonearm - to the right, at the lifted record height */}
+            {/* Tonearm - pivots from base on right, swings over to record */}
             <motion.div
-              className="absolute right-4 origin-bottom"
-              style={{ bottom: 12 + recordStackY + 60, zIndex: 50 }}
-              animate={{ rotate: playState === "playing" ? 0 : 25 }}
+              className="absolute"
+              style={{
+                // Position pivot base to the right of where the record plays
+                left: 320,
+                bottom: 12 + recordStackY + 85,
+                zIndex: 50,
+                transformOrigin: 'left center',
+              }}
+              animate={{ rotate: playState === "playing" ? -50 : 10 }}
               transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.2 }}
             >
-              <div className="h-20 w-1.5 rounded-full bg-amber-500" />
-              <div className="absolute -left-1 top-0 h-3 w-3 rounded-sm bg-amber-400" />
+              {/* Pivot base */}
+              <div className="absolute -left-3 -top-3 h-6 w-6 rounded-full bg-amber-600" />
+              {/* Arm extends from pivot toward record */}
+              <div className="h-1.5 w-32 rounded-full bg-amber-500" />
+              {/* Headshell at the end */}
+              <div className="absolute -top-1 right-0 h-3 w-4 rounded-sm bg-amber-400" />
             </motion.div>
           </div>
 
@@ -192,11 +199,11 @@ export default function Wurlitzer() {
   );
 }
 
-/** Simple oval record viewed from above at an angle */
-function Record({ isActive = false, spinning = false }: { isActive?: boolean; spinning?: boolean }) {
+/** Record tilted back to appear oval, as if viewed from the side */
+function Record({ isActive = false, spinning = false, rotation = 0 }: { isActive?: boolean; spinning?: boolean; rotation?: number }) {
   return (
     <div
-      className={`h-36 w-36 rounded-full ${isActive ? "border-2 border-rose-800/50" : "border-2 border-neutral-800/50"}`}
+      className={`h-36 w-36 overflow-hidden rounded-full ${isActive ? "border-2 border-rose-800/50" : "border-2 border-neutral-800/50"}`}
       style={{
         background: isActive
           ? "radial-gradient(circle, #1f1f1f 25%, #0a0a0a 70%)"
@@ -204,14 +211,38 @@ function Record({ isActive = false, spinning = false }: { isActive?: boolean; sp
         boxShadow: spinning
           ? "0 8px 32px rgba(0,0,0,0.8)"
           : "0 4px 16px rgba(0,0,0,0.6)",
+        transform: `rotateX(65deg) rotateZ(${rotation}deg)`,
+        transformStyle: "preserve-3d",
       }}
     >
+      {/* Radial lines/spokes for spin visibility */}
+      {[0, 45, 90, 135].map((angle) => (
+        <div
+          key={angle}
+          className="absolute left-1/2 top-1/2 h-0.5 w-full origin-left -translate-y-1/2"
+          style={{
+            transform: `rotate(${angle}deg)`,
+            background: "linear-gradient(90deg, transparent 20%, rgba(255,255,255,0.08) 30%, rgba(255,255,255,0.08) 70%, transparent 80%)",
+          }}
+        />
+      ))}
+
+      {/* Groove rings */}
+      <div className="absolute left-1/2 top-1/2 h-28 w-28 -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/30" />
+      <div className="absolute left-1/2 top-1/2 h-20 w-20 -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/20" />
+
       {/* Label */}
       <div
         className={`absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full ${
-          isActive ? "bg-rose-700" : "bg-amber-800"
+          isActive ? "bg-gradient-to-br from-rose-600 to-rose-800" : "bg-gradient-to-br from-amber-700 to-amber-900"
         }`}
       >
+        {/* Label detail - off-center dot */}
+        <div
+          className="absolute h-2 w-2 rounded-full bg-white/20"
+          style={{ top: "25%", left: "60%" }}
+        />
+        {/* Center spindle hole */}
         <div className="absolute left-1/2 top-1/2 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full bg-black" />
       </div>
     </div>
