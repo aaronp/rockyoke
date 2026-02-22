@@ -63,8 +63,8 @@ export default function Wurlitzer() {
             className="relative h-full w-full"
             style={{
               transformStyle: "preserve-3d",
-              transform: "rotateX(55deg)",
-              transformOrigin: "center 90%",
+              transform: "rotateX(15deg)",
+              transformOrigin: "center 100%",
             }}
           >
             {/* Record Stack (left) */}
@@ -92,12 +92,14 @@ export default function Wurlitzer() {
               {playState !== "idle" && (
                 <motion.div
                   className="absolute left-6"
-                  style={{ bottom: 12 + recordStackY, zIndex: 15 - currentRecord }}
-                  initial={{ x: 0, y: 0 }}
+                  style={{ zIndex: 15 - currentRecord, transform: "translateZ(0)" }}
+                  initial={{ x: 0, bottom: 12 + recordStackY }}
                   animate={{
                     x: 210,
                     // Record only moves up when platter is pushing it (lifting/playing)
-                    y: playState === "lifting" || playState === "playing" ? -60 : 0,
+                    bottom: playState === "lifting" || playState === "playing"
+                      ? 12 + recordStackY + 60
+                      : 12 + recordStackY,
                   }}
                   exit={{ opacity: 0 }}
                   transition={{ type: "spring", stiffness: 50, damping: 12 }}
@@ -119,14 +121,15 @@ export default function Wurlitzer() {
             {/* Platter with lift column - rises to meet record, then pushes it up */}
             <motion.div
               className="absolute left-6"
-              style={{ bottom: 12, x: 210 }}
+              style={{ x: 210, transform: "translateZ(0)" }}
+              initial={{ bottom: 12 }}
               animate={{
                 // First rise to meet record, then push it up
-                y: playState === "rising"
-                  ? -recordStackY  // Rise to meet the record
+                bottom: playState === "rising"
+                  ? 12 + recordStackY  // Rise to meet the record
                   : playState === "lifting" || playState === "playing"
-                    ? -(recordStackY + 60)  // Continue rising, pushing record
-                    : 0,
+                    ? 12 + recordStackY + 60  // Continue rising, pushing record
+                    : 12,
               }}
               transition={{ type: "spring", stiffness: 50, damping: 12 }}
             >
