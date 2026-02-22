@@ -98,7 +98,7 @@ export default function Wurlitzer() {
                     x: 210,
                     // Record only moves up when platter is pushing it (lifting/playing)
                     bottom: playState === "lifting" || playState === "playing"
-                      ? 12 + recordStackY + 60
+                      ? 12 + recordStackY + 30
                       : 12 + recordStackY,
                   }}
                   exit={{ opacity: 0 }}
@@ -121,7 +121,7 @@ export default function Wurlitzer() {
                 bottom: playState === "rising"
                   ? 12 + recordStackY  // Rise to meet the record
                   : playState === "lifting" || playState === "playing"
-                    ? 12 + recordStackY + 60  // Continue rising, pushing record
+                    ? 12 + recordStackY + 30  // Continue rising, pushing record
                     : 12,
               }}
               transition={{ type: "spring", stiffness: 50, damping: 12 }}
@@ -145,25 +145,26 @@ export default function Wurlitzer() {
               </div>
             </motion.div>
 
-            {/* Tonearm - pivots from base on right, swings over to record */}
+            {/* Tonearm - pivot to the right of record, arm extends left over record */}
             <motion.div
               className="absolute"
               style={{
-                // Position pivot base to the right of where the record plays
-                left: 320,
-                bottom: 12 + recordStackY + 85,
+                right: 15,
+                // Vertically aligned with final record position (reduced lift)
+                bottom: 12 + recordStackY + 30 + 20,
                 zIndex: 50,
-                transformOrigin: 'left center',
+                transformOrigin: 'right center',
               }}
-              animate={{ rotate: playState === "playing" ? -50 : 10 }}
+              // Headshell tilts DOWN (positive rotation), small swing from 15° to 8°
+              animate={{ rotate: playState === "playing" ? 8 : 15 }}
               transition={{ type: "spring", stiffness: 80, damping: 12, delay: 0.2 }}
             >
-              {/* Pivot base */}
-              <div className="absolute -left-3 -top-3 h-6 w-6 rounded-full bg-amber-600" />
-              {/* Arm extends from pivot toward record */}
+              {/* Arm extends to the left toward record */}
               <div className="h-1.5 w-32 rounded-full bg-amber-500" />
-              {/* Headshell at the end */}
-              <div className="absolute -top-1 right-0 h-3 w-4 rounded-sm bg-amber-400" />
+              {/* Headshell at left end */}
+              <div className="absolute -top-1 left-0 h-3 w-4 rounded-sm bg-amber-400" />
+              {/* Pivot base at right */}
+              <div className="absolute -right-3 -top-3 h-6 w-6 rounded-full bg-amber-600" />
             </motion.div>
           </div>
 
