@@ -101,10 +101,13 @@ export function SignUpWizard({
     onPreviewStart?.();
   }, [onPreviewStart]);
 
-  // Play audio when needle reaches record
+  // Play audio when needle reaches record (with slight delay for natural feel)
   useEffect(() => {
     if (triggerPlayAudio && preview.previewUrl) {
-      preview.play();
+      const timer = setTimeout(() => {
+        preview.play();
+      }, 500);
+      return () => clearTimeout(timer);
     }
   }, [triggerPlayAudio, preview.previewUrl, preview.play]);
 

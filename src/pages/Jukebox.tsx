@@ -34,7 +34,7 @@ export default function Jukebox() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 overflow-auto">
       {/* Header */}
       <div className="absolute left-4 top-4 z-50">
         <Link
@@ -47,15 +47,15 @@ export default function Jukebox() {
       </div>
 
       {/* Jukebox */}
-      <div className="flex min-h-screen items-center justify-center p-4">
+      <div className="flex min-h-screen items-center justify-center py-8 px-4">
         <JukeboxShell
           recordPlayer={
             <Wurlitzer
               triggerPlay={shouldTriggerPlay}
               triggerReset={shouldTriggerReset}
-              onPlayComplete={state.onPlayComplete}
+              onPlayComplete={previewPlaying ? undefined : state.onPlayComplete}
               onReset={state.reset}
-              onNeedleDown={handleNeedleDown}
+              onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
               showControls={state.wizardState === "idle"}
             />
           }
