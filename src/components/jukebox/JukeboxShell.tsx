@@ -917,7 +917,7 @@ export function JukeboxShell({
           Positioned below the rolodex, in the button area.
           Slot box: x=148 y=555 w=504 h=120 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={148} y={555} w={404} h={120}>
+      <SlotOverlay x={178} y={520} w={504} h={120}>
         {buttonPanel}
       </SlotOverlay>
 

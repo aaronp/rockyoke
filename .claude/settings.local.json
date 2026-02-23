@@ -14,7 +14,12 @@
       "Bash(git worktree:*)",
       "Bash(lsof:*)",
       "Bash(curl:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke diff src/components/jukebox/Rolodex.tsx)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: update song codes to letter+number format \\(A01-K06\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(npm run lint:*)",
+      "Bash(npm run)",
+      "Bash(npm test:*)"
     ],
     "deny": [],
     "ask": []
