@@ -35,6 +35,10 @@ export function EventPoster({
     );
   }
 
+  const nameParts = eventName.split(" ");
+  const firstWord = nameParts[0];
+  const remainingWords = nameParts.slice(1).join(" ");
+
   return (
     <div
       className={`flex h-full flex-col items-center justify-center rounded-lg p-6 ${className}`}
@@ -67,9 +71,9 @@ export function EventPoster({
           textShadow: "2px 2px 4px rgba(0, 0, 0, 0.5)",
         }}
       >
-        {eventName.split(" ")[0]}
+        {firstWord}
       </h1>
-      {eventName.split(" ").length > 1 && (
+      {remainingWords && (
         <h2
           className="mb-6 text-center font-bold uppercase tracking-wider text-amber-200"
           style={{
@@ -77,7 +81,7 @@ export function EventPoster({
             textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)",
           }}
         >
-          {eventName.split(" ").slice(1).join(" ")}
+          {remainingWords}
         </h2>
       )}
 
