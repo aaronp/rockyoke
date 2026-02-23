@@ -206,29 +206,29 @@ export function Rolodex({ onSelectSong }: Props) {
   }, [onSelectSong]);
 
   return (
-    <div className="w-full h-full flex flex-col">
+    <div className="w-full h-full flex">
       {/* Split-flap display */}
-      <div className="flex-1" style={{ perspective: "1200px" }}>
+      <div className="flex-1 h-full" style={{ perspective: "1200px" }}>
         <SplitFlapPanel page={currentPage} onSongClick={handleSongClick} />
       </div>
 
-      {/* Navigation arrows */}
-      <div className="flex justify-center gap-2 mt-2">
+      {/* Navigation arrows - positioned on the right */}
+      <div className="flex flex-col justify-center gap-1 pl-2">
         <Button
           size="sm"
-          className="h-8 rounded-lg bg-amber-600/80 px-3 text-amber-950 hover:bg-amber-500 disabled:opacity-40"
+          className="h-10 w-10 rounded-full bg-amber-600/90 p-0 text-amber-950 hover:bg-amber-500 disabled:opacity-40 shadow-lg"
           onClick={goUp}
           disabled={!canGoUp}
         >
-          <ChevronUp className="h-4 w-4" />
+          <ChevronUp className="h-5 w-5" />
         </Button>
         <Button
           size="sm"
-          className="h-8 rounded-lg bg-amber-600/80 px-3 text-amber-950 hover:bg-amber-500 disabled:opacity-40"
+          className="h-10 w-10 rounded-full bg-amber-600/90 p-0 text-amber-950 hover:bg-amber-500 disabled:opacity-40 shadow-lg"
           onClick={goDown}
           disabled={!canGoDown}
         >
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="h-5 w-5" />
         </Button>
       </div>
     </div>

@@ -912,10 +912,10 @@ export function JukeboxShell({
       {/* ================================================================
           SLOT 2 -- SONG ROLODEX
           Positioned over the glass display window (inside chrome bezel).
-          Extended to include navigation buttons area below.
-          Slot box: x=250 y=433 w=300 h={106+60} (in SVG coords)
+          Widened to fill bezel + space on right for navigation arrows.
+          Slot box: x=240 y=433 w=370 h=122 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={250} y={433} w={300} h={166}>
+      <SlotOverlay x={240} y={433} w={370} h={122}>
         {songRolodex}
       </SlotOverlay>
 
