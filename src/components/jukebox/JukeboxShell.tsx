@@ -323,6 +323,17 @@ export function JukeboxShell({
           fill="url(#jb-woodBase)"
         />
 
+        {/* -- BASE CHROME TRIM (rendered early so medallion overlaps it) -- */}
+        <rect
+          x="108"
+          y="915"
+          width="584"
+          height="8"
+          rx="3"
+          fill="url(#jb-chromeH)"
+          opacity="0.5"
+        />
+
         {/* -- FEET -- */}
         <rect x="120" y="960" width="52" height="46" rx="12" fill="#100604" />
         <rect x="196" y="960" width="52" height="46" rx="12" fill="#100604" />
@@ -851,16 +862,6 @@ export function JukeboxShell({
           fill="url(#jb-chromeH)"
           opacity="0.6"
         />
-        <rect
-          x="108"
-          y="915"
-          width="584"
-          height="8"
-          rx="3"
-          fill="url(#jb-chromeH)"
-          opacity="0.5"
-        />
-
         {/* Base centre knob */}
         <circle cx="400" cy="948" r="9" fill="url(#jb-chromeV)" />
         <circle cx="400" cy="948" r="5" fill="#1A0808" />
