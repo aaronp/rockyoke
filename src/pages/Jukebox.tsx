@@ -96,7 +96,7 @@ export default function Jukebox() {
 
           {/* Jukebox (center) - fixed size, no shrink */}
           <div className="flex flex-shrink-0 items-center justify-center">
-            <div className="w-[500px]">
+            <div className="w-[800px]">
               <JukeboxShell
                 recordPlayer={
                 <Wurlitzer
