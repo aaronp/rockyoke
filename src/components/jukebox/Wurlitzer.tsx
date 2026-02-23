@@ -7,12 +7,13 @@ type PlayState = "idle" | "sliding" | "rising" | "lifting" | "playing";
 
 type Props = {
   triggerPlay?: boolean;
+  triggerReset?: boolean;
   onPlayComplete?: () => void;
   onReset?: () => void;
   showControls?: boolean;
 };
 
-export function Wurlitzer({ triggerPlay, onPlayComplete, onReset, showControls = true }: Props) {
+export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, showControls = true }: Props) {
   const [playState, setPlayState] = useState<PlayState>("idle");
   const [currentRecord, setCurrentRecord] = useState(0);
 
@@ -26,12 +27,20 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, onReset, showControls =
     setTimeout(() => setPlayState("playing"), 2000);
   }, [playState]);
 
-  // External trigger
+  // External trigger to play
   useEffect(() => {
     if (triggerPlay && playState === "idle") {
       handlePlay();
     }
   }, [triggerPlay, playState, handlePlay]);
+
+  // External trigger to reset
+  useEffect(() => {
+    if (triggerReset && playState !== "idle") {
+      setPlayState("idle");
+      setCurrentRecord((r) => (r + 1) % 15);
+    }
+  }, [triggerReset, playState]);
 
   // Notify when playing completes (after ~3 seconds of playing)
   useEffect(() => {

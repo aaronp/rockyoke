@@ -7,16 +7,21 @@ import { Input } from "@/components/ui/input";
 import type { WizardState, Song, QueueEntry } from "@/types/jukebox";
 
 // Hook to fetch iTunes preview URL and manage playback
-function useItunesPreview() {
+function useItunesPreview(onEnd?: () => void) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const onEndRef = useRef(onEnd);
+  onEndRef.current = onEnd;
 
   // Create audio element once
   useEffect(() => {
     audioRef.current = new Audio();
-    audioRef.current.addEventListener("ended", () => setIsPlaying(false));
+    audioRef.current.addEventListener("ended", () => {
+      setIsPlaying(false);
+      onEndRef.current?.();
+    });
     audioRef.current.addEventListener("pause", () => setIsPlaying(false));
     audioRef.current.addEventListener("play", () => setIsPlaying(true));
     return () => {
@@ -69,6 +74,8 @@ type Props = {
   onSubmitName: (name: string) => void;
   onSubmitPayment: () => void;
   onReset: () => void;
+  onPreviewStart?: () => void;
+  onPreviewEnd?: () => void;
   queue?: QueueEntry[];
 };
 
@@ -80,10 +87,24 @@ export function SignUpWizard({
   onSubmitName,
   onSubmitPayment,
   onReset,
+  onPreviewStart,
+  onPreviewEnd,
   queue = [],
 }: Props) {
   const [nameInput, setNameInput] = useState("");
-  const preview = useItunesPreview();
+  const preview = useItunesPreview(onPreviewEnd);
+
+  // Wrap play to also trigger onPreviewStart
+  const handlePreviewPlay = useCallback(() => {
+    preview.play();
+    onPreviewStart?.();
+  }, [preview.play, onPreviewStart]);
+
+  // Wrap stop to also trigger onPreviewEnd
+  const handlePreviewStop = useCallback(() => {
+    preview.stop();
+    onPreviewEnd?.();
+  }, [preview.stop, onPreviewEnd]);
 
   // Fetch preview when song is selected
   useEffect(() => {
@@ -96,8 +117,9 @@ export function SignUpWizard({
   useEffect(() => {
     if (wizardState !== "song-selected") {
       preview.stop();
+      onPreviewEnd?.();
     }
-  }, [wizardState, preview.stop]);
+  }, [wizardState, preview.stop, onPreviewEnd]);
 
   // Auto-reset after complete
   useEffect(() => {
@@ -147,7 +169,7 @@ export function SignUpWizard({
                   {!preview.isPlaying ? (
                     <Button
                       size="sm"
-                      onClick={preview.play}
+                      onClick={handlePreviewPlay}
                       className="h-8 gap-1 bg-amber-600 px-3 text-amber-950 hover:bg-amber-500"
                     >
                       <Play className="h-3 w-3" /> Preview
@@ -155,7 +177,7 @@ export function SignUpWizard({
                   ) : (
                     <Button
                       size="sm"
-                      onClick={preview.stop}
+                      onClick={handlePreviewStop}
                       className="h-8 gap-1 bg-amber-700 px-3 text-amber-100 hover:bg-amber-600"
                     >
                       <Square className="h-3 w-3" /> Stop

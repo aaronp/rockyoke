@@ -1,4 +1,5 @@
 // src/pages/Jukebox.tsx
+import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import {
@@ -11,9 +12,19 @@ import { useJukeboxState } from "@/hooks/useJukeboxState";
 
 export default function Jukebox() {
   const state = useJukeboxState();
+  const [previewPlaying, setPreviewPlaying] = useState(false);
 
-  // Trigger Wurlitzer when entering "playing" state
-  const shouldTriggerPlay = state.wizardState === "playing";
+  // Trigger Wurlitzer when entering "playing" state OR preview is playing
+  const shouldTriggerPlay = state.wizardState === "playing" || previewPlaying;
+  const shouldTriggerReset = !previewPlaying && state.wizardState === "song-selected";
+
+  const handlePreviewStart = useCallback(() => {
+    setPreviewPlaying(true);
+  }, []);
+
+  const handlePreviewEnd = useCallback(() => {
+    setPreviewPlaying(false);
+  }, []);
 
   return (
     <div className="min-h-screen bg-neutral-950 text-neutral-100">
@@ -34,6 +45,7 @@ export default function Jukebox() {
           recordPlayer={
             <Wurlitzer
               triggerPlay={shouldTriggerPlay}
+              triggerReset={shouldTriggerReset}
               onPlayComplete={state.onPlayComplete}
               onReset={state.reset}
               showControls={state.wizardState === "idle"}
@@ -51,6 +63,8 @@ export default function Jukebox() {
               onSubmitName={state.submitName}
               onSubmitPayment={state.submitPayment}
               onReset={state.reset}
+              onPreviewStart={handlePreviewStart}
+              onPreviewEnd={handlePreviewEnd}
               queue={state.queue}
             />
           }
