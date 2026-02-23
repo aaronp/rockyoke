@@ -11,6 +11,8 @@ import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 import type { DisplayState } from "@/components/jukebox/ButtonPanel";
 import backgroundImage from "../background.png";
+import { EventPoster } from "@/components/EventPoster";
+import { LineupPanel } from "@/components/LineupPanel";
 
 export default function Jukebox() {
   const state = useJukeboxState();
@@ -59,63 +61,107 @@ export default function Jukebox() {
       className="relative min-h-screen text-neutral-100 overflow-auto bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      {/* Dark overlay for ~20% background visibility */}
+      {/* Dark overlay */}
       <div className="absolute inset-0 bg-neutral-950/80" />
 
-      {/* Jukebox */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center py-2 px-4">
-        <JukeboxShell
-          recordPlayer={
-            <Wurlitzer
-              triggerPlay={shouldTriggerPlay}
-              triggerReset={shouldTriggerReset}
-              onPlayComplete={previewPlaying ? undefined : state.onPlayComplete}
-              onReset={state.reset}
-              onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
-              showControls={state.wizardState === "idle"}
+      {/* Main content */}
+      <div className="relative z-10 min-h-screen">
+        {/* Narrow screens: Banner at top */}
+        <div className="lg:hidden">
+          <EventPoster
+            eventName="Rockyoke Night"
+            venue="The Mechanics"
+            date="2nd May"
+            priceAdvance="£12"
+            priceDoor="£15"
+            variant="banner"
+          />
+        </div>
+
+        {/* Grid layout */}
+        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[280px_1fr_280px] lg:items-center lg:py-2">
+          {/* Wide screens: Poster on left */}
+          <div className="hidden lg:block lg:self-center">
+            <EventPoster
+              eventName="Rockyoke Night"
+              venue="The Mechanics"
+              date="2nd May"
+              priceAdvance="£12"
+              priceDoor="£15"
+              variant="poster"
             />
-          }
-          songRolodex={
-            <Rolodex
-              onSelectSong={(song) => {
-                state.selectSong(song);
-                setCodeInput(song.number);
-              }}
-              pageIndex={rolodexPage}
-              onPageChange={setRolodexPage}
+          </div>
+
+          {/* Jukebox (center) */}
+          <div className="flex items-center justify-center">
+            <JukeboxShell
+              recordPlayer={
+                <Wurlitzer
+                  triggerPlay={shouldTriggerPlay}
+                  triggerReset={shouldTriggerReset}
+                  onPlayComplete={previewPlaying ? undefined : state.onPlayComplete}
+                  onReset={state.reset}
+                  onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
+                  showControls={state.wizardState === "idle"}
+                />
+              }
+              songRolodex={
+                <Rolodex
+                  onSelectSong={(song) => {
+                    state.selectSong(song);
+                    setCodeInput(song.number);
+                  }}
+                  pageIndex={rolodexPage}
+                  onPageChange={setRolodexPage}
+                />
+              }
+              buttonPanel={
+                <ButtonPanel
+                  onSelectSong={handleCodeEntry}
+                  onNavigateUp={handleNavigateUp}
+                  onNavigateDown={handleNavigateDown}
+                  canNavigateUp={rolodexPage > 0}
+                  canNavigateDown={rolodexPage < totalPages - 1}
+                  input={codeInput}
+                  onInputChange={setCodeInput}
+                  displayState={codeDisplayState}
+                  onDisplayStateChange={setCodeDisplayState}
+                />
+              }
+              songQueue={
+                <SignUpWizard
+                  wizardState={state.wizardState}
+                  selectedSong={state.selectedSong}
+                  lastEntry={state.lastEntry}
+                  onStartSignUp={state.startSignUp}
+                  onSubmitName={state.submitName}
+                  onSubmitPayment={state.submitPayment}
+                  onReset={state.reset}
+                  onPreviewStart={handlePreviewStart}
+                  onPreviewEnd={handlePreviewEnd}
+                  triggerPlayAudio={needleDown}
+                  queue={state.queue}
+                  codeInput={codeInput}
+                  codeDisplayState={codeDisplayState}
+                />
+              }
             />
-          }
-          buttonPanel={
-            <ButtonPanel
-              onSelectSong={handleCodeEntry}
-              onNavigateUp={handleNavigateUp}
-              onNavigateDown={handleNavigateDown}
-              canNavigateUp={rolodexPage > 0}
-              canNavigateDown={rolodexPage < totalPages - 1}
-              input={codeInput}
-              onInputChange={setCodeInput}
-              displayState={codeDisplayState}
-              onDisplayStateChange={setCodeDisplayState}
-            />
-          }
-          songQueue={
-            <SignUpWizard
-              wizardState={state.wizardState}
-              selectedSong={state.selectedSong}
-              lastEntry={state.lastEntry}
-              onStartSignUp={state.startSignUp}
-              onSubmitName={state.submitName}
-              onSubmitPayment={state.submitPayment}
-              onReset={state.reset}
-              onPreviewStart={handlePreviewStart}
-              onPreviewEnd={handlePreviewEnd}
-              triggerPlayAudio={needleDown}
+          </div>
+
+          {/* Queue panel (right on wide, bottom on narrow) */}
+          <div className="lg:self-center">
+            <LineupPanel
               queue={state.queue}
-              codeInput={codeInput}
-              codeDisplayState={codeDisplayState}
+              variant="panel"
+              className="hidden lg:flex lg:h-[600px]"
             />
-          }
-        />
+            <LineupPanel
+              queue={state.queue}
+              variant="section"
+              className="lg:hidden"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
