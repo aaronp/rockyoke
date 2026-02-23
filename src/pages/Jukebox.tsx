@@ -11,6 +11,7 @@ import {
 } from "@/components/jukebox";
 import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
+import backgroundImage from "../background.png";
 
 export default function Jukebox() {
   const state = useJukeboxState();
@@ -53,7 +54,10 @@ export default function Jukebox() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 overflow-auto">
+    <div
+      className="min-h-screen text-neutral-100 overflow-auto bg-cover bg-center bg-no-repeat"
+      style={{ backgroundImage: `url(${backgroundImage})` }}
+    >
       {/* Header */}
       <div className="absolute left-4 top-4 z-50">
         <Link
