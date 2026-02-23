@@ -76,6 +76,7 @@ type Props = {
   onReset: () => void;
   onPreviewStart?: () => void;
   onPreviewEnd?: () => void;
+  triggerPlayAudio?: boolean;
   queue?: QueueEntry[];
 };
 
@@ -89,16 +90,23 @@ export function SignUpWizard({
   onReset,
   onPreviewStart,
   onPreviewEnd,
+  triggerPlayAudio,
   queue = [],
 }: Props) {
   const [nameInput, setNameInput] = useState("");
   const preview = useItunesPreview(onPreviewEnd);
 
-  // Wrap play to also trigger onPreviewStart
+  // Trigger animation start (audio will play when triggerPlayAudio becomes true)
   const handlePreviewPlay = useCallback(() => {
-    preview.play();
     onPreviewStart?.();
-  }, [preview.play, onPreviewStart]);
+  }, [onPreviewStart]);
+
+  // Play audio when needle reaches record
+  useEffect(() => {
+    if (triggerPlayAudio && preview.previewUrl) {
+      preview.play();
+    }
+  }, [triggerPlayAudio, preview.previewUrl, preview.play]);
 
   // Wrap stop to also trigger onPreviewEnd
   const handlePreviewStop = useCallback(() => {

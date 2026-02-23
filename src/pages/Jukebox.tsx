@@ -13,6 +13,7 @@ import { useJukeboxState } from "@/hooks/useJukeboxState";
 export default function Jukebox() {
   const state = useJukeboxState();
   const [previewPlaying, setPreviewPlaying] = useState(false);
+  const [needleDown, setNeedleDown] = useState(false);
 
   // Trigger Wurlitzer when entering "playing" state OR preview is playing
   const shouldTriggerPlay = state.wizardState === "playing" || previewPlaying;
@@ -20,10 +21,16 @@ export default function Jukebox() {
 
   const handlePreviewStart = useCallback(() => {
     setPreviewPlaying(true);
+    setNeedleDown(false);
   }, []);
 
   const handlePreviewEnd = useCallback(() => {
     setPreviewPlaying(false);
+    setNeedleDown(false);
+  }, []);
+
+  const handleNeedleDown = useCallback(() => {
+    setNeedleDown(true);
   }, []);
 
   return (
@@ -48,6 +55,7 @@ export default function Jukebox() {
               triggerReset={shouldTriggerReset}
               onPlayComplete={state.onPlayComplete}
               onReset={state.reset}
+              onNeedleDown={handleNeedleDown}
               showControls={state.wizardState === "idle"}
             />
           }
@@ -65,6 +73,7 @@ export default function Jukebox() {
               onReset={state.reset}
               onPreviewStart={handlePreviewStart}
               onPreviewEnd={handlePreviewEnd}
+              triggerPlayAudio={needleDown}
               queue={state.queue}
             />
           }

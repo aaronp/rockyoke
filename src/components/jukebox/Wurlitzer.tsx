@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Play, RotateCcw } from "lucide-react";
+import { RotateCcw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 type PlayState = "idle" | "sliding" | "rising" | "lifting" | "playing";
@@ -10,10 +10,11 @@ type Props = {
   triggerReset?: boolean;
   onPlayComplete?: () => void;
   onReset?: () => void;
+  onNeedleDown?: () => void;
   showControls?: boolean;
 };
 
-export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, showControls = true }: Props) {
+export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, onNeedleDown, showControls = true }: Props) {
   const [playState, setPlayState] = useState<PlayState>("idle");
   const [currentRecord, setCurrentRecord] = useState(0);
 
@@ -41,6 +42,13 @@ export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, 
       setCurrentRecord((r) => (r + 1) % 15);
     }
   }, [triggerReset, playState]);
+
+  // Notify when needle reaches the record
+  useEffect(() => {
+    if (playState === "playing") {
+      onNeedleDown?.();
+    }
+  }, [playState, onNeedleDown]);
 
   // Notify when playing completes (after ~3 seconds of playing)
   useEffect(() => {
@@ -173,18 +181,6 @@ export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, 
         <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent" />
       </div>
 
-      {/* Mini Controls - show when idle */}
-      {showControls && playState === "idle" && (
-        <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-          <Button
-            onClick={handlePlay}
-            size="sm"
-            className="rounded-full bg-rose-600 px-3 h-8 hover:bg-rose-500"
-          >
-            <Play className="h-3 w-3" />
-          </Button>
-        </div>
-      )}
 
       {/* Reset button - bottom right when playing */}
       {playState !== "idle" && onReset && (
