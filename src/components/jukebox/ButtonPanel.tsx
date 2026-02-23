@@ -255,42 +255,51 @@ export function ButtonPanel({
   }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, onNavigateUp, onNavigateDown, canNavigateUp, canNavigateDown]);
 
   return (
-    <div className="flex flex-col items-center gap-1 p-1">
-      {/* LED Display */}
-      <LEDDisplay value={input} state={displayState} />
+    <div className="flex items-center gap-2 p-1">
+      {/* Button grid - letters above numbers, aligned */}
+      <div className="flex flex-col gap-0.5">
+        {/* Letter row: A-K (11 buttons) */}
+        <div className="flex gap-0.5">
+          {LETTERS.map(letter => (
+            <VintageButton
+              key={letter}
+              label={letter}
+              onClick={() => handleLetterPress(letter)}
+              variant="letter"
+            />
+          ))}
+        </div>
 
-      {/* Letter row */}
-      <div className="flex gap-0.5">
-        {LETTERS.map(letter => (
-          <VintageButton
-            key={letter}
-            label={letter}
-            onClick={() => handleLetterPress(letter)}
-            variant="letter"
-          />
-        ))}
+        {/* Number row: 0-6 aligned under A-G, then spacers */}
+        <div className="flex gap-0.5">
+          {NUMBERS.map(num => (
+            <VintageButton
+              key={num}
+              label={num}
+              onClick={() => handleNumberPress(num)}
+              variant="number"
+            />
+          ))}
+          {/* 4 empty spacers to align with H I J K above */}
+          <div className="w-5" />
+          <div className="w-5" />
+          <div className="w-5" />
+          <div className="w-5" />
+        </div>
       </div>
 
-      {/* Number row + controls */}
-      <div className="flex gap-0.5 items-center">
-        {NUMBERS.map(num => (
-          <VintageButton
-            key={num}
-            label={num}
-            onClick={() => handleNumberPress(num)}
-            variant="number"
-          />
-        ))}
-
-        <div className="w-1" /> {/* Spacer */}
-
-        <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
-        <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
-
-        <div className="w-1" /> {/* Spacer */}
-
-        <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
-        <VintageButton label="OK" onClick={handleEnter} variant="action" wide />
+      {/* Navigation + LED + Actions */}
+      <div className="flex flex-col gap-0.5 items-center">
+        <div className="flex gap-0.5 items-center">
+          <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
+          <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
+          <div className="w-1" />
+          <LEDDisplay value={input} state={displayState} />
+        </div>
+        <div className="flex gap-0.5">
+          <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
+          <VintageButton label="OK" onClick={handleEnter} variant="action" wide />
+        </div>
       </div>
     </div>
   );

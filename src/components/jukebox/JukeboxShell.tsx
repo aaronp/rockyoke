@@ -673,18 +673,7 @@ export function JukeboxShell({
           fill="url(#jb-chromeH)"
           opacity="0.5"
         />
-        <circle cx="267" cy="581" r="9" fill="url(#jb-redGem)" />
-        <circle cx="291" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="315" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="339" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="363" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="387" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="411" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="435" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="459" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="483" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="507" cy="581" r="8.5" fill="url(#jb-orangeBtn)" />
-        <circle cx="531" cy="581" r="9" fill="url(#jb-redGem)" />
+        {/* Decorative circles removed - ButtonPanel component now occupies this area */}
 
         {/* -- SONG QUEUE SLOT -- chrome-bezelled panel
             Slot covers: x=148 y=626 w=504 h=362  */}
