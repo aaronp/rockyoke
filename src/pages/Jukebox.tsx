@@ -9,6 +9,7 @@ import {
   SignUpWizard,
   ButtonPanel,
 } from "@/components/jukebox";
+import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 
 export default function Jukebox() {
@@ -27,14 +28,10 @@ export default function Jukebox() {
   }, []);
 
   const handleCodeEntry = useCallback((code: string) => {
-    // For now, just create a placeholder song - Task 12 will use findSongByCode
-    const song = {
-      id: code,
-      number: code,
-      title: "",
-      artist: "",
-    };
-    state.selectSong(song);
+    const song = findSongByCode(code);
+    if (song) {
+      state.selectSong(song);
+    }
   }, [state]);
 
   // Trigger Wurlitzer when entering "playing" state OR preview is playing
