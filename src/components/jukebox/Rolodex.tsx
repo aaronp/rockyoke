@@ -9,7 +9,7 @@ type InternalSong = {
   year: number;
 };
 
-const SONGS: InternalSong[] = [
+export const SONGS: InternalSong[] = [
   { no: 1, title: "Hard To Handle", artist: "The Black Crowes", year: 1990 },
   { no: 2, title: "In The Morning", artist: "Razorlight", year: 2006 },
   { no: 3, title: "Dakota", artist: "Stereophonics", year: 2005 },
@@ -77,6 +77,29 @@ const SONGS: InternalSong[] = [
   { no: 65, title: "Sex on Fire", artist: "Kings of Leon", year: 2008 },
   { no: 66, title: "A New Beginning", artist: "Good Charlotte", year: 2000 },
 ];
+
+export function findSongByCode(code: string): Song | null {
+  if (code.length !== 3) return null;
+
+  const letter = code[0];
+  const num = parseInt(code.slice(1), 10);
+  const pageIndex = letter.charCodeAt(0) - 65;
+
+  if (pageIndex < 0 || pageIndex > 10 || num < 1 || num > 6) return null;
+
+  const songIndex = pageIndex * 6 + (num - 1);
+  const internal = SONGS[songIndex];
+
+  if (!internal) return null;
+
+  return {
+    id: code,
+    number: code,
+    title: internal.title,
+    artist: internal.artist,
+    year: internal.year,
+  };
+}
 
 function toSong(internal: InternalSong, pageIndex: number, indexOnPage: number): Song {
   const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
