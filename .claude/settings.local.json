@@ -12,7 +12,9 @@
       "Bash(git merge:*)",
       "Bash(git branch:*)",
       "Bash(git worktree:*)",
-      "Bash(lsof:*)"
+      "Bash(lsof:*)",
+      "Bash(curl:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

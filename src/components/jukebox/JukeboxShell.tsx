@@ -915,7 +915,7 @@ export function JukeboxShell({
           Extended slightly for navigation arrows on right.
           Slot box: x=232 y=433 w=380 h=122 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={232} y={433} w={380} h={122}>
+      <SlotOverlay x={200} y={430} w={450} h={122}>
         {songRolodex}
       </SlotOverlay>
 
