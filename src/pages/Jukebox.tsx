@@ -13,6 +13,7 @@ import type { DisplayState } from "@/components/jukebox/ButtonPanel";
 import backgroundImage from "../background.png";
 import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
+import { HelpTooltip } from "@/components/HelpTooltip";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
@@ -96,7 +97,8 @@ export default function Jukebox() {
 
           {/* Jukebox (center) - fixed size, no shrink */}
           <div className="flex flex-shrink-0 items-center justify-center">
-            <div className="w-[800px]">
+            <div className="relative w-[800px]">
+              <HelpTooltip />
               <JukeboxShell
                 recordPlayer={
                 <Wurlitzer
