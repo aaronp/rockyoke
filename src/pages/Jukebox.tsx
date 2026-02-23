@@ -7,6 +7,7 @@ import {
   Wurlitzer,
   Rolodex,
   SignUpWizard,
+  ButtonPanel,
 } from "@/components/jukebox";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 
@@ -14,6 +15,27 @@ export default function Jukebox() {
   const state = useJukeboxState();
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [needleDown, setNeedleDown] = useState(false);
+  const [rolodexPage, setRolodexPage] = useState(0);
+  const totalPages = 11; // A-K
+
+  const handleNavigateUp = useCallback(() => {
+    setRolodexPage(p => Math.max(0, p - 1));
+  }, []);
+
+  const handleNavigateDown = useCallback(() => {
+    setRolodexPage(p => Math.min(totalPages - 1, p + 1));
+  }, []);
+
+  const handleCodeEntry = useCallback((code: string) => {
+    // For now, just create a placeholder song - Task 12 will use findSongByCode
+    const song = {
+      id: code,
+      number: code,
+      title: "",
+      artist: "",
+    };
+    state.selectSong(song);
+  }, [state]);
 
   // Trigger Wurlitzer when entering "playing" state OR preview is playing
   const shouldTriggerPlay = state.wizardState === "playing" || previewPlaying;
@@ -60,7 +82,20 @@ export default function Jukebox() {
             />
           }
           songRolodex={
-            <Rolodex onSelectSong={state.selectSong} />
+            <Rolodex
+              onSelectSong={state.selectSong}
+              pageIndex={rolodexPage}
+              onPageChange={setRolodexPage}
+            />
+          }
+          buttonPanel={
+            <ButtonPanel
+              onSelectSong={handleCodeEntry}
+              onNavigateUp={handleNavigateUp}
+              onNavigateDown={handleNavigateDown}
+              canNavigateUp={rolodexPage > 0}
+              canNavigateDown={rolodexPage < totalPages - 1}
+            />
           }
           songQueue={
             <SignUpWizard
