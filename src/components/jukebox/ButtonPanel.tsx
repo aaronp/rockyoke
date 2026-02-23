@@ -81,11 +81,11 @@ function LEDDisplay({ value, state }: { value: string; state: DisplayState }) {
     : "text-amber-400";
 
   return (
-    <div className={`${bgColor} rounded-lg px-4 py-2 border-2 border-neutral-700 shadow-inner`}>
-      <div className={`font-mono text-2xl font-bold tracking-[0.3em] ${textColor}`}
-           style={{ textShadow: state === "normal" ? "0 0 10px currentColor" : "none" }}>
+    <div className={`${bgColor} rounded px-2 py-1 border border-neutral-700 shadow-inner`}>
+      <div className={`font-mono text-sm font-bold tracking-[0.2em] ${textColor}`}
+           style={{ textShadow: state === "normal" ? "0 0 8px currentColor" : "none" }}>
         {display.split("").map((char, i) => (
-          <span key={i} className="inline-block w-6 text-center">
+          <span key={i} className="inline-block w-4 text-center">
             {char}
           </span>
         ))}
@@ -104,7 +104,7 @@ type VintageButtonProps = {
 
 function VintageButton({ label, onClick, disabled, variant = "letter", wide }: VintageButtonProps) {
   const baseStyles = "font-mono font-bold uppercase transition-all duration-75 select-none";
-  const sizeStyles = wide ? "px-3 py-1.5 text-xs" : "w-7 h-7 text-sm";
+  const sizeStyles = wide ? "px-2 py-0.5 text-[10px]" : "w-5 h-5 text-[10px]";
 
   const variantStyles = {
     letter: "bg-gradient-to-b from-amber-50 to-amber-100 text-amber-900 border-amber-300",
@@ -255,12 +255,12 @@ export function ButtonPanel({
   }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, onNavigateUp, onNavigateDown, canNavigateUp, canNavigateDown]);
 
   return (
-    <div className="flex flex-col items-center gap-2 p-2">
+    <div className="flex flex-col items-center gap-1 p-1">
       {/* LED Display */}
       <LEDDisplay value={input} state={displayState} />
 
       {/* Letter row */}
-      <div className="flex gap-1">
+      <div className="flex gap-0.5">
         {LETTERS.map(letter => (
           <VintageButton
             key={letter}
@@ -272,7 +272,7 @@ export function ButtonPanel({
       </div>
 
       {/* Number row + controls */}
-      <div className="flex gap-1 items-center">
+      <div className="flex gap-0.5 items-center">
         {NUMBERS.map(num => (
           <VintageButton
             key={num}
@@ -282,12 +282,12 @@ export function ButtonPanel({
           />
         ))}
 
-        <div className="w-2" /> {/* Spacer */}
+        <div className="w-1" /> {/* Spacer */}
 
         <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
         <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
 
-        <div className="w-2" /> {/* Spacer */}
+        <div className="w-1" /> {/* Spacer */}
 
         <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
         <VintageButton label="OK" onClick={handleEnter} variant="action" wide />
