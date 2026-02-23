@@ -115,7 +115,7 @@ export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, 
                 animate={{
                   x: 210,
                   bottom: playState === "lifting" || playState === "playing"
-                    ? -40 + recordStackY + 30
+                    ? -40 + recordStackY + 20
                     : -40 + recordStackY,
                 }}
                 exit={{ opacity: 0 }}
@@ -137,7 +137,7 @@ export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, 
               bottom: playState === "rising"
                 ? -40 + recordStackY
                 : playState === "lifting" || playState === "playing"
-                  ? -40 + recordStackY + 30
+                  ? -40 + recordStackY + 20
                   : -40,
             }}
             transition={{ type: "spring", stiffness: 50, damping: 12 }}
