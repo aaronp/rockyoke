@@ -1,18 +1,20 @@
 /**
  * JukeboxShell
  *
- * Decorative jukebox casing that hosts three swappable UI components.
+ * Decorative jukebox casing that hosts four swappable UI components.
  * Drop your components in via props — the SVG shell is purely presentational.
  *
  * Slot layout (top -> bottom):
  *   1. recordPlayer  — the large arch opening (spinning record visualiser, etc.)
  *   2. songRolodex   — the glass display window (song-selection rolodex / carousel)
- *   3. songQueue     — the tall lower panel (queue list, history, etc.)
+ *   3. buttonPanel   — the button area below the rolodex (selection buttons, etc.)
+ *   4. songQueue     — the tall lower panel (queue list, history, etc.)
  *
  * Usage:
  *   <JukeboxShell
  *     recordPlayer={<MySpinningRecord />}
  *     songRolodex={<MyRolodex />}
+ *     buttonPanel={<MyButtonPanel />}
  *     songQueue={<MySongQueue />}
  *   />
  *
@@ -40,6 +42,7 @@ interface SlotOverlayProps {
 interface JukeboxShellProps {
   recordPlayer?: React.ReactNode;
   songRolodex?: React.ReactNode;
+  buttonPanel?: React.ReactNode;
   songQueue?: React.ReactNode;
 }
 
@@ -129,6 +132,7 @@ function SlotOverlay({
 export function JukeboxShell({
   recordPlayer = <SlotPlaceholder label="Record Player" />,
   songRolodex = <SlotPlaceholder label="Song Rolodex" />,
+  buttonPanel = <SlotPlaceholder label="Button Panel" />,
   songQueue = <SlotPlaceholder label="Song Queue" />,
 }: JukeboxShellProps): React.ReactElement {
   return (
@@ -920,7 +924,16 @@ export function JukeboxShell({
       </SlotOverlay>
 
       {/* ================================================================
-          SLOT 3 -- SONG QUEUE
+          SLOT 3 -- BUTTON PANEL
+          Positioned below the rolodex, in the button area.
+          Slot box: x=148 y=555 w=504 h=65 (in SVG coords)
+          ================================================================ */}
+      <SlotOverlay x={148} y={555} w={504} h={65}>
+        {buttonPanel}
+      </SlotOverlay>
+
+      {/* ================================================================
+          SLOT 4 -- SONG QUEUE
           Positioned inside the large lower panel bezel.
           Slot box: x=148 y=622 w=504 h=374 (in SVG coords)
           ================================================================ */}

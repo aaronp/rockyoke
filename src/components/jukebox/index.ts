@@ -4,3 +4,4 @@ export { Wurlitzer } from "./Wurlitzer";
 export { Rolodex } from "./Rolodex";
 export { SignUpWizard } from "./SignUpWizard";
 export { QueueDisplay } from "./QueueDisplay";
+export { ButtonPanel } from "./ButtonPanel";
