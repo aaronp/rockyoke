@@ -59,7 +59,7 @@ export function SignUpWizard({
 
         {wizardState === "enter-name" && (
           <WizardPanel key="enter-name">
-            <p className="mb-3 text-amber-100">Enter your name:</p>
+            <p className="mb-3 text-amber-100">Enter your name(s):</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -67,7 +67,7 @@ export function SignUpWizard({
                   onSubmitName(nameInput.trim());
                 }
               }}
-              className="flex gap-2"
+              className="flex flex-col gap-3"
             >
               <Input
                 value={nameInput}
@@ -76,8 +76,12 @@ export function SignUpWizard({
                 className="bg-neutral-800 border-amber-600 text-amber-50"
                 autoFocus
               />
-              <Button type="submit" className="bg-amber-600 hover:bg-amber-500">
-                Next
+              <Button
+                type="submit"
+                className="bg-amber-500 text-amber-950 hover:bg-amber-400"
+                disabled={!nameInput.trim()}
+              >
+                🪙 Insert Coin
               </Button>
             </form>
           </WizardPanel>
@@ -85,23 +89,11 @@ export function SignUpWizard({
 
         {wizardState === "playing" && (
           <WizardPanel key="playing">
-            <p className="text-amber-200">Now playing preview...</p>
+            <p className="text-amber-200">Adding to queue...</p>
             <div className="mt-2 flex items-center gap-2">
               <span className="h-2 w-2 animate-pulse rounded-full bg-rose-500" />
               <span className="text-sm text-amber-300">Watch the Wurlitzer!</span>
             </div>
-          </WizardPanel>
-        )}
-
-        {wizardState === "payment" && (
-          <WizardPanel key="payment">
-            <p className="mb-2 text-amber-100">Insert a coin to confirm:</p>
-            <Button
-              onClick={onSubmitPayment}
-              className="bg-amber-500 text-amber-950 hover:bg-amber-400"
-            >
-              🪙 Insert Coin
-            </Button>
           </WizardPanel>
         )}
 

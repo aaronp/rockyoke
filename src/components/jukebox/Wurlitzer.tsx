@@ -8,10 +8,11 @@ type PlayState = "idle" | "sliding" | "rising" | "lifting" | "playing";
 type Props = {
   triggerPlay?: boolean;
   onPlayComplete?: () => void;
+  onReset?: () => void;
   showControls?: boolean;
 };
 
-export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: Props) {
+export function Wurlitzer({ triggerPlay, onPlayComplete, onReset, showControls = true }: Props) {
   const [playState, setPlayState] = useState<PlayState>("idle");
   const [currentRecord, setCurrentRecord] = useState(0);
 
@@ -163,27 +164,33 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: 
         <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-neutral-900 to-transparent" />
       </div>
 
-      {/* Mini Controls */}
-      {showControls && (
+      {/* Mini Controls - show when idle */}
+      {showControls && playState === "idle" && (
         <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
-          {playState === "idle" ? (
-            <Button
-              onClick={handlePlay}
-              size="sm"
-              className="rounded-full bg-rose-600 px-3 h-8 hover:bg-rose-500"
-            >
-              <Play className="h-3 w-3" />
-            </Button>
-          ) : playState === "playing" ? (
-            <Button
-              onClick={handleReset}
-              size="sm"
-              variant="secondary"
-              className="rounded-full px-3 h-8"
-            >
-              <RotateCcw className="h-3 w-3" />
-            </Button>
-          ) : null}
+          <Button
+            onClick={handlePlay}
+            size="sm"
+            className="rounded-full bg-rose-600 px-3 h-8 hover:bg-rose-500"
+          >
+            <Play className="h-3 w-3" />
+          </Button>
+        </div>
+      )}
+
+      {/* Reset button - bottom right when playing */}
+      {playState !== "idle" && onReset && (
+        <div className="absolute bottom-2 right-2">
+          <Button
+            onClick={() => {
+              handleReset();
+              onReset();
+            }}
+            size="sm"
+            variant="secondary"
+            className="rounded-full px-3 h-8 bg-neutral-800/80 hover:bg-neutral-700"
+          >
+            <RotateCcw className="h-3 w-3" />
+          </Button>
         </div>
       )}
     </div>

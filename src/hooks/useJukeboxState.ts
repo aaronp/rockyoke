@@ -23,20 +23,21 @@ export function useJukeboxState() {
 
   const submitName = useCallback((name: string) => {
     setUserName(name);
+    if (selectedSong) {
+      const entry = addToQueue(name, selectedSong);
+      setLastEntry(entry);
+    }
     setWizardState("playing");
-  }, []);
+  }, [selectedSong, addToQueue]);
 
   const onPlayComplete = useCallback(() => {
-    setWizardState("payment");
+    setWizardState("complete");
   }, []);
 
   const submitPayment = useCallback(() => {
-    if (selectedSong && userName) {
-      const entry = addToQueue(userName, selectedSong);
-      setLastEntry(entry);
-      setWizardState("complete");
-    }
-  }, [selectedSong, userName, addToQueue]);
+    // Legacy - payment now happens with name submission
+    setWizardState("complete");
+  }, []);
 
   const reset = useCallback(() => {
     setWizardState("idle");

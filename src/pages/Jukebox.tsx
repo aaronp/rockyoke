@@ -36,6 +36,7 @@ export default function Jukebox() {
             <Wurlitzer
               triggerPlay={shouldTriggerPlay}
               onPlayComplete={state.onPlayComplete}
+              onReset={state.reset}
               showControls={state.wizardState === "idle"}
             />
           }
