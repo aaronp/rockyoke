@@ -13,6 +13,7 @@ type Props = {
   onSubmitName: (name: string) => void;
   onSubmitPayment: () => void;
   onReset: () => void;
+  queue?: QueueEntry[];
 };
 
 export function SignUpWizard({
@@ -23,6 +24,7 @@ export function SignUpWizard({
   onSubmitName,
   onSubmitPayment,
   onReset,
+  queue = [],
 }: Props) {
   const [nameInput, setNameInput] = useState("");
 
@@ -40,6 +42,22 @@ export function SignUpWizard({
         {wizardState === "idle" && (
           <WizardPanel key="idle">
             <p className="text-lg text-amber-100">Pick a song to get started!</p>
+            {queue.length > 0 && (
+              <div className="mt-4 text-left">
+                <p className="text-sm font-semibold text-amber-300">Up Next:</p>
+                <ul className="mt-2 space-y-1">
+                  {queue.map((entry) => (
+                    <li key={entry.id} className="text-sm text-amber-200">
+                      <span className="font-mono text-amber-400">{entry.ticketNumber}</span>
+                      {" - "}
+                      <span>{entry.name}</span>
+                      {" - "}
+                      <span className="text-amber-300">{entry.song.title}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </WizardPanel>
         )}
 
