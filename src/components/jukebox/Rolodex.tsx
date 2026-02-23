@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronUp, ChevronDown } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import type { Song } from "@/types/jukebox";
 
 type InternalSong = {
@@ -216,31 +214,8 @@ export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageCh
   }, [onSelectSong, pageIndex]);
 
   return (
-    <div className="w-full h-full flex">
-      {/* Split-flap display */}
-      <div className="flex-1 h-full" style={{ perspective: "1200px" }}>
-        <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} />
-      </div>
-
-      {/* Navigation arrows - positioned on the right */}
-      <div className="flex flex-col justify-center gap-1 pl-2">
-        <Button
-          size="sm"
-          className="h-10 w-10 rounded-full bg-amber-600/90 p-0 text-amber-950 hover:bg-amber-500 disabled:opacity-40 shadow-lg"
-          onClick={goUp}
-          disabled={!canGoUp}
-        >
-          <ChevronUp className="h-5 w-5" />
-        </Button>
-        <Button
-          size="sm"
-          className="h-10 w-10 rounded-full bg-amber-600/90 p-0 text-amber-950 hover:bg-amber-500 disabled:opacity-40 shadow-lg"
-          onClick={goDown}
-          disabled={!canGoDown}
-        >
-          <ChevronDown className="h-5 w-5" />
-        </Button>
-      </div>
+    <div className="w-full h-full" style={{ perspective: "1200px" }}>
+      <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} />
     </div>
   );
 }
