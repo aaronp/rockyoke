@@ -83,17 +83,19 @@ export default function Jukebox() {
         </div>
 
         {/* Grid layout */}
-        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[280px_1fr_280px] lg:items-center lg:py-2">
+        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-2">
           {/* Wide screens: Poster on left */}
-          <div className="hidden lg:block lg:self-center">
-            <EventPoster
-              {...EVENT_DETAILS}
-              variant="poster"
-            />
+          <div className="hidden lg:flex lg:justify-end lg:self-center">
+            <div className="w-[280px]">
+              <EventPoster
+                {...EVENT_DETAILS}
+                variant="poster"
+              />
+            </div>
           </div>
 
-          {/* Jukebox (center) */}
-          <div className="flex items-center justify-center">
+          {/* Jukebox (center) - fixed size, no shrink */}
+          <div className="flex flex-shrink-0 items-center justify-center">
             <JukeboxShell
               recordPlayer={
                 <Wurlitzer
@@ -149,17 +151,19 @@ export default function Jukebox() {
           </div>
 
           {/* Queue panel (right on wide, bottom on narrow) */}
-          <div className="lg:self-center">
-            <LineupPanel
-              queue={state.queue}
-              variant="panel"
-              className="hidden lg:flex lg:h-[600px]"
-            />
-            <LineupPanel
-              queue={state.queue}
-              variant="section"
-              className="lg:hidden"
-            />
+          <div className="lg:flex lg:justify-start lg:self-center">
+            <div className="w-full lg:w-[280px]">
+              <LineupPanel
+                queue={state.queue}
+                variant="panel"
+                className="hidden lg:flex lg:h-[600px]"
+              />
+              <LineupPanel
+                queue={state.queue}
+                variant="section"
+                className="lg:hidden"
+              />
+            </div>
           </div>
         </div>
       </div>
