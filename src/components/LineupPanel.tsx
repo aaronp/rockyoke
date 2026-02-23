@@ -60,7 +60,7 @@ export function LineupPanel({
                     {entry.name}
                   </p>
                   <p className="truncate text-xs text-amber-400">
-                    {entry.song.title}
+                    {entry.song?.title ?? "Unknown Song"}
                   </p>
                 </div>
               </li>
