@@ -151,6 +151,46 @@ export function ButtonPanel({
     }, 500);
   }, [input, onSelectSong]);
 
+  // Keyboard support
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      const key = e.key.toUpperCase();
+
+      // Letters A-K
+      if (key >= "A" && key <= "K") {
+        e.preventDefault();
+        handleLetterPress(key);
+      }
+      // Numbers 0-6
+      else if (key >= "0" && key <= "6") {
+        e.preventDefault();
+        handleNumberPress(key);
+      }
+      // Backspace = Clear
+      else if (e.key === "Backspace") {
+        e.preventDefault();
+        handleClear();
+      }
+      // Enter = Submit
+      else if (e.key === "Enter") {
+        e.preventDefault();
+        handleEnter();
+      }
+      // Arrow keys = Navigate
+      else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (canNavigateUp) onNavigateUp();
+      }
+      else if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (canNavigateDown) onNavigateDown();
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, onNavigateUp, onNavigateDown, canNavigateUp, canNavigateDown]);
+
   return (
     <div className="flex flex-col items-center gap-2 p-2">
       {/* LED Display */}
