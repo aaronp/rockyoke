@@ -79,6 +79,9 @@ type Props = {
   canNavigateDown?: boolean;
 };
 
+const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+const NUMBERS = ["0", "1", "2", "3", "4", "5", "6"];
+
 export function ButtonPanel({
   onSelectSong,
   onNavigateUp,
@@ -88,9 +91,14 @@ export function ButtonPanel({
 }: Props) {
   const [input, setInput] = useState("");
   const [displayState, setDisplayState] = useState<DisplayState>("normal");
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
-  const numbers = ["0", "1", "2", "3", "4", "5", "6"];
+  // Cleanup timers on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
 
   const handleLetterPress = useCallback((letter: string) => {
     // Letter always replaces/sets first character
@@ -115,9 +123,12 @@ export function ButtonPanel({
   }, []);
 
   const handleEnter = useCallback(() => {
+    // Clear any pending timer
+    if (timerRef.current) clearTimeout(timerRef.current);
+
     if (input.length !== 3) {
       setDisplayState("error");
-      setTimeout(() => setDisplayState("normal"), 300);
+      timerRef.current = setTimeout(() => setDisplayState("normal"), 300);
       return;
     }
 
@@ -128,13 +139,13 @@ export function ButtonPanel({
     const letterIndex = letter.charCodeAt(0) - 65;
     if (letterIndex < 0 || letterIndex > 10 || num < 1 || num > 6) {
       setDisplayState("error");
-      setTimeout(() => setDisplayState("normal"), 300);
+      timerRef.current = setTimeout(() => setDisplayState("normal"), 300);
       return;
     }
 
     setDisplayState("success");
     onSelectSong(input);
-    setTimeout(() => {
+    timerRef.current = setTimeout(() => {
       setInput("");
       setDisplayState("normal");
     }, 500);
@@ -147,7 +158,7 @@ export function ButtonPanel({
 
       {/* Letter row */}
       <div className="flex gap-1">
-        {letters.map(letter => (
+        {LETTERS.map(letter => (
           <VintageButton
             key={letter}
             label={letter}
@@ -159,7 +170,7 @@ export function ButtonPanel({
 
       {/* Number row + controls */}
       <div className="flex gap-1 items-center">
-        {numbers.map(num => (
+        {NUMBERS.map(num => (
           <VintageButton
             key={num}
             label={num}
