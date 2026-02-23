@@ -30,8 +30,8 @@ export function HelpTooltip() {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ type: "spring", duration: 0.5 }}
-          className="absolute left-1/2 -translate-x-1/2 z-50"
-          style={{ top: "50%" }}
+          className="absolute z-50"
+          style={{ top: "42%", right: "8%" }}
         >
           <motion.div
             animate={{ y: [0, -8, 0] }}
@@ -43,25 +43,25 @@ export function HelpTooltip() {
             onClick={handleDismiss}
             className="relative cursor-pointer rounded-xl bg-white px-5 py-3 shadow-xl border-2 border-amber-400"
           >
-            {/* Speech bubble tail pointing down */}
+            {/* Speech bubble tail pointing up-right toward the arrows */}
             <div
-              className="absolute -bottom-3 left-1/2 -translate-x-1/2"
+              className="absolute -top-3 right-6"
               style={{
                 width: 0,
                 height: 0,
                 borderLeft: "12px solid transparent",
                 borderRight: "12px solid transparent",
-                borderTop: "14px solid #fbbf24",
+                borderBottom: "14px solid #fbbf24",
               }}
             />
             <div
-              className="absolute -bottom-2 left-1/2 -translate-x-1/2"
+              className="absolute -top-2 right-6"
               style={{
                 width: 0,
                 height: 0,
                 borderLeft: "10px solid transparent",
                 borderRight: "10px solid transparent",
-                borderTop: "12px solid white",
+                borderBottom: "12px solid white",
               }}
             />
 
