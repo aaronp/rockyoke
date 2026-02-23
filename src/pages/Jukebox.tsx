@@ -2,11 +2,10 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import {
-  JukeboxFrame,
+  JukeboxShell,
   Wurlitzer,
   Rolodex,
   SignUpWizard,
-  QueueDisplay,
 } from "@/components/jukebox";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 
@@ -31,8 +30,8 @@ export default function Jukebox() {
 
       {/* Jukebox */}
       <div className="flex min-h-screen items-center justify-center p-4">
-        <JukeboxFrame
-          wurlitzer={
+        <JukeboxShell
+          recordPlayer={
             <Wurlitzer
               triggerPlay={shouldTriggerPlay}
               onPlayComplete={state.onPlayComplete}
@@ -40,10 +39,10 @@ export default function Jukebox() {
               showControls={state.wizardState === "idle"}
             />
           }
-          rolodex={
+          songRolodex={
             <Rolodex onSelectSong={state.selectSong} />
           }
-          wizard={
+          songQueue={
             <SignUpWizard
               wizardState={state.wizardState}
               selectedSong={state.selectedSong}
@@ -52,12 +51,8 @@ export default function Jukebox() {
               onSubmitName={state.submitName}
               onSubmitPayment={state.submitPayment}
               onReset={state.reset}
+              queue={state.queue}
             />
-          }
-          queue={
-            state.queue.length > 0 ? (
-              <QueueDisplay queue={state.queue} />
-            ) : undefined
           }
         />
       </div>
