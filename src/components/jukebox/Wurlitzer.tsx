@@ -68,7 +68,7 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: 
           }}
         >
           {/* Record Stack (left) */}
-          <div className="absolute bottom-12 left-6">
+          <div className="absolute left-6" style={{ bottom: -40 }}>
             {[...Array(15)].map((_, i) => {
               const isTop = i === currentRecord;
               const hide = isTop && playState !== "idle";
@@ -93,12 +93,12 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: 
               <motion.div
                 className="absolute left-6"
                 style={{ zIndex: 15 - currentRecord, transform: "translateZ(0)" }}
-                initial={{ x: 0, bottom: 12 + recordStackY }}
+                initial={{ x: 0, bottom: -40 + recordStackY }}
                 animate={{
                   x: 210,
                   bottom: playState === "lifting" || playState === "playing"
-                    ? 12 + recordStackY + 30
-                    : 12 + recordStackY,
+                    ? -40 + recordStackY + 30
+                    : -40 + recordStackY,
                 }}
                 exit={{ opacity: 0 }}
                 transition={{ type: "spring", stiffness: 50, damping: 12 }}
@@ -114,13 +114,13 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: 
           <motion.div
             className="absolute left-6"
             style={{ x: 210, transform: "translateZ(0)" }}
-            initial={{ bottom: 12 }}
+            initial={{ bottom: -40 }}
             animate={{
               bottom: playState === "rising"
-                ? 12 + recordStackY
+                ? -40 + recordStackY
                 : playState === "lifting" || playState === "playing"
-                  ? 12 + recordStackY + 30
-                  : 12,
+                  ? -40 + recordStackY + 30
+                  : -40,
             }}
             transition={{ type: "spring", stiffness: 50, damping: 12 }}
           >
@@ -146,7 +146,7 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, showControls = true }: 
             className="absolute"
             style={{
               right: 5,
-              bottom: 12 + recordStackY + 110,
+              bottom: -40 + recordStackY + 110,
               zIndex: 50,
               transformOrigin: 'right center',
             }}
