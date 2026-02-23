@@ -83,7 +83,7 @@ export default function Jukebox() {
         </div>
 
         {/* Grid layout */}
-        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:py-2">
+        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1fr_max-content_1fr] lg:items-center lg:py-2">
           {/* Wide screens: Poster on left */}
           <div className="hidden lg:flex lg:justify-end lg:self-center">
             <div className="w-[280px]">
