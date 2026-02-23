@@ -901,11 +901,11 @@ export function JukeboxShell({
       {/* ================================================================
           SLOT 1 -- RECORD PLAYER
           Positioned inside the arch interior opening.
-          The arch inner curve peaks at ~y=276; the opening runs to y=522.
-          Slot box: x=205 y=285 w=390 h=140 (in SVG coords)
-          Reduced height to avoid overlapping the song rolodex slot below.
+          The arch inner curve runs from ~y=118 at peak to y=522 at bottom.
+          Slot box: x=192 y=140 w=416 h=285 (in SVG coords)
+          Fills the full arch interior width and most of the height.
           ================================================================ */}
-      <SlotOverlay x={205} y={285} w={390} h={140}>
+      <SlotOverlay x={192} y={140} w={416} h={285}>
         {recordPlayer}
       </SlotOverlay>
 
