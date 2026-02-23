@@ -1,9 +1,65 @@
 // src/components/jukebox/SignUpWizard.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { WizardState, Song, QueueEntry } from "@/types/jukebox";
+
+// Hook to fetch iTunes preview URL and manage playback
+function useItunesPreview() {
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  // Create audio element once
+  useEffect(() => {
+    audioRef.current = new Audio();
+    audioRef.current.addEventListener("ended", () => setIsPlaying(false));
+    audioRef.current.addEventListener("pause", () => setIsPlaying(false));
+    audioRef.current.addEventListener("play", () => setIsPlaying(true));
+    return () => {
+      audioRef.current?.pause();
+      audioRef.current = null;
+    };
+  }, []);
+
+  const fetchPreview = useCallback(async (title: string, artist: string) => {
+    setIsLoading(true);
+    setPreviewUrl(null);
+    try {
+      const query = encodeURIComponent(`${title} ${artist}`);
+      const res = await fetch(
+        `https://itunes.apple.com/search?term=${query}&entity=song&limit=1`
+      );
+      const data = await res.json();
+      if (data.results?.[0]?.previewUrl) {
+        setPreviewUrl(data.results[0].previewUrl);
+      }
+    } catch (err) {
+      console.error("Failed to fetch iTunes preview:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  const play = useCallback(() => {
+    if (audioRef.current && previewUrl) {
+      audioRef.current.src = previewUrl;
+      audioRef.current.play();
+    }
+  }, [previewUrl]);
+
+  const stop = useCallback(() => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+    }
+  }, []);
+
+  return { isPlaying, isLoading, previewUrl, fetchPreview, play, stop };
+}
 
 type Props = {
   wizardState: WizardState;
@@ -27,6 +83,21 @@ export function SignUpWizard({
   queue = [],
 }: Props) {
   const [nameInput, setNameInput] = useState("");
+  const preview = useItunesPreview();
+
+  // Fetch preview when song is selected
+  useEffect(() => {
+    if (wizardState === "song-selected" && selectedSong) {
+      preview.fetchPreview(selectedSong.title, selectedSong.artist);
+    }
+  }, [wizardState, selectedSong, preview.fetchPreview]);
+
+  // Stop preview when leaving song-selected state
+  useEffect(() => {
+    if (wizardState !== "song-selected") {
+      preview.stop();
+    }
+  }, [wizardState, preview.stop]);
 
   // Auto-reset after complete
   useEffect(() => {
@@ -66,6 +137,36 @@ export function SignUpWizard({
             <p className="text-sm text-amber-200">You selected:</p>
             <p className="mt-1 text-lg font-bold text-amber-50">{selectedSong.title}</p>
             <p className="text-sm text-amber-300">{selectedSong.artist}</p>
+
+            {/* Preview buttons */}
+            <div className="mt-3 flex justify-center gap-2">
+              {preview.isLoading ? (
+                <span className="text-xs text-amber-400">Loading preview...</span>
+              ) : preview.previewUrl ? (
+                <>
+                  {!preview.isPlaying ? (
+                    <Button
+                      size="sm"
+                      onClick={preview.play}
+                      className="h-8 gap-1 bg-amber-600 px-3 text-amber-950 hover:bg-amber-500"
+                    >
+                      <Play className="h-3 w-3" /> Preview
+                    </Button>
+                  ) : (
+                    <Button
+                      size="sm"
+                      onClick={preview.stop}
+                      className="h-8 gap-1 bg-amber-700 px-3 text-amber-100 hover:bg-amber-600"
+                    >
+                      <Square className="h-3 w-3" /> Stop
+                    </Button>
+                  )}
+                </>
+              ) : (
+                <span className="text-xs text-amber-500">No preview available</span>
+              )}
+            </div>
+
             <Button
               onClick={onStartSignUp}
               className="mt-4 bg-rose-600 hover:bg-rose-500"
