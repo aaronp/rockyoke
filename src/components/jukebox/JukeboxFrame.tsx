@@ -14,7 +14,7 @@ export function JukeboxFrame({ wurlitzer, rolodex, wizard, queue }: Props) {
   return (
     <div className="mx-auto w-full max-w-[500px]">
       {/* Outer jukebox shell */}
-      <div className="rounded-t-[120px] bg-gradient-to-b from-amber-800 via-amber-900 to-neutral-900 p-3 shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
+      <div className="rounded-t-[140px] bg-gradient-to-b from-[#D4A574] via-[#5C3D2E] to-neutral-900 p-1 shadow-[0_40px_100px_rgba(0,0,0,0.8)]">
         {/* Top arch section - Wurlitzer */}
         <ArchFrame className="h-[260px]">
           {wurlitzer}
