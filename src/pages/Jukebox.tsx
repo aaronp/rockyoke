@@ -11,6 +11,7 @@ import {
 } from "@/components/jukebox";
 import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
+import type { DisplayState } from "@/components/jukebox/ButtonPanel";
 import backgroundImage from "../background.png";
 
 export default function Jukebox() {
@@ -18,6 +19,8 @@ export default function Jukebox() {
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [needleDown, setNeedleDown] = useState(false);
   const [rolodexPage, setRolodexPage] = useState(0);
+  const [codeInput, setCodeInput] = useState("");
+  const [codeDisplayState, setCodeDisplayState] = useState<DisplayState>("normal");
   const totalPages = 11; // A-K
 
   const handleNavigateUp = useCallback(() => {
@@ -99,6 +102,10 @@ export default function Jukebox() {
               onNavigateDown={handleNavigateDown}
               canNavigateUp={rolodexPage > 0}
               canNavigateDown={rolodexPage < totalPages - 1}
+              input={codeInput}
+              onInputChange={setCodeInput}
+              displayState={codeDisplayState}
+              onDisplayStateChange={setCodeDisplayState}
             />
           }
           songQueue={
@@ -114,6 +121,8 @@ export default function Jukebox() {
               onPreviewEnd={handlePreviewEnd}
               triggerPlayAudio={needleDown}
               queue={state.queue}
+              codeInput={codeInput}
+              codeDisplayState={codeDisplayState}
             />
           }
         />

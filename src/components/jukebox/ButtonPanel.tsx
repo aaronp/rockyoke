@@ -1,5 +1,5 @@
 // src/components/jukebox/ButtonPanel.tsx
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 function useClackSfx() {
   const ctxRef = useRef<AudioContext | null>(null);
@@ -138,6 +138,10 @@ type Props = {
   onNavigateDown: () => void;
   canNavigateUp?: boolean;
   canNavigateDown?: boolean;
+  input: string;
+  onInputChange: (input: string) => void;
+  displayState: DisplayState;
+  onDisplayStateChange: (state: DisplayState) => void;
 };
 
 const LETTERS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
@@ -149,11 +153,17 @@ export function ButtonPanel({
   onNavigateDown,
   canNavigateUp = true,
   canNavigateDown = true,
+  input,
+  onInputChange,
+  displayState,
+  onDisplayStateChange,
 }: Props) {
-  const [input, setInput] = useState("");
-  const [displayState, setDisplayState] = useState<DisplayState>("normal");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sfx = useClackSfx();
+
+  // Aliases for cleaner code
+  const setInput = onInputChange;
+  const setDisplayState = onDisplayStateChange;
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -166,23 +176,21 @@ export function ButtonPanel({
     sfx.clack(0.7);
     setInput(letter);
     setDisplayState("normal");
-  }, [sfx]);
+  }, [sfx, setInput, setDisplayState]);
 
   const handleNumberPress = useCallback((num: string) => {
     sfx.clack(0.7);
-    setInput(prev => {
-      if (prev.length === 0) return prev;
-      if (prev.length >= 3) return prev;
-      return prev + num;
-    });
+    if (input.length === 0) return;
+    if (input.length >= 3) return;
+    setInput(input + num);
     setDisplayState("normal");
-  }, [sfx]);
+  }, [sfx, input, setInput, setDisplayState]);
 
   const handleClear = useCallback(() => {
     sfx.clack(0.6);
     setInput("");
     setDisplayState("normal");
-  }, [sfx]);
+  }, [sfx, setInput, setDisplayState]);
 
   const handleEnter = useCallback(() => {
     sfx.clack(0.8);
@@ -212,7 +220,7 @@ export function ButtonPanel({
       setInput("");
       setDisplayState("normal");
     }, 500);
-  }, [input, onSelectSong, sfx]);
+  }, [input, onSelectSong, sfx, setInput, setDisplayState]);
 
   // Keyboard support
   useEffect(() => {
@@ -289,13 +297,11 @@ export function ButtonPanel({
           </div>
         </div>
 
-        {/* Navigation + LED + Actions */}
-        <div className="flex flex-col gap-0.5 items-center">
-          <div className="flex gap-0.5 items-center">
+        {/* Navigation + Actions */}
+        <div className="flex flex-col gap-0.5 items-end">
+          <div className="flex gap-0.5">
             <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
             <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
-            <div className="w-1" />
-            <LEDDisplay value={input} state={displayState} />
           </div>
           <div className="flex gap-0.5">
             <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
@@ -308,3 +314,4 @@ export function ButtonPanel({
 }
 
 export { LEDDisplay };
+export type { DisplayState };

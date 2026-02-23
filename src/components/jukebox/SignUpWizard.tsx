@@ -5,6 +5,7 @@ import { Play, Square } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import type { WizardState, Song, QueueEntry } from "@/types/jukebox";
+import { LEDDisplay, type DisplayState } from "./ButtonPanel";
 
 // Hook to fetch iTunes preview URL and manage playback
 function useItunesPreview(onEnd?: () => void) {
@@ -78,6 +79,8 @@ type Props = {
   onPreviewEnd?: () => void;
   triggerPlayAudio?: boolean;
   queue?: QueueEntry[];
+  codeInput?: string;
+  codeDisplayState?: DisplayState;
 };
 
 export function SignUpWizard({
@@ -92,6 +95,8 @@ export function SignUpWizard({
   onPreviewEnd,
   triggerPlayAudio,
   queue = [],
+  codeInput = "",
+  codeDisplayState = "normal",
 }: Props) {
   const [nameInput, setNameInput] = useState("");
   const preview = useItunesPreview(onPreviewEnd);
@@ -141,7 +146,12 @@ export function SignUpWizard({
   }, [wizardState, onReset]);
 
   return (
-    <div className="flex h-full flex-col p-3">
+    <div className="relative flex h-full flex-col p-3">
+      {/* LED Display - top right */}
+      <div className="absolute top-2 right-2 z-10">
+        <LEDDisplay value={codeInput} state={codeDisplayState} />
+      </div>
+
       {/* Top action area */}
       <div className="flex-shrink-0">
         <AnimatePresence mode="wait">
