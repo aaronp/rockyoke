@@ -255,9 +255,9 @@ function SplitFlapPanel({
       </div>
 
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div key={page.top[0]?.no ?? "empty"} className="absolute inset-0">
+        <motion.div key={page.top[0]?.no ?? "empty"} className="absolute inset-0 pointer-events-none">
           <motion.div
-            className="absolute inset-x-0 top-0 overflow-hidden rounded-t-xl pointer-events-none"
+            className="absolute inset-x-0 top-0 overflow-hidden rounded-t-xl"
             style={{
               height: "calc(50% - 2px)",
               transformStyle: "preserve-3d",
@@ -274,7 +274,7 @@ function SplitFlapPanel({
           </motion.div>
 
           <motion.div
-            className="absolute inset-x-0 bottom-0 overflow-hidden rounded-b-xl"
+            className="absolute inset-x-0 bottom-0 overflow-hidden rounded-b-xl pointer-events-auto"
             style={{
               height: "calc(50% - 2px)",
               transformStyle: "preserve-3d",
