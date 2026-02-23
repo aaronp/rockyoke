@@ -52,7 +52,7 @@ export function Wurlitzer({ triggerPlay, onPlayComplete, onReset, showControls =
     <div className="relative w-full h-full">
       {/* Player Stage */}
       <div
-        className="relative mx-auto overflow-hidden rounded-t-[100px] bg-gradient-to-b from-rose-950/80 via-neutral-950 to-neutral-900"
+        className="relative mx-auto overflow-hidden"
         style={{
           width: "100%",
           height: "100%",
