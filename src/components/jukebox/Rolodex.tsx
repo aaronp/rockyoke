@@ -167,11 +167,18 @@ function useClackSfx() {
 
 type Props = {
   onSelectSong?: (song: Song) => void;
+  pageIndex?: number;           // Controlled page index
+  onPageChange?: (index: number) => void;  // Callback when page changes
 };
 
-export function Rolodex({ onSelectSong }: Props) {
+export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageChange }: Props) {
   const pages = getPages(SONGS);
-  const [pageIndex, setPageIndex] = useState(0);
+  const [internalPageIndex, setInternalPageIndex] = useState(0);
+
+  // Use controlled if provided, otherwise internal
+  const pageIndex = controlledPageIndex ?? internalPageIndex;
+  const setPageIndex = onPageChange ?? setInternalPageIndex;
+
   const sfx = useClackSfx();
 
   const canGoDown = pageIndex < pages.length - 1;
@@ -181,15 +188,15 @@ export function Rolodex({ onSelectSong }: Props) {
     if (!canGoDown) return;
     await sfx.resumeIfNeeded();
     sfx.clack(0.95);
-    setPageIndex((i) => i + 1);
-  }, [canGoDown, sfx]);
+    setPageIndex(pageIndex + 1);
+  }, [canGoDown, sfx, pageIndex, setPageIndex]);
 
   const goUp = useCallback(async () => {
     if (!canGoUp) return;
     await sfx.resumeIfNeeded();
     sfx.clack(0.85);
-    setPageIndex((i) => i - 1);
-  }, [canGoUp, sfx]);
+    setPageIndex(pageIndex - 1);
+  }, [canGoUp, sfx, pageIndex, setPageIndex]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
