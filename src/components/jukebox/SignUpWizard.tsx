@@ -141,75 +141,66 @@ export function SignUpWizard({
   }, [wizardState, onReset]);
 
   return (
-    <div className="flex h-full items-center justify-center p-4">
-      <AnimatePresence mode="wait">
-        {wizardState === "idle" && (
-          <WizardPanel key="idle">
-            <p className="text-lg text-amber-100">Pick a song to get started!</p>
-            {queue.length > 0 && (
-              <div className="mt-4 text-left">
-                <p className="text-sm font-semibold text-amber-300">Up Next:</p>
-                <ul className="mt-2 space-y-1">
-                  {queue.map((entry) => (
-                    <li key={entry.id} className="text-sm text-amber-200">
-                      <span className="font-mono text-amber-400">{entry.ticketNumber}</span>
-                      {" - "}
-                      <span>{entry.name}</span>
-                      {" - "}
-                      <span className="text-amber-300">{entry.song.title}</span>
-                    </li>
-                  ))}
-                </ul>
+    <div className="flex h-full flex-col p-3">
+      {/* Top action area */}
+      <div className="flex-shrink-0">
+        <AnimatePresence mode="wait">
+          {wizardState === "idle" && (
+            <WizardPanel key="idle">
+              <p className="text-center text-amber-100">Pick a song to get started!</p>
+            </WizardPanel>
+          )}
+
+          {wizardState === "song-selected" && selectedSong && (
+            <motion.div
+              key="song-selected"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-3 rounded-lg bg-neutral-800/50 p-2"
+            >
+              {/* Song info */}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-bold text-amber-50">{selectedSong.title}</p>
+                <p className="truncate text-xs text-amber-300">{selectedSong.artist}</p>
               </div>
-            )}
-          </WizardPanel>
-        )}
 
-        {wizardState === "song-selected" && selectedSong && (
-          <WizardPanel key="song-selected">
-            <p className="text-sm text-amber-200">You selected:</p>
-            <p className="mt-1 text-lg font-bold text-amber-50">{selectedSong.title}</p>
-            <p className="text-sm text-amber-300">{selectedSong.artist}</p>
-
-            {/* Preview buttons */}
-            <div className="mt-3 flex justify-center gap-2">
-              {preview.isLoading ? (
-                <span className="text-xs text-amber-400">Loading preview...</span>
-              ) : preview.previewUrl ? (
-                <>
-                  {!preview.isPlaying ? (
+              {/* Action buttons */}
+              <div className="flex flex-shrink-0 items-center gap-2">
+                {preview.isLoading ? (
+                  <span className="text-xs text-amber-400">...</span>
+                ) : preview.previewUrl ? (
+                  !preview.isPlaying ? (
                     <Button
                       size="sm"
                       onClick={handlePreviewPlay}
-                      className="h-8 gap-1 bg-amber-600 px-3 text-amber-950 hover:bg-amber-500"
+                      className="h-8 w-8 rounded-full bg-amber-600 p-0 text-amber-950 hover:bg-amber-500"
                     >
-                      <Play className="h-3 w-3" /> Preview
+                      <Play className="h-3 w-3" />
                     </Button>
                   ) : (
                     <Button
                       size="sm"
                       onClick={handlePreviewStop}
-                      className="h-8 gap-1 bg-amber-700 px-3 text-amber-100 hover:bg-amber-600"
+                      className="h-8 w-8 rounded-full bg-amber-700 p-0 text-amber-100 hover:bg-amber-600"
                     >
-                      <Square className="h-3 w-3" /> Stop
+                      <Square className="h-3 w-3" />
                     </Button>
-                  )}
-                </>
-              ) : (
-                <span className="text-xs text-amber-500">No preview available</span>
-              )}
-            </div>
+                  )
+                ) : null}
+                <Button
+                  size="sm"
+                  onClick={onStartSignUp}
+                  className="h-8 bg-rose-600 px-3 text-xs hover:bg-rose-500"
+                >
+                  Sign Up
+                </Button>
+              </div>
+            </motion.div>
+          )}
 
-            <Button
-              onClick={onStartSignUp}
-              className="mt-4 bg-rose-600 hover:bg-rose-500"
-            >
-              Sign Up to Sing
-            </Button>
-          </WizardPanel>
-        )}
-
-        {wizardState === "enter-name" && (
+          {wizardState === "enter-name" && (
           <WizardPanel key="enter-name">
             <p className="mb-3 text-amber-100">Enter your name(s):</p>
             <form
@@ -260,7 +251,39 @@ export function SignUpWizard({
             </p>
           </WizardPanel>
         )}
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
+
+      {/* Queue list - scrollable */}
+      {queue.length > 0 && (
+        <div className="mt-3 flex-1 overflow-hidden rounded-lg bg-neutral-900/50">
+          <div className="sticky top-0 border-b border-amber-900/30 bg-neutral-900/80 px-3 py-1.5">
+            <p className="text-xs font-semibold uppercase tracking-wide text-amber-400">
+              Up Next ({queue.length})
+            </p>
+          </div>
+          <div className="h-full overflow-y-auto p-2">
+            <ul className="space-y-1">
+              {queue.map((entry, index) => (
+                <li
+                  key={entry.id}
+                  className="flex items-center gap-2 rounded bg-neutral-800/50 px-2 py-1.5 text-sm"
+                >
+                  <span className="flex-shrink-0 font-mono text-xs text-amber-500">
+                    {index + 1}.
+                  </span>
+                  <span className="min-w-0 flex-1 truncate text-amber-100">
+                    {entry.name}
+                  </span>
+                  <span className="flex-shrink-0 truncate text-xs text-amber-400">
+                    {entry.song.title}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

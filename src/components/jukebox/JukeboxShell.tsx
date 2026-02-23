@@ -393,8 +393,8 @@ export function JukeboxShell({
         <path
           fillRule="evenodd"
           fill="url(#jb-archPeach)"
-          d="M 110 522 L 110 312 A 290 254 0 0 1 690 312 L 690 522 Z
-             M 192 522 L 192 364 A 208 246 0 0 1 608 364 L 608 522 Z"
+          d="M 110 1102 L 110 312 A 290 254 0 0 1 690 312 L 690 1102 Z
+             M 192 1102 L 192 364 A 208 246 0 0 1 608 364 L 608 1102 Z"
         />
         {/* Arch interior (dark -- record player slot sits above this) */}
         <path
@@ -413,7 +413,7 @@ export function JukeboxShell({
           stroke="#3C1808"
           strokeWidth="2"
           opacity="0.7"
-          d="M 110 522 L 110 312 A 290 254 0 0 1 690 312 L 690 522"
+          d="M 110 1102 L 110 312 A 290 254 0 0 1 690 312 L 690 1102"
         />
 
         {/* -- LEFT FIN STACKS (on top of cabinet housing) -- */}
