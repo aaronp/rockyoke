@@ -15,7 +15,7 @@ import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
 
 const EVENT_DETAILS = {
-  eventName: "Rockyoke Night",
+  eventName: "Rockyoke Night!",
   venue: "The Mechanics",
   date: "2nd May",
   priceAdvance: "£12",
@@ -96,8 +96,9 @@ export default function Jukebox() {
 
           {/* Jukebox (center) - fixed size, no shrink */}
           <div className="flex flex-shrink-0 items-center justify-center">
-            <JukeboxShell
-              recordPlayer={
+            <div className="w-[500px]">
+              <JukeboxShell
+                recordPlayer={
                 <Wurlitzer
                   triggerPlay={shouldTriggerPlay}
                   triggerReset={shouldTriggerReset}
@@ -147,7 +148,8 @@ export default function Jukebox() {
                   codeDisplayState={codeDisplayState}
                 />
               }
-            />
+              />
+            </div>
           </div>
 
           {/* Queue panel (right on wide, bottom on narrow) */}
