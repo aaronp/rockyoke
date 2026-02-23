@@ -147,11 +147,6 @@ export function SignUpWizard({
 
   return (
     <div className="relative flex h-full flex-col p-3">
-      {/* LED Display - top right */}
-      <div className="absolute top-2 right-2 z-10">
-        <LEDDisplay value={codeInput} state={codeDisplayState} />
-      </div>
-
       {/* Top action area */}
       <div className="flex-shrink-0">
         <AnimatePresence mode="wait">
@@ -170,6 +165,11 @@ export function SignUpWizard({
               transition={{ duration: 0.2 }}
               className="flex items-center gap-3 rounded-lg bg-neutral-800/50 p-2"
             >
+              {/* LED Display - shows selected song code */}
+              <div className="flex-shrink-0">
+                <LEDDisplay value={codeInput} state={codeDisplayState} />
+              </div>
+
               {/* Song info */}
               <div className="min-w-0 flex-1">
                 <p className="truncate text-sm font-bold text-amber-50">{selectedSong.title}</p>
@@ -220,13 +220,13 @@ export function SignUpWizard({
                   onSubmitName(nameInput.trim());
                 }
               }}
-              className="flex flex-col gap-3"
+              className="flex items-center gap-2"
             >
               <Input
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 placeholder="Your name"
-                className="bg-neutral-800 border-amber-600 text-amber-50"
+                className="flex-1 bg-neutral-800 border-amber-600 text-amber-50"
                 autoFocus
               />
               <Button
@@ -234,7 +234,7 @@ export function SignUpWizard({
                 className="bg-amber-500 text-amber-950 hover:bg-amber-400"
                 disabled={!nameInput.trim()}
               >
-                🪙 Insert Coin
+                Register
               </Button>
             </form>
           </WizardPanel>

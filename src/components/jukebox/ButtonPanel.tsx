@@ -217,7 +217,6 @@ export function ButtonPanel({
     setDisplayState("success");
     onSelectSong(input);
     timerRef.current = setTimeout(() => {
-      setInput("");
       setDisplayState("normal");
     }, 500);
   }, [input, onSelectSong, sfx, setInput, setDisplayState]);
@@ -225,15 +224,21 @@ export function ButtonPanel({
   // Keyboard support
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
+      // Don't intercept when user is typing in an input or textarea
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === "INPUT" || activeEl.tagName === "TEXTAREA")) {
+        return;
+      }
+
       const key = e.key.toUpperCase();
 
-      // Letters A-K
-      if (key >= "A" && key <= "K") {
+      // Letters A-K (single character only)
+      if (key.length === 1 && key >= "A" && key <= "K") {
         e.preventDefault();
         handleLetterPress(key);
       }
-      // Numbers 0-6
-      else if (key >= "0" && key <= "6") {
+      // Numbers 0-6 (single character only)
+      else if (key.length === 1 && key >= "0" && key <= "6") {
         e.preventDefault();
         handleNumberPress(key);
       }

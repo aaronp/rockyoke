@@ -76,7 +76,7 @@ export default function Jukebox() {
       </div>
 
       {/* Jukebox */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center py-8 px-4">
+      <div className="relative z-10 flex min-h-screen items-center justify-center py-2 px-4">
         <JukeboxShell
           recordPlayer={
             <Wurlitzer
@@ -90,7 +90,10 @@ export default function Jukebox() {
           }
           songRolodex={
             <Rolodex
-              onSelectSong={state.selectSong}
+              onSelectSong={(song) => {
+                state.selectSong(song);
+                setCodeInput(song.number);
+              }}
               pageIndex={rolodexPage}
               onPageChange={setRolodexPage}
             />
