@@ -14,6 +14,14 @@ import backgroundImage from "../background.png";
 import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
 
+const EVENT_DETAILS = {
+  eventName: "Rockyoke Night",
+  venue: "The Mechanics",
+  date: "2nd May",
+  priceAdvance: "£12",
+  priceDoor: "£15",
+} as const;
+
 export default function Jukebox() {
   const state = useJukeboxState();
   const [previewPlaying, setPreviewPlaying] = useState(false);
@@ -69,11 +77,7 @@ export default function Jukebox() {
         {/* Narrow screens: Banner at top */}
         <div className="lg:hidden">
           <EventPoster
-            eventName="Rockyoke Night"
-            venue="The Mechanics"
-            date="2nd May"
-            priceAdvance="£12"
-            priceDoor="£15"
+            {...EVENT_DETAILS}
             variant="banner"
           />
         </div>
@@ -83,11 +87,7 @@ export default function Jukebox() {
           {/* Wide screens: Poster on left */}
           <div className="hidden lg:block lg:self-center">
             <EventPoster
-              eventName="Rockyoke Night"
-              venue="The Mechanics"
-              date="2nd May"
-              priceAdvance="£12"
-              priceDoor="£15"
+              {...EVENT_DETAILS}
               variant="poster"
             />
           </div>
