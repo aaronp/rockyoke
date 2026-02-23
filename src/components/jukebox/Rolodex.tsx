@@ -80,10 +80,13 @@ const SONGS: InternalSong[] = [
   { no: 66, title: "A New Beginning", artist: "Good Charlotte", year: 2000 },
 ];
 
-function toSong(internal: InternalSong): Song {
+function toSong(internal: InternalSong, pageIndex: number, indexOnPage: number): Song {
+  const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
+  const number = String(indexOnPage + 1).padStart(2, '0'); // 01-06
+  const code = `${letter}${number}`;
   return {
-    id: String(internal.no),
-    number: String(internal.no),
+    id: code,
+    number: code,
     title: internal.title,
     artist: internal.artist,
     year: internal.year,
@@ -199,17 +202,17 @@ export function Rolodex({ onSelectSong }: Props) {
 
   const currentPage = pages[pageIndex];
 
-  const handleSongClick = useCallback((internal: InternalSong) => {
+  const handleSongClick = useCallback((internal: InternalSong, indexOnPage: number) => {
     if (onSelectSong) {
-      onSelectSong(toSong(internal));
+      onSelectSong(toSong(internal, pageIndex, indexOnPage));
     }
-  }, [onSelectSong]);
+  }, [onSelectSong, pageIndex]);
 
   return (
     <div className="w-full h-full flex">
       {/* Split-flap display */}
       <div className="flex-1 h-full" style={{ perspective: "1200px" }}>
-        <SplitFlapPanel page={currentPage} onSongClick={handleSongClick} />
+        <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} />
       </div>
 
       {/* Navigation arrows - positioned on the right */}
@@ -237,20 +240,22 @@ export function Rolodex({ onSelectSong }: Props) {
 
 function SplitFlapPanel({
   page,
+  pageIndex,
   onSongClick
 }: {
   page: { top: InternalSong[]; bottom: InternalSong[] };
-  onSongClick: (song: InternalSong) => void;
+  pageIndex: number;
+  onSongClick: (song: InternalSong, indexOnPage: number) => void;
 }) {
   return (
     <div className="relative select-none h-full">
       <div className="relative rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] h-full">
         <div className="bg-gradient-to-b from-amber-100 to-amber-50 h-[calc(50%-2px)]">
-          <SongStrips songs={page.top} onSongClick={onSongClick} />
+          <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} />
         </div>
         <div className="h-1 bg-gradient-to-b from-amber-800/60 via-amber-900/80 to-amber-800/60" />
         <div className="bg-gradient-to-b from-amber-50 to-amber-100 h-[calc(50%-2px)]">
-          <SongStrips songs={page.bottom} onSongClick={onSongClick} />
+          <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} />
         </div>
       </div>
 
@@ -269,7 +274,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-100 to-amber-50 shadow-lg">
-              <SongStrips songs={page.top} onSongClick={onSongClick} />
+              <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} />
             </div>
           </motion.div>
 
@@ -286,7 +291,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.35, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-50 to-amber-100 shadow-lg">
-              <SongStrips songs={page.bottom} onSongClick={onSongClick} />
+              <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} />
             </div>
           </motion.div>
         </motion.div>
@@ -297,16 +302,31 @@ function SplitFlapPanel({
 
 function SongStrips({
   songs,
+  pageIndex,
+  indexOffset,
   onSongClick
 }: {
   songs: InternalSong[];
-  onSongClick: (song: InternalSong) => void;
+  pageIndex: number;
+  indexOffset: number;
+  onSongClick: (song: InternalSong, indexOnPage: number) => void;
 }) {
+  const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
+
   return (
     <div className="grid grid-cols-3 gap-px bg-amber-300/50 p-1.5 h-full">
-      {songs.map((song) => (
-        <SongCard key={song.no} song={song} onClick={() => onSongClick(song)} />
-      ))}
+      {songs.map((song, i) => {
+        const indexOnPage = indexOffset + i;
+        const displayNumber = `${letter}${String(indexOnPage + 1).padStart(2, '0')}`;
+        return (
+          <SongCard
+            key={song.no}
+            song={song}
+            displayNumber={displayNumber}
+            onClick={() => onSongClick(song, indexOnPage)}
+          />
+        );
+      })}
       {songs.length < 3 &&
         Array.from({ length: 3 - songs.length }).map((_, i) => (
           <div key={`empty-${i}`} className="rounded bg-amber-100/50" />
@@ -317,9 +337,11 @@ function SongStrips({
 
 function SongCard({
   song,
+  displayNumber,
   onClick
 }: {
   song: InternalSong;
+  displayNumber: string;
   onClick: () => void;
 }) {
   return (
@@ -330,7 +352,7 @@ function SongCard({
     >
       <div className="border-b border-amber-200/80 px-1.5 py-0.5 flex-1">
         <div className="flex items-start gap-1">
-          <span className="font-mono text-[10px] font-bold text-amber-900">{song.no}</span>
+          <span className="font-mono text-[10px] font-bold text-amber-900">{displayNumber}</span>
           <span className="flex-1 truncate text-[9px] font-semibold uppercase tracking-tight text-amber-950 leading-tight">
             {song.title}
           </span>
