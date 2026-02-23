@@ -926,18 +926,18 @@ export function JukeboxShell({
       {/* ================================================================
           SLOT 3 -- BUTTON PANEL
           Positioned below the rolodex, in the button area.
-          Slot box: x=148 y=555 w=504 h=65 (in SVG coords)
+          Slot box: x=148 y=555 w=504 h=120 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={148} y={555} w={504} h={65}>
+      <SlotOverlay x={148} y={555} w={504} h={120}>
         {buttonPanel}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 4 -- SONG QUEUE
           Positioned inside the large lower panel bezel.
-          Slot box: x=148 y=622 w=504 h=374 (in SVG coords)
+          Slot box: x=148 y=677 w=504 h=319 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={148} y={622} w={504} h={374}>
+      <SlotOverlay x={148} y={677} w={504} h={319}>
         {songQueue}
       </SlotOverlay>
     </div>
