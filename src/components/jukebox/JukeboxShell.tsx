@@ -37,6 +37,7 @@ interface SlotOverlayProps {
   w: number;
   h: number;
   children: React.ReactNode;
+  zIndex?: number;
 }
 
 interface JukeboxShellProps {
@@ -109,6 +110,7 @@ function SlotOverlay({
   w,
   h,
   children,
+  zIndex,
 }: SlotOverlayProps): React.ReactElement {
   return (
     <div
@@ -119,6 +121,7 @@ function SlotOverlay({
         width: `${(w / VB_W) * 100}%`,
         height: `${(h / VB_H) * 100}%`,
         overflow: "hidden",
+        zIndex,
       }}
     >
       {children}
@@ -155,6 +158,7 @@ export function JukeboxShell({
           width: "100%",
           height: "100%",
           pointerEvents: "none",
+          zIndex: 2,
         }}
         shapeRendering="geometricPrecision"
       >
@@ -299,12 +303,12 @@ export function JukeboxShell({
         </defs>
 
         {/* -- CABINET BODY --
-            Spans full arch outer width x=108->692, top y=455 -> base y=905 */}
+            Spans full arch outer width x=108->692, top y=455 -> base y=920 */}
         <rect
           x="108"
           y="455"
           width="584"
-          height="450"
+          height="465"
           rx="14"
           fill="url(#jb-woodMain)"
         />
@@ -312,7 +316,7 @@ export function JukeboxShell({
         {/* -- BASE PLINTH -- */}
         <rect
           x="100"
-          y="902"
+          y="920"
           width="600"
           height="55"
           rx="14"
@@ -320,17 +324,17 @@ export function JukeboxShell({
         />
 
         {/* -- FEET -- */}
-        <rect x="120" y="932" width="52" height="46" rx="12" fill="#100604" />
-        <rect x="196" y="932" width="52" height="46" rx="12" fill="#100604" />
-        <rect x="552" y="932" width="52" height="46" rx="12" fill="#100604" />
-        <rect x="628" y="932" width="52" height="46" rx="12" fill="#100604" />
+        <rect x="120" y="960" width="52" height="46" rx="12" fill="#100604" />
+        <rect x="196" y="960" width="52" height="46" rx="12" fill="#100604" />
+        <rect x="552" y="960" width="52" height="46" rx="12" fill="#100604" />
+        <rect x="628" y="960" width="52" height="46" rx="12" fill="#100604" />
 
         {/* -- ILLUMINATED SIDE COLUMNS (full cabinet height) -- */}
         <rect
           x="196"
           y="455"
           width="36"
-          height="446"
+          height="460"
           rx="5"
           fill="url(#jb-colGlow)"
         />
@@ -338,7 +342,7 @@ export function JukeboxShell({
           x="568"
           y="455"
           width="36"
-          height="446"
+          height="460"
           rx="5"
           fill="url(#jb-colGlowR)"
         />
@@ -346,7 +350,7 @@ export function JukeboxShell({
         {/* Column base caps */}
         <rect
           x="190"
-          y="878"
+          y="898"
           width="48"
           height="20"
           rx="4"
@@ -354,7 +358,7 @@ export function JukeboxShell({
         />
         <rect
           x="562"
-          y="878"
+          y="898"
           width="48"
           height="20"
           rx="4"
@@ -362,7 +366,7 @@ export function JukeboxShell({
         />
         <rect
           x="190"
-          y="862"
+          y="882"
           width="48"
           height="16"
           rx="3"
@@ -370,7 +374,7 @@ export function JukeboxShell({
         />
         <rect
           x="562"
-          y="862"
+          y="882"
           width="48"
           height="16"
           rx="3"
@@ -378,7 +382,7 @@ export function JukeboxShell({
         />
         <rect
           x="185"
-          y="842"
+          y="862"
           width="58"
           height="20"
           rx="5"
@@ -386,7 +390,7 @@ export function JukeboxShell({
         />
         <rect
           x="557"
-          y="842"
+          y="862"
           width="58"
           height="20"
           rx="5"
@@ -397,14 +401,10 @@ export function JukeboxShell({
         <path
           fillRule="evenodd"
           fill="url(#jb-archPeach)"
-          d="M 110 1102 L 110 312 A 290 254 0 0 1 690 312 L 690 1102 Z
-             M 192 1102 L 192 364 A 208 246 0 0 1 608 364 L 608 1102 Z"
+          d="M 110 905 L 110 312 A 290 254 0 0 1 690 312 L 690 905 Z
+             M 192 905 L 192 364 A 208 246 0 0 1 608 364 L 608 905 Z"
         />
-        {/* Arch interior (dark -- record player slot sits above this) */}
-        <path
-          fill="url(#jb-archInterior)"
-          d="M 192 522 L 192 364 A 208 246 0 0 1 608 364 L 608 522 Z"
-        />
+        {/* Arch interior - transparent to show record player behind */}
         <path
           fill="none"
           stroke="#FFF0D0"
@@ -417,7 +417,7 @@ export function JukeboxShell({
           stroke="#3C1808"
           strokeWidth="2"
           opacity="0.7"
-          d="M 110 1102 L 110 312 A 290 254 0 0 1 690 312 L 690 1102"
+          d="M 110 905 L 110 312 A 290 254 0 0 1 690 312 L 690 905"
         />
 
         {/* -- LEFT FIN STACKS (on top of cabinet housing) -- */}
@@ -602,48 +602,23 @@ export function JukeboxShell({
           fill="url(#jb-chromeH)"
         />
 
-        {/* -- TITLE BAR -- */}
-        <rect x="256" y="403" width="288" height="20" rx="5" fill="#1E0C04" />
-        <rect x="260" y="406" width="280" height="14" rx="3" fill="#4A3010" />
-        <circle cx="280" cy="413" r="4" fill="#C89040" />
-        <circle cx="300" cy="413" r="4" fill="#C89040" />
-
-        {/* -- SONG ROLODEX SLOT -- glass display window bezel
-            Slot covers: x=250 y=433 w=300 h=106
-            The chrome bezel is drawn here; the slot overlay sits inside it. */}
+        {/* -- SONG ROLODEX SLOT -- glass display window bezel */}
         <rect
-          x="200"
+          x="232"
           y="425"
-          width="400"
+          width="336"
           height="122"
           rx="7"
           fill="url(#jb-chromeH)"
         />
         {/* Slot background (replaced by SongRolodex component) */}
         <rect
-          x="210"
+          x="240"
           y="433"
-          width="380"
+          width="320"
           height="106"
           rx="5"
           fill="url(#jb-displayBg)"
-        />
-        {/* Corner indicator lights */}
-        <rect
-          x="204"
-          y="428"
-          width="8"
-          height="28"
-          rx="2"
-          fill="url(#jb-redGemSm)"
-        />
-        <rect
-          x="588"
-          y="428"
-          width="8"
-          height="28"
-          rx="2"
-          fill="url(#jb-redGemSm)"
         />
 
         {/* -- SELECTOR BUTTON PANEL -- */}
@@ -713,52 +688,52 @@ export function JukeboxShell({
           opacity="0.3"
         />
 
-        {/* -- BOTTOM DECORATIVE ARCH (shifted +248px from original) -- */}
+        {/* -- BOTTOM DECORATIVE ARCH -- */}
         <path
           fillRule="evenodd"
           fill="url(#jb-btmArchPeach)"
-          d="M 308 832 L 308 788  A 92 92 0 0 1 492 788  L 492 832 Z
-             M 328 832 L 328 796  A 72 72 0 0 1 472 796  L 472 832 Z"
+          d="M 308 892 L 308 848  A 92 92 0 0 1 492 848  L 492 892 Z
+             M 328 892 L 328 856  A 72 72 0 0 1 472 856  L 472 892 Z"
         />
         <path
           fill="#1A0806"
-          d="M 328 832 L 328 796 A 72 72 0 0 1 472 796 L 472 832 Z"
+          d="M 328 892 L 328 856 A 72 72 0 0 1 472 856 L 472 892 Z"
         />
 
-        {/* -- DECORATIVE MEDALLION (shifted +248px) -- */}
-        <circle cx="400" cy="844" r="55" fill="url(#jb-chromeH)" />
-        <circle cx="400" cy="844" r="44" fill="#1A0806" />
+        {/* -- DECORATIVE MEDALLION -- */}
+        <circle cx="400" cy="904" r="55" fill="url(#jb-chromeH)" />
+        <circle cx="400" cy="904" r="44" fill="#1A0806" />
         <path
-          d="M 400 789 L 392 808 L 400 804 L 408 808 Z"
+          d="M 400 849 L 392 868 L 400 864 L 408 868 Z"
           fill="url(#jb-chromeV)"
         />
         <ellipse
           cx="366"
-          cy="840"
+          cy="900"
           rx="24"
           ry="10"
           fill="url(#jb-chromeH)"
-          transform="rotate(-15 366 840)"
+          transform="rotate(-15 366 900)"
         />
         <ellipse
           cx="434"
-          cy="840"
+          cy="900"
           rx="24"
           ry="10"
           fill="url(#jb-chromeH)"
-          transform="rotate(15 434 840)"
+          transform="rotate(15 434 900)"
         />
         <path
-          d="M 345 844 L 355 838 L 355 850 Z"
+          d="M 345 904 L 355 898 L 355 910 Z"
           fill="url(#jb-chromeV)"
         />
         <path
-          d="M 455 844 L 445 838 L 445 850 Z"
+          d="M 455 904 L 445 898 L 445 910 Z"
           fill="url(#jb-chromeV)"
         />
         <ellipse
           cx="400"
-          cy="793"
+          cy="853"
           rx="10"
           ry="12"
           fill="url(#jb-redGem)"
@@ -767,16 +742,16 @@ export function JukeboxShell({
         />
         <ellipse
           cx="397"
-          cy="789"
+          cy="849"
           rx="3.5"
           ry="4"
           fill="rgba(255,180,180,0.6)"
         />
-        <circle cx="360" cy="830" r="6" fill="url(#jb-redGemSm)" />
-        <circle cx="440" cy="830" r="6" fill="url(#jb-redGemSm)" />
+        <circle cx="360" cy="890" r="6" fill="url(#jb-redGemSm)" />
+        <circle cx="440" cy="890" r="6" fill="url(#jb-redGemSm)" />
         <circle
           cx="400"
-          cy="846"
+          cy="906"
           r="20"
           fill="url(#jb-yellowGem)"
           stroke="#9B7000"
@@ -784,14 +759,14 @@ export function JukeboxShell({
         />
         <ellipse
           cx="394"
-          cy="839"
+          cy="899"
           rx="7"
           ry="9"
           fill="rgba(255,255,200,0.55)"
         />
         <circle
           cx="400"
-          cy="846"
+          cy="906"
           r="24"
           fill="none"
           stroke="url(#jb-chromeH)"
@@ -878,7 +853,7 @@ export function JukeboxShell({
         />
         <rect
           x="108"
-          y="898"
+          y="915"
           width="584"
           height="8"
           rx="3"
@@ -887,28 +862,25 @@ export function JukeboxShell({
         />
 
         {/* Base centre knob */}
-        <circle cx="400" cy="918" r="9" fill="url(#jb-chromeV)" />
-        <circle cx="400" cy="918" r="5" fill="#1A0808" />
+        <circle cx="400" cy="948" r="9" fill="url(#jb-chromeV)" />
+        <circle cx="400" cy="948" r="5" fill="#1A0808" />
       </svg>
 
       {/* ================================================================
-          SLOT 1 -- RECORD PLAYER
+          SLOT 1 -- RECORD PLAYER (z-index 1 to appear behind the housing)
           Positioned inside the arch interior opening.
-          The arch inner curve runs from ~y=118 at peak to y=522 at bottom.
-          Slot box: x=192 y=140 w=416 h=285 (in SVG coords)
-          Fills the full arch interior width and most of the height.
+          Slot box: x=192 y=100 w=416 h=320 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={192} y={140} w={416} h={285}>
+      <SlotOverlay x={192} y={100} w={416} h={320} zIndex={1}>
         {recordPlayer}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 2 -- SONG ROLODEX
-          Spans full width between illuminated columns (x=232 to x=568).
-          Extended slightly for navigation arrows on right.
-          Slot box: x=210 y=433 w=380 h=106 (in SVG coords)
+          Fits between the illuminated columns.
+          Slot box: x=240 y=433 w=320 h=106 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={210} y={433} w={380} h={106}>
+      <SlotOverlay x={240} y={433} w={320} h={106} zIndex={3}>
         {songRolodex}
       </SlotOverlay>
 
@@ -917,7 +889,7 @@ export function JukeboxShell({
           Positioned below the rolodex, in the button area.
           Slot box: x=200 y=553 w=400 h=56 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={200} y={553} w={400} h={56}>
+      <SlotOverlay x={200} y={553} w={400} h={56} zIndex={3}>
         {buttonPanel}
       </SlotOverlay>
 
@@ -926,7 +898,7 @@ export function JukeboxShell({
           Positioned inside the large lower panel bezel.
           Slot box: x=148 y=622 w=504 h=174 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={148} y={622} w={504} h={174}>
+      <SlotOverlay x={148} y={622} w={504} h={174} zIndex={3}>
         {songQueue}
       </SlotOverlay>
     </div>
