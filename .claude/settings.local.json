@@ -8,7 +8,11 @@
       "Bash(gh repo view:*)",
       "Bash(gh workflow run:*)",
       "Bash(bun run build:*)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "Bash(git merge:*)",
+      "Bash(git branch:*)",
+      "Bash(git worktree:*)",
+      "Bash(lsof:*)"
     ],
     "deny": [],
     "ask": []

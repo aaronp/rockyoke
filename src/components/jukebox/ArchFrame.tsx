@@ -41,7 +41,7 @@ export function ArchFrame({ children, className }: Props) {
         />
       </svg>
       {/* Content area (inset from frame) */}
-      <div className="relative z-10 mx-6 mt-4 mb-2 overflow-hidden rounded-t-[80px] bg-gradient-to-b from-rose-950/80 via-neutral-950 to-neutral-900">
+      <div className="relative z-10 mx-6 mt-4 mb-2 h-[calc(100%-1.5rem)] overflow-hidden rounded-t-[80px] bg-gradient-to-b from-rose-950/80 via-neutral-950 to-neutral-900">
         {children}
       </div>
     </div>
