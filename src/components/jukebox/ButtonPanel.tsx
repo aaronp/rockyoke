@@ -33,4 +33,42 @@ function LEDDisplay({ value, state }: { value: string; state: DisplayState }) {
   );
 }
 
+type VintageButtonProps = {
+  label: string;
+  onClick: () => void;
+  disabled?: boolean;
+  variant?: "letter" | "number" | "action";
+  wide?: boolean;
+};
+
+function VintageButton({ label, onClick, disabled, variant = "letter", wide }: VintageButtonProps) {
+  const baseStyles = "font-mono font-bold uppercase transition-all duration-75 select-none";
+  const sizeStyles = wide ? "px-3 py-1.5 text-xs" : "w-7 h-7 text-sm";
+
+  const variantStyles = {
+    letter: "bg-gradient-to-b from-amber-50 to-amber-100 text-amber-900 border-amber-300",
+    number: "bg-gradient-to-b from-amber-50 to-amber-100 text-amber-900 border-amber-300",
+    action: "bg-gradient-to-b from-neutral-100 to-neutral-200 text-neutral-800 border-neutral-400",
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={`
+        ${baseStyles} ${sizeStyles} ${variantStyles[variant]}
+        rounded border-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_2px_0_rgba(0,0,0,0.2),0_3px_3px_rgba(0,0,0,0.1)]
+        hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_0_rgba(0,0,0,0.2),0_2px_2px_rgba(0,0,0,0.1)]
+        active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
+        active:translate-y-0.5
+        disabled:opacity-40 disabled:cursor-not-allowed
+        flex items-center justify-center
+      `}
+    >
+      {label}
+    </button>
+  );
+}
+
 export { LEDDisplay };
