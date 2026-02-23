@@ -8,6 +8,13 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* Jukebox color palette */
+  --jukebox-cream: #F5E6D3;
+  --jukebox-gold: #C4A35A;
+  --jukebox-dark-wood: #4A3728;
+  --jukebox-medium-wood: #8B6914;
+  --jukebox-chrome: #B8B8B8;
 }
 
 body {
