@@ -55,9 +55,12 @@ export default function Jukebox() {
 
   return (
     <div
-      className="min-h-screen text-neutral-100 overflow-auto bg-cover bg-center bg-no-repeat"
+      className="relative min-h-screen text-neutral-100 overflow-auto bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      {/* Dark overlay for ~20% background visibility */}
+      <div className="absolute inset-0 bg-neutral-950/80" />
+
       {/* Header */}
       <div className="absolute left-4 top-4 z-50">
         <Link
@@ -70,7 +73,7 @@ export default function Jukebox() {
       </div>
 
       {/* Jukebox */}
-      <div className="flex min-h-screen items-center justify-center py-8 px-4">
+      <div className="relative z-10 flex min-h-screen items-center justify-center py-8 px-4">
         <JukeboxShell
           recordPlayer={
             <Wurlitzer

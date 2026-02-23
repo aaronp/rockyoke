@@ -256,7 +256,7 @@ export function ButtonPanel({
 
   return (
     <div className="flex items-center justify-center h-full w-full p-2">
-      <div className="flex items-center gap-3 bg-neutral-800/90 rounded-xl px-4 py-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.3),0_1px_0_rgba(255,255,255,0.1)]">
+      <div className="flex items-center gap-3">
         {/* Button grid - letters above numbers, aligned */}
         <div className="flex flex-col gap-0.5">
           {/* Letter row: A-K (11 buttons) */}
