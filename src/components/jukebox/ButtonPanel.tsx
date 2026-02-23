@@ -71,4 +71,115 @@ function VintageButton({ label, onClick, disabled, variant = "letter", wide }: V
   );
 }
 
+type Props = {
+  onSelectSong: (code: string) => void;
+  onNavigateUp: () => void;
+  onNavigateDown: () => void;
+  canNavigateUp?: boolean;
+  canNavigateDown?: boolean;
+};
+
+export function ButtonPanel({
+  onSelectSong,
+  onNavigateUp,
+  onNavigateDown,
+  canNavigateUp = true,
+  canNavigateDown = true,
+}: Props) {
+  const [input, setInput] = useState("");
+  const [displayState, setDisplayState] = useState<DisplayState>("normal");
+
+  const letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K"];
+  const numbers = ["0", "1", "2", "3", "4", "5", "6"];
+
+  const handleLetterPress = useCallback((letter: string) => {
+    // Letter always replaces/sets first character
+    setInput(letter);
+    setDisplayState("normal");
+  }, []);
+
+  const handleNumberPress = useCallback((num: string) => {
+    setInput(prev => {
+      // Must have letter first
+      if (prev.length === 0) return prev;
+      // Max 3 characters (letter + 2 digits)
+      if (prev.length >= 3) return prev;
+      return prev + num;
+    });
+    setDisplayState("normal");
+  }, []);
+
+  const handleClear = useCallback(() => {
+    setInput("");
+    setDisplayState("normal");
+  }, []);
+
+  const handleEnter = useCallback(() => {
+    if (input.length !== 3) {
+      setDisplayState("error");
+      setTimeout(() => setDisplayState("normal"), 300);
+      return;
+    }
+
+    const letter = input[0];
+    const num = parseInt(input.slice(1), 10);
+
+    // Validate: letter A-K, number 01-06
+    const letterIndex = letter.charCodeAt(0) - 65;
+    if (letterIndex < 0 || letterIndex > 10 || num < 1 || num > 6) {
+      setDisplayState("error");
+      setTimeout(() => setDisplayState("normal"), 300);
+      return;
+    }
+
+    setDisplayState("success");
+    onSelectSong(input);
+    setTimeout(() => {
+      setInput("");
+      setDisplayState("normal");
+    }, 500);
+  }, [input, onSelectSong]);
+
+  return (
+    <div className="flex flex-col items-center gap-2 p-2">
+      {/* LED Display */}
+      <LEDDisplay value={input} state={displayState} />
+
+      {/* Letter row */}
+      <div className="flex gap-1">
+        {letters.map(letter => (
+          <VintageButton
+            key={letter}
+            label={letter}
+            onClick={() => handleLetterPress(letter)}
+            variant="letter"
+          />
+        ))}
+      </div>
+
+      {/* Number row + controls */}
+      <div className="flex gap-1 items-center">
+        {numbers.map(num => (
+          <VintageButton
+            key={num}
+            label={num}
+            onClick={() => handleNumberPress(num)}
+            variant="number"
+          />
+        ))}
+
+        <div className="w-2" /> {/* Spacer */}
+
+        <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
+        <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
+
+        <div className="w-2" /> {/* Spacer */}
+
+        <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
+        <VintageButton label="OK" onClick={handleEnter} variant="action" wide />
+      </div>
+    </div>
+  );
+}
+
 export { LEDDisplay };
