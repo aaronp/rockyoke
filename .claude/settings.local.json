@@ -19,7 +19,19 @@
       "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: update song codes to letter+number format \\(A01-K06\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(npm run lint:*)",
       "Bash(npm run)",
-      "Bash(npm test:*)"
+      "Bash(npm test:*)",
+      "Skill(superpowers:brainstorming)",
+      "Skill(superpowers:brainstorming:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:writing-plans:*)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Skill(superpowers:subagent-driven-development:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npm run build:*)",
+      "Bash(git stash:*)",
+      "Bash(git checkout:*)"
     ],
     "deny": [],
     "ask": []

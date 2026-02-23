@@ -17,9 +17,8 @@ export function LineupPanel({
 
   return (
     <div
-      className={`flex flex-col overflow-hidden rounded-lg bg-neutral-900/80 ${
-        isPanel ? "h-full" : ""
-      } ${className}`}
+      className={`flex flex-col overflow-hidden rounded-lg bg-neutral-900/80 ${isPanel ? "h-full" : ""
+        } ${className}`}
     >
       {/* Header */}
       <div className="flex-shrink-0 border-b border-amber-900/30 bg-neutral-900/90 px-4 py-3">
@@ -41,8 +40,8 @@ export function LineupPanel({
       <div className={`flex-1 overflow-y-auto p-3 ${isPanel ? "" : "max-h-64"}`}>
         {queue.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center py-8 text-center">
-            <p className="mb-2 text-amber-200">No singers yet</p>
-            <p className="text-sm text-amber-500">Be first!</p>
+            <p className="mb-2 text-amber-200">Song sign-up required in advance</p>
+            <p className="text-sm text-amber-500">Be the first to sign up!</p>
             <span className="mt-2 text-2xl">👈</span>
           </div>
         ) : (
