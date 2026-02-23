@@ -219,14 +219,18 @@ export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageCh
     setPageIndex(pageIndex - 1);
   }, [canGoUp, sfx, pageIndex, setPageIndex]);
 
+  // Only handle keyboard navigation in uncontrolled mode
+  // When controlled (onPageChange provided), let the parent handle keyboard events
   useEffect(() => {
+    if (onPageChange) return; // Skip keyboard handling in controlled mode
+
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === "ArrowDown" || e.key === "j") { e.preventDefault(); goDown(); }
       else if (e.key === "ArrowUp" || e.key === "k") { e.preventDefault(); goUp(); }
     }
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [goDown, goUp]);
+  }, [goDown, goUp, onPageChange]);
 
   const currentPage = pages[pageIndex];
 
