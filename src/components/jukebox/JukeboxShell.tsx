@@ -902,18 +902,20 @@ export function JukeboxShell({
           SLOT 1 -- RECORD PLAYER
           Positioned inside the arch interior opening.
           The arch inner curve peaks at ~y=276; the opening runs to y=522.
-          Slot box: x=205 y=285 w=390 h=232 (in SVG coords)
+          Slot box: x=205 y=285 w=390 h=140 (in SVG coords)
+          Reduced height to avoid overlapping the song rolodex slot below.
           ================================================================ */}
-      <SlotOverlay x={205} y={285} w={390} h={232}>
+      <SlotOverlay x={205} y={285} w={390} h={140}>
         {recordPlayer}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 2 -- SONG ROLODEX
           Positioned over the glass display window (inside chrome bezel).
-          Slot box: x=250 y=433 w=300 h=106 (in SVG coords)
+          Extended to include navigation buttons area below.
+          Slot box: x=250 y=433 w=300 h={106+60} (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={250} y={433} w={300} h={106}>
+      <SlotOverlay x={250} y={433} w={300} h={166}>
         {songRolodex}
       </SlotOverlay>
 
