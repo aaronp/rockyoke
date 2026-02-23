@@ -31,7 +31,7 @@ export function HelpTooltip() {
           exit={{ opacity: 0, scale: 0.8 }}
           transition={{ type: "spring", duration: 0.5 }}
           className="absolute z-50"
-          style={{ top: "42%", right: "8%" }}
+          style={{ top: "43%", right: "7%" }}
         >
           <motion.div
             animate={{ y: [0, -8, 0] }}
