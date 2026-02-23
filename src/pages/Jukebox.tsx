@@ -1,7 +1,5 @@
 // src/pages/Jukebox.tsx
 import { useState, useCallback } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
 import {
   JukeboxShell,
   Wurlitzer,
@@ -63,17 +61,6 @@ export default function Jukebox() {
     >
       {/* Dark overlay for ~20% background visibility */}
       <div className="absolute inset-0 bg-neutral-950/80" />
-
-      {/* Header */}
-      <div className="absolute left-4 top-4 z-50">
-        <Link
-          to="/"
-          className="inline-flex items-center gap-1 rounded-lg bg-neutral-900/80 px-3 py-1.5 text-sm text-neutral-400 hover:text-neutral-200"
-        >
-          <ArrowLeft className="h-4 w-4" />
-          Back
-        </Link>
-      </div>
 
       {/* Jukebox */}
       <div className="relative z-10 flex min-h-screen items-center justify-center py-2 px-4">
