@@ -43,25 +43,25 @@ export function HelpTooltip() {
             onClick={handleDismiss}
             className="relative cursor-pointer rounded-xl bg-white px-5 py-3 shadow-xl border-2 border-amber-400"
           >
-            {/* Speech bubble tail pointing up-right toward the arrows */}
+            {/* Speech bubble tail pointing down-left toward the arrows */}
             <div
-              className="absolute -top-3 right-6"
+              className="absolute -bottom-3 left-6"
               style={{
                 width: 0,
                 height: 0,
                 borderLeft: "12px solid transparent",
                 borderRight: "12px solid transparent",
-                borderBottom: "14px solid #fbbf24",
+                borderTop: "14px solid #fbbf24",
               }}
             />
             <div
-              className="absolute -top-2 right-6"
+              className="absolute -bottom-2 left-6"
               style={{
                 width: 0,
                 height: 0,
                 borderLeft: "10px solid transparent",
                 borderRight: "10px solid transparent",
-                borderBottom: "12px solid white",
+                borderTop: "12px solid white",
               }}
             />
 
