@@ -1,6 +1,67 @@
 // src/components/jukebox/ButtonPanel.tsx
 import { useState, useCallback, useEffect, useRef } from "react";
 
+function useClackSfx() {
+  const ctxRef = useRef<AudioContext | null>(null);
+
+  function getCtx() {
+    if (!ctxRef.current) {
+      // @ts-expect-error webkitAudioContext for Safari
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (AC) ctxRef.current = new AC();
+    }
+    return ctxRef.current;
+  }
+
+  async function resumeIfNeeded() {
+    const ctx = getCtx();
+    if (!ctx) return null;
+    if (ctx.state !== "running") {
+      try { await ctx.resume(); } catch { /* ignore */ }
+    }
+    return ctx;
+  }
+
+  function clack(strength = 0.9) {
+    const ctx = getCtx();
+    if (!ctx) return;
+    const t0 = ctx.currentTime;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(140, t0);
+    osc.frequency.exponentialRampToValueAtTime(70, t0 + 0.08);
+    gain.gain.setValueAtTime(0.0001, t0);
+    gain.gain.exponentialRampToValueAtTime(0.18 * strength, t0 + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.12);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start(t0);
+    osc.stop(t0 + 0.14);
+
+    const noise = ctx.createBufferSource();
+    const buf = ctx.createBuffer(1, ctx.sampleRate * 0.04, ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * 0.55;
+    noise.buffer = buf;
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.setValueAtTime(1400, t0);
+    const ng = ctx.createGain();
+    ng.gain.setValueAtTime(0.0001, t0);
+    ng.gain.exponentialRampToValueAtTime(0.11 * strength, t0 + 0.004);
+    ng.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.05);
+    noise.connect(hp);
+    hp.connect(ng);
+    ng.connect(ctx.destination);
+    noise.start(t0 + 0.004);
+    noise.stop(t0 + 0.06);
+  }
+
+  return { resumeIfNeeded, clack };
+}
+
 type DisplayState = "normal" | "error" | "success";
 
 function LEDDisplay({ value, state }: { value: string; state: DisplayState }) {
@@ -92,6 +153,7 @@ export function ButtonPanel({
   const [input, setInput] = useState("");
   const [displayState, setDisplayState] = useState<DisplayState>("normal");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const sfx = useClackSfx();
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -101,28 +163,29 @@ export function ButtonPanel({
   }, []);
 
   const handleLetterPress = useCallback((letter: string) => {
-    // Letter always replaces/sets first character
+    sfx.clack(0.7);
     setInput(letter);
     setDisplayState("normal");
-  }, []);
+  }, [sfx]);
 
   const handleNumberPress = useCallback((num: string) => {
+    sfx.clack(0.7);
     setInput(prev => {
-      // Must have letter first
       if (prev.length === 0) return prev;
-      // Max 3 characters (letter + 2 digits)
       if (prev.length >= 3) return prev;
       return prev + num;
     });
     setDisplayState("normal");
-  }, []);
+  }, [sfx]);
 
   const handleClear = useCallback(() => {
+    sfx.clack(0.6);
     setInput("");
     setDisplayState("normal");
-  }, []);
+  }, [sfx]);
 
   const handleEnter = useCallback(() => {
+    sfx.clack(0.8);
     // Clear any pending timer
     if (timerRef.current) clearTimeout(timerRef.current);
 
@@ -149,7 +212,7 @@ export function ButtonPanel({
       setInput("");
       setDisplayState("normal");
     }, 500);
-  }, [input, onSelectSong]);
+  }, [input, onSelectSong, sfx]);
 
   // Keyboard support
   useEffect(() => {
