@@ -13,7 +13,7 @@ export function LineupPanel({
   className = "",
 }: LineupPanelProps) {
   const isPanel = variant === "panel";
-  const title = isPanel ? "Tonight's Lineup" : "Up Next";
+  const title = isPanel ? "The Lineup!" : "Up Next";
 
   return (
     <div
