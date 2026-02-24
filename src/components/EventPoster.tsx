@@ -8,6 +8,7 @@ type EventPosterProps = {
   priceDoor: string;
   variant: "poster" | "banner";
   className?: string;
+  onBuyTickets?: () => void;
 };
 
 export function EventPoster({
@@ -18,6 +19,7 @@ export function EventPoster({
   priceDoor,
   variant,
   className = "",
+  onBuyTickets,
 }: EventPosterProps) {
   if (variant === "banner") {
     return (
@@ -116,6 +118,16 @@ export function EventPoster({
           {priceDoor} on the door
         </p>
       </div>
+
+      {/* Buy Tickets Button */}
+      {onBuyTickets && (
+        <button
+          onClick={onBuyTickets}
+          className="mt-4 rounded-lg bg-amber-500 px-6 py-2 font-bold uppercase tracking-wide text-amber-950 transition-colors hover:bg-amber-400"
+        >
+          Buy Tickets
+        </button>
+      )}
 
       {/* Decorative bottom border */}
       <div className="mt-4 flex items-center gap-2">
