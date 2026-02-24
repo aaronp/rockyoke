@@ -171,9 +171,35 @@ export function SignUpWizard({
       <div className="flex-shrink-0">
         <AnimatePresence mode="wait">
           {wizardState === "idle" && (
-            <WizardPanel key="idle">
-              <p className="text-center text-xs sm:text-base text-amber-100">Pick a song to get started!</p>
-            </WizardPanel>
+            <motion.div
+              key="idle"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-1.5 sm:gap-3 rounded-lg bg-neutral-800/50 p-1.5 sm:p-2"
+            >
+              {/* LED Display - shows current code input */}
+              <div className="flex-shrink-0">
+                <LEDDisplay value={codeInput} state={codeDisplayState} />
+              </div>
+
+              {/* Prompt text */}
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-amber-100">Pick a song to get started!</p>
+              </div>
+
+              {/* Buy tickets button */}
+              <div className="flex flex-shrink-0 items-center">
+                <Button
+                  size="sm"
+                  onClick={onBuyTickets}
+                  className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
+                >
+                  Buy Tickets
+                </Button>
+              </div>
+            </motion.div>
           )}
 
           {wizardState === "song-selected" && selectedSong && (
@@ -186,7 +212,7 @@ export function SignUpWizard({
               className="flex items-center gap-1.5 sm:gap-3 rounded-lg bg-neutral-800/50 p-1.5 sm:p-2"
             >
               {/* LED Display - shows selected song code */}
-              <div className="flex-shrink-0 hidden sm:block">
+              <div className="flex-shrink-0">
                 <LEDDisplay value={codeInput} state={codeDisplayState} />
               </div>
 

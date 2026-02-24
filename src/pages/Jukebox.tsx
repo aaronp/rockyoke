@@ -77,7 +77,8 @@ export default function Jukebox() {
 
   // Trigger Wurlitzer when entering "playing" state OR preview is playing
   const shouldTriggerPlay = state.wizardState === "playing" || previewPlaying;
-  const shouldTriggerReset = !previewPlaying && state.wizardState === "song-selected";
+  // Reset when not playing (works for both song-selected state and queue previews)
+  const shouldTriggerReset = !shouldTriggerPlay;
 
   const handlePreviewStart = useCallback(() => {
     setPreviewPlaying(true);
