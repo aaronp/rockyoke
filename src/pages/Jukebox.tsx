@@ -14,6 +14,7 @@ import backgroundImage from "../background.png";
 import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
 import { HelpTooltip } from "@/components/HelpTooltip";
+import { TicketModal } from "@/components/TicketModal";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
@@ -21,6 +22,7 @@ const EVENT_DETAILS = {
   date: "2nd May",
   priceAdvance: "£12",
   priceDoor: "£15",
+  paymentLinkUrl: "https://buy.stripe.com/test_placeholder",
 } as const;
 
 export default function Jukebox() {
@@ -30,6 +32,7 @@ export default function Jukebox() {
   const [rolodexPage, setRolodexPage] = useState(0);
   const [codeInput, setCodeInput] = useState("");
   const [codeDisplayState, setCodeDisplayState] = useState<DisplayState>("normal");
+  const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const totalPages = 11; // A-K
 
   const handleNavigateUp = useCallback(() => {
@@ -91,6 +94,7 @@ export default function Jukebox() {
               <EventPoster
                 {...EVENT_DETAILS}
                 variant="poster"
+                onBuyTickets={() => setTicketModalOpen(true)}
               />
             </div>
           </div>
@@ -148,6 +152,7 @@ export default function Jukebox() {
                   queue={state.queue}
                   codeInput={codeInput}
                   codeDisplayState={codeDisplayState}
+                  onBuyTickets={() => setTicketModalOpen(true)}
                 />
               }
               />
@@ -161,16 +166,25 @@ export default function Jukebox() {
                 queue={state.queue}
                 variant="panel"
                 className="hidden lg:flex lg:h-[600px]"
+                onBuyTickets={() => setTicketModalOpen(true)}
               />
               <LineupPanel
                 queue={state.queue}
                 variant="section"
                 className="lg:hidden"
+                onBuyTickets={() => setTicketModalOpen(true)}
               />
             </div>
           </div>
         </div>
       </div>
+
+      {/* Ticket Modal */}
+      <TicketModal
+        open={ticketModalOpen}
+        onOpenChange={setTicketModalOpen}
+        {...EVENT_DETAILS}
+      />
     </div>
   );
 }
