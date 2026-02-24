@@ -71,7 +71,7 @@ type Props = {
   wizardState: WizardState;
   selectedSong: Song | null;
   lastEntry: QueueEntry | null;
-  onStartSignUp: () => void;
+  onStartSignUp: (customSongTitle?: string) => void;
   onSubmitName: (name: string) => void;
   onSubmitPayment: () => void;
   onReset: () => void;
@@ -109,7 +109,11 @@ export function SignUpWizard({
   onPlaySong,
 }: Props) {
   const [nameInput, setNameInput] = useState("");
+  const [customSongInput, setCustomSongInput] = useState("");  // For request-a-song
   const preview = useItunesPreview(onPreviewEnd);
+
+  // Check if selected song is a request type
+  const isRequestSong = selectedSong?.isRequest ?? false;
 
   // Trigger animation start (audio will play when triggerPlayAudio becomes true)
   const handlePreviewPlay = useCallback(() => {
@@ -133,12 +137,18 @@ export function SignUpWizard({
   }, [preview.stop, onPreviewEnd]);
 
   // Fetch preview when song is selected OR when previewingSong changes
+  // For request songs, use the custom song input
   useEffect(() => {
     const songToPreview = previewingSong ?? (wizardState === "song-selected" ? selectedSong : null);
     if (songToPreview) {
-      preview.fetchPreview(songToPreview.title, songToPreview.artist);
+      // For request songs, use the custom song input as the search term
+      if (songToPreview.isRequest && customSongInput.trim()) {
+        preview.fetchPreview(customSongInput.trim(), "");
+      } else if (!songToPreview.isRequest) {
+        preview.fetchPreview(songToPreview.title, songToPreview.artist);
+      }
     }
-  }, [wizardState, selectedSong, previewingSong, preview.fetchPreview]);
+  }, [wizardState, selectedSong, previewingSong, customSongInput, preview.fetchPreview]);
 
   // Track previous previewingSong to detect when it's cleared
   const prevPreviewingSongRef = useRef<Song | null>(null);
@@ -166,6 +176,13 @@ export function SignUpWizard({
       return () => clearTimeout(timer);
     }
   }, [wizardState, onReset]);
+
+  // Reset custom song input when returning to idle
+  useEffect(() => {
+    if (wizardState === "idle") {
+      setCustomSongInput("");
+    }
+  }, [wizardState]);
 
   return (
     <div className="relative flex h-full flex-col p-1.5 sm:p-3">
@@ -211,60 +228,131 @@ export function SignUpWizard({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center gap-1.5 sm:gap-3 rounded-lg bg-neutral-800/50 p-1.5 sm:p-2"
+              className={`flex flex-col gap-1.5 sm:gap-2 rounded-lg p-1.5 sm:p-2 ${isRequestSong ? "bg-rose-900/50" : "bg-neutral-800/50"}`}
             >
-              {/* LED Display - shows selected song code */}
-              <div className="flex-shrink-0">
-                <LEDDisplay value={codeInput} state={codeDisplayState} />
-              </div>
+              <div className="flex items-center gap-1.5 sm:gap-3">
+                {/* LED Display - shows selected song code */}
+                <div className="flex-shrink-0">
+                  <LEDDisplay value={codeInput} state={codeDisplayState} />
+                </div>
 
-              {/* Song info */}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-xs sm:text-sm font-bold text-amber-50">{selectedSong.title}</p>
-                <p className="truncate text-[10px] sm:text-xs text-amber-300">{selectedSong.artist}</p>
-              </div>
+                {/* Song info - different for request vs regular */}
+                <div className="min-w-0 flex-1">
+                  {isRequestSong ? (
+                    <>
+                      <p className="truncate text-xs sm:text-sm font-bold text-rose-200">Request a Song</p>
+                      <p className="truncate text-[10px] sm:text-xs text-rose-300">Type your song below</p>
+                    </>
+                  ) : (
+                    <>
+                      <p className="truncate text-xs sm:text-sm font-bold text-amber-50">{selectedSong.title}</p>
+                      <p className="truncate text-[10px] sm:text-xs text-amber-300">{selectedSong.artist}</p>
+                    </>
+                  )}
+                </div>
 
-              {/* Action buttons */}
-              <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
-                {preview.isLoading ? (
-                  <span className="text-xs text-amber-400">...</span>
-                ) : preview.previewUrl ? (
-                  !preview.isPlaying ? (
+                {/* Action buttons - only show if not request or has custom song */}
+                <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
+                  {!isRequestSong && (
+                    <>
+                      {preview.isLoading ? (
+                        <span className="text-xs text-amber-400">...</span>
+                      ) : preview.previewUrl ? (
+                        !preview.isPlaying ? (
+                          <Button
+                            size="sm"
+                            onClick={handlePreviewPlay}
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-600 p-0 text-amber-950 hover:bg-amber-500"
+                          >
+                            <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={handlePreviewStop}
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-700 p-0 text-amber-100 hover:bg-amber-600"
+                          >
+                            <Square className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                          </Button>
+                        )
+                      ) : null}
+                    </>
+                  )}
+                  {isRequestSong && customSongInput.trim() && (
+                    <>
+                      {preview.isLoading ? (
+                        <span className="text-xs text-rose-300">...</span>
+                      ) : preview.previewUrl ? (
+                        !preview.isPlaying ? (
+                          <Button
+                            size="sm"
+                            onClick={handlePreviewPlay}
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-rose-600 p-0 text-rose-100 hover:bg-rose-500"
+                          >
+                            <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                          </Button>
+                        ) : (
+                          <Button
+                            size="sm"
+                            onClick={handlePreviewStop}
+                            className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-rose-700 p-0 text-rose-100 hover:bg-rose-600"
+                          >
+                            <Square className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                          </Button>
+                        )
+                      ) : null}
+                    </>
+                  )}
+                  {!isRequestSong && ticketsRemaining > 0 ? (
                     <Button
                       size="sm"
-                      onClick={handlePreviewPlay}
-                      className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-600 p-0 text-amber-950 hover:bg-amber-500"
+                      onClick={() => onStartSignUp()}
+                      className="h-6 sm:h-8 bg-rose-600 px-2 sm:px-3 text-[10px] sm:text-xs hover:bg-rose-500"
                     >
-                      <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      Sign Up
+                    </Button>
+                  ) : !isRequestSong && (
+                    <Button
+                      size="sm"
+                      onClick={onBuyTickets}
+                      className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
+                    >
+                      {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
+                    </Button>
+                  )}
+                </div>
+              </div>
+
+              {/* Custom song input for request-a-song */}
+              {isRequestSong && (
+                <div className="flex items-center gap-1.5 sm:gap-2">
+                  <Input
+                    value={customSongInput}
+                    onChange={(e) => setCustomSongInput(e.target.value)}
+                    placeholder="Song name (e.g. Bohemian Rhapsody)"
+                    className="flex-1 bg-neutral-800 border-rose-600 text-rose-50 placeholder:text-rose-300/50 text-xs sm:text-sm h-7 sm:h-9"
+                    autoFocus
+                  />
+                  {ticketsRemaining > 0 ? (
+                    <Button
+                      size="sm"
+                      onClick={() => onStartSignUp(customSongInput.trim())}
+                      disabled={!customSongInput.trim()}
+                      className="h-7 sm:h-9 bg-rose-600 px-2 sm:px-3 text-[10px] sm:text-xs hover:bg-rose-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      Sign Up
                     </Button>
                   ) : (
                     <Button
                       size="sm"
-                      onClick={handlePreviewStop}
-                      className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-700 p-0 text-amber-100 hover:bg-amber-600"
+                      onClick={onBuyTickets}
+                      className="h-7 sm:h-9 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
                     >
-                      <Square className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                      {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
                     </Button>
-                  )
-                ) : null}
-                {ticketsRemaining > 0 ? (
-                  <Button
-                    size="sm"
-                    onClick={onStartSignUp}
-                    className="h-6 sm:h-8 bg-rose-600 px-2 sm:px-3 text-[10px] sm:text-xs hover:bg-rose-500"
-                  >
-                    Sign Up
-                  </Button>
-                ) : (
-                  <Button
-                    size="sm"
-                    onClick={onBuyTickets}
-                    className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
-                  >
-                    {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
-                  </Button>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </motion.div>
           )}
 

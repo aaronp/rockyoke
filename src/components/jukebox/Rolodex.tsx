@@ -7,6 +7,7 @@ type InternalSong = {
   title: string;
   artist: string;
   year: number;
+  isRequest?: boolean;  // Special "request your own song" entry
 };
 
 export const SONGS: InternalSong[] = [
@@ -76,6 +77,8 @@ export const SONGS: InternalSong[] = [
   { no: 64, title: "Message In A Bottle", artist: "The Police", year: 1979 },
   { no: 65, title: "Sex on Fire", artist: "Kings of Leon", year: 2008 },
   { no: 66, title: "A New Beginning", artist: "Good Charlotte", year: 2000 },
+  // Special request entry - always last
+  { no: 99, title: "Request a Song", artist: "Your choice!", year: 0, isRequest: true },
 ];
 
 export function findSongByCode(code: string): Song | null {
@@ -111,6 +114,7 @@ function toSong(internal: InternalSong, pageIndex: number, indexOnPage: number):
     title: internal.title,
     artist: internal.artist,
     year: internal.year,
+    isRequest: internal.isRequest,
   };
 }
 
@@ -375,6 +379,7 @@ function SongCard({
   variant?: "large" | "small";
 }) {
   const isSmall = variant === "small";
+  const isRequest = song.isRequest;
 
   // Small variant uses larger, fixed text sizes since slot is bigger
   const codeSize = isSmall ? "text-[10px]" : "text-[7px] sm:text-[10px]";
@@ -385,28 +390,39 @@ function SongCard({
   const playIconSize = isSmall ? "h-3 w-4" : "h-2 sm:h-3 w-3 sm:w-4";
   const playTriangle = isSmall ? "border-y-[4px] border-l-[6px]" : "border-y-[3px] sm:border-y-[4px] border-l-[4px] sm:border-l-[6px]";
 
+  // Request song has red background styling
+  const bgClasses = isRequest
+    ? "bg-gradient-to-b from-rose-400 via-rose-500 to-rose-400 hover:from-rose-500 hover:via-rose-600 hover:to-rose-500"
+    : "bg-gradient-to-b from-amber-50 via-amber-100 to-amber-50 hover:from-amber-100 hover:via-amber-150 hover:to-amber-100";
+  const textColor = isRequest ? "text-white" : "text-amber-950";
+  const codeColor = isRequest ? "text-rose-100" : "text-amber-900";
+  const artistColor = isRequest ? "text-rose-100" : "text-amber-900";
+  const borderColor = isRequest ? "border-rose-300/50" : "border-amber-200/80";
+  const bottomBg = isRequest ? "bg-rose-600/40" : "bg-amber-200/40";
+  const ringColor = isRequest ? "focus:ring-rose-500" : "focus:ring-amber-500";
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className="relative overflow-hidden rounded bg-gradient-to-b from-amber-50 via-amber-100 to-amber-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.2)] flex flex-col text-left cursor-pointer hover:from-amber-100 hover:via-amber-150 hover:to-amber-100 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_rgba(0,0,0,0.25)] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 h-full w-full"
+      className={`relative overflow-hidden rounded ${bgClasses} shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.2)] flex flex-col text-left cursor-pointer hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_rgba(0,0,0,0.25)] transition-all duration-150 focus:outline-none focus:ring-2 ${ringColor} focus:ring-offset-1 h-full w-full`}
     >
-      <div className={`border-b border-amber-200/80 ${padding} py-0.5 flex-1`}>
+      <div className={`${borderColor} border-b ${padding} py-0.5 flex-1`}>
         <div className={`flex items-start ${gap}`}>
-          <span className={`font-mono ${codeSize} font-bold text-amber-900`}>{displayNumber}</span>
-          <span className={`flex-1 truncate ${titleSize} font-semibold uppercase tracking-tight text-amber-950 leading-tight`}>
+          <span className={`font-mono ${codeSize} font-bold ${codeColor}`}>{displayNumber}</span>
+          <span className={`flex-1 truncate ${titleSize} font-semibold uppercase tracking-tight ${textColor} leading-tight`}>
             {song.title}
           </span>
         </div>
       </div>
-      <div className={`flex items-center ${gap} bg-amber-200/40 ${padding} py-0.5`}>
+      <div className={`flex items-center ${gap} ${bottomBg} ${padding} py-0.5`}>
         <div className={`flex ${playIconSize} items-center justify-center`}>
           <div
-            className={`h-0 w-0 ${playTriangle} border-y-transparent border-l-red-600`}
+            className={`h-0 w-0 ${playTriangle} border-y-transparent ${isRequest ? "border-l-white" : "border-l-red-600"}`}
             style={{ filter: "drop-shadow(1px 1px 1px rgba(0,0,0,0.3))" }}
           />
         </div>
-        <span className={`flex-1 truncate ${artistSize} font-bold uppercase text-amber-900`}>
+        <span className={`flex-1 truncate ${artistSize} font-bold uppercase ${artistColor}`}>
           {song.artist}
         </span>
       </div>

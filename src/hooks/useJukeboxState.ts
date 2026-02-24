@@ -15,8 +15,16 @@ export function useJukeboxState() {
     setWizardState("song-selected");
   }, []);
 
-  const startSignUp = useCallback(() => {
+  const startSignUp = useCallback((customSongTitle?: string) => {
     if (selectedSong) {
+      // For request songs, update the title with the custom song name
+      if (selectedSong.isRequest && customSongTitle) {
+        setSelectedSong({
+          ...selectedSong,
+          title: customSongTitle,
+          artist: "Requested",
+        });
+      }
       setWizardState("enter-name");
     }
   }, [selectedSong]);

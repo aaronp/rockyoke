@@ -6,6 +6,7 @@ export type Song = {
   title: string;
   artist: string;
   year?: number;
+  isRequest?: boolean;  // Special "request your own song" entry
 };
 
 export type QueueEntry = {

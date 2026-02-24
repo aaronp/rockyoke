@@ -41,7 +41,7 @@ export default function Jukebox() {
   const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
   const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const totalPages = 11; // A-K
+  const totalPages = 12; // A-L (last page has "Request a Song")
 
   // Detect mobile screen size for Wurlitzer variant
   useEffect(() => {
