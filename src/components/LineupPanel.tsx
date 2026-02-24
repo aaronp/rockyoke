@@ -1,11 +1,14 @@
 // src/components/LineupPanel.tsx
-import type { QueueEntry } from "@/types/jukebox";
+import { Play, Square } from "lucide-react";
+import type { QueueEntry, Song } from "@/types/jukebox";
 
 type LineupPanelProps = {
   queue: QueueEntry[];
   variant: "panel" | "section";
   className?: string;
   onBuyTickets?: () => void;
+  onPlaySong?: (song: Song) => void;
+  playingSongId?: string;
 };
 
 export function LineupPanel({
@@ -13,6 +16,8 @@ export function LineupPanel({
   variant,
   className = "",
   onBuyTickets,
+  onPlaySong,
+  playingSongId,
 }: LineupPanelProps) {
   const isPanel = variant === "panel";
   const title = isPanel ? "The Lineup!" : "Up Next";
@@ -48,24 +53,43 @@ export function LineupPanel({
           </div>
         ) : (
           <ul className="space-y-2">
-            {queue.map((entry, index) => (
-              <li
-                key={entry.id}
-                className="flex items-center gap-3 rounded bg-neutral-800/50 px-3 py-2"
-              >
-                <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-900/50 font-mono text-xs font-bold text-amber-400">
-                  {index + 1}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-medium text-amber-100">
-                    {entry.name}
-                  </p>
-                  <p className="truncate text-xs text-amber-400">
-                    {entry.song?.title ?? "Unknown Song"}
-                  </p>
-                </div>
-              </li>
-            ))}
+            {queue.map((entry, index) => {
+              const isPlaying = playingSongId === entry.song?.number;
+              return (
+                <li
+                  key={entry.id}
+                  className="flex items-center gap-3 rounded bg-neutral-800/50 px-3 py-2"
+                >
+                  <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-amber-900/50 font-mono text-xs font-bold text-amber-400">
+                    {index + 1}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-medium text-amber-100">
+                      {entry.name}
+                    </p>
+                    <p className="truncate text-xs text-amber-400">
+                      {entry.song?.title ?? "Unknown Song"}
+                    </p>
+                  </div>
+                  {onPlaySong && entry.song && (
+                    <button
+                      onClick={() => onPlaySong(entry.song)}
+                      className={`flex-shrink-0 rounded-full p-1.5 transition-colors ${
+                        isPlaying
+                          ? "bg-amber-700 text-amber-100 hover:bg-amber-600"
+                          : "bg-amber-600/50 text-amber-200 hover:bg-amber-600"
+                      }`}
+                    >
+                      {isPlaying ? (
+                        <Square className="h-3 w-3" />
+                      ) : (
+                        <Play className="h-3 w-3" />
+                      )}
+                    </button>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>

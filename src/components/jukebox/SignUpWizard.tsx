@@ -83,6 +83,8 @@ type Props = {
   codeDisplayState?: DisplayState;
   onBuyTickets?: () => void;
   ticketsRemaining?: number;
+  previewingSong?: Song | null;
+  onPlaySong?: (song: Song) => void;
 };
 
 export function SignUpWizard({
@@ -101,6 +103,8 @@ export function SignUpWizard({
   codeDisplayState = "normal",
   onBuyTickets,
   ticketsRemaining = 0,
+  previewingSong,
+  onPlaySong,
 }: Props) {
   const [nameInput, setNameInput] = useState("");
   const preview = useItunesPreview(onPreviewEnd);
@@ -126,20 +130,21 @@ export function SignUpWizard({
     onPreviewEnd?.();
   }, [preview.stop, onPreviewEnd]);
 
-  // Fetch preview when song is selected
+  // Fetch preview when song is selected OR when previewingSong changes
   useEffect(() => {
-    if (wizardState === "song-selected" && selectedSong) {
-      preview.fetchPreview(selectedSong.title, selectedSong.artist);
+    const songToPreview = previewingSong ?? (wizardState === "song-selected" ? selectedSong : null);
+    if (songToPreview) {
+      preview.fetchPreview(songToPreview.title, songToPreview.artist);
     }
-  }, [wizardState, selectedSong, preview.fetchPreview]);
+  }, [wizardState, selectedSong, previewingSong, preview.fetchPreview]);
 
-  // Stop preview when leaving song-selected state
+  // Stop preview when leaving song-selected state (and not previewing a queue song)
   useEffect(() => {
-    if (wizardState !== "song-selected") {
+    if (wizardState !== "song-selected" && !previewingSong) {
       preview.stop();
       onPreviewEnd?.();
     }
-  }, [wizardState, preview.stop, onPreviewEnd]);
+  }, [wizardState, previewingSong, preview.stop, onPreviewEnd]);
 
   // Auto-reset after complete
   useEffect(() => {
@@ -288,22 +293,41 @@ export function SignUpWizard({
           </div>
           <div className="h-full overflow-y-auto p-2">
             <ul className="space-y-1">
-              {queue.map((entry, index) => (
-                <li
-                  key={entry.id}
-                  className="flex items-center gap-2 rounded bg-neutral-800/50 px-2 py-1.5 text-sm"
-                >
-                  <span className="flex-shrink-0 font-mono text-xs text-amber-500">
-                    {index + 1}.
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-amber-100">
-                    {entry.name}
-                  </span>
-                  <span className="flex-shrink-0 truncate text-xs text-amber-400">
-                    {entry.song.title}
-                  </span>
-                </li>
-              ))}
+              {queue.map((entry, index) => {
+                const isPlaying = previewingSong?.number === entry.song.number && preview.isPlaying;
+                return (
+                  <li
+                    key={entry.id}
+                    className="flex items-center gap-2 rounded bg-neutral-800/50 px-2 py-1.5 text-sm"
+                  >
+                    <span className="flex-shrink-0 font-mono text-xs text-amber-500">
+                      {index + 1}.
+                    </span>
+                    <span className="min-w-0 flex-1 truncate text-amber-100">
+                      {entry.name}
+                    </span>
+                    <span className="flex-shrink-0 truncate text-xs text-amber-400">
+                      {entry.song.title}
+                    </span>
+                    {onPlaySong && (
+                      <button
+                        onClick={() => isPlaying ? handlePreviewStop() : onPlaySong(entry.song)}
+                        className={`flex-shrink-0 rounded-full p-1 transition-colors ${
+                          isPlaying
+                            ? "bg-amber-700 text-amber-100 hover:bg-amber-600"
+                            : "bg-amber-600/50 text-amber-200 hover:bg-amber-600"
+                        }`}
+                      >
+                        {isPlaying ? (
+                          <Square className="h-3 w-3" />
+                        ) : (
+                          <Play className="h-3 w-3" />
+                        )}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>

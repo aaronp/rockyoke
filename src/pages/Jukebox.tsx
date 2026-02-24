@@ -10,6 +10,7 @@ import {
 import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 import type { DisplayState } from "@/components/jukebox/ButtonPanel";
+import type { Song } from "@/types/jukebox";
 import backgroundImage from "../background.png";
 import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
@@ -33,6 +34,7 @@ export default function Jukebox() {
   const [codeDisplayState, setCodeDisplayState] = useState<DisplayState>("normal");
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [ticketsOwned, setTicketsOwned] = useState(0);
+  const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
   const totalPages = 11; // A-K
 
   // Calculate remaining sign-ups (tickets owned minus queue entries)
@@ -40,6 +42,13 @@ export default function Jukebox() {
 
   const handleBuyTickets = useCallback((quantity: number) => {
     setTicketsOwned(prev => prev + quantity);
+  }, []);
+
+  // Common action to play any song preview
+  const handlePlaySong = useCallback((song: Song) => {
+    setPreviewingSong(song);
+    setPreviewPlaying(true);
+    setNeedleDown(false);
   }, []);
 
   const handleNavigateUp = useCallback(() => {
@@ -69,6 +78,7 @@ export default function Jukebox() {
   const handlePreviewEnd = useCallback(() => {
     setPreviewPlaying(false);
     setNeedleDown(false);
+    setPreviewingSong(null);
   }, []);
 
   const handleNeedleDown = useCallback(() => {
@@ -161,6 +171,8 @@ export default function Jukebox() {
                   codeDisplayState={codeDisplayState}
                   onBuyTickets={() => setTicketModalOpen(true)}
                   ticketsRemaining={ticketsRemaining}
+                  previewingSong={previewingSong}
+                  onPlaySong={handlePlaySong}
                 />
               }
               />
@@ -175,12 +187,16 @@ export default function Jukebox() {
                 variant="panel"
                 className="hidden lg:flex lg:h-[600px]"
                 onBuyTickets={() => setTicketModalOpen(true)}
+                onPlaySong={handlePlaySong}
+                playingSongId={previewingSong?.number}
               />
               <LineupPanel
                 queue={state.queue}
                 variant="section"
                 className="lg:hidden"
                 onBuyTickets={() => setTicketModalOpen(true)}
+                onPlaySong={handlePlaySong}
+                playingSongId={previewingSong?.number}
               />
             </div>
           </div>
