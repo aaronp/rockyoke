@@ -24,14 +24,19 @@ export function EventPoster({
   if (variant === "banner") {
     return (
       <div
-        className={`bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 px-4 py-3 text-center ${className}`}
+        className={`bg-gradient-to-r from-amber-950 via-amber-900 to-amber-950 px-4 py-2 text-center ${className}`}
       >
-        <p className="text-sm font-bold uppercase tracking-wider text-amber-100">
-          <span className="text-amber-300">{eventName}</span>
-          <span className="mx-2 text-amber-600">•</span>
-          {venue}
-          <span className="mx-2 text-amber-600">•</span>
-          {date}
+        <p className="text-base font-bold uppercase tracking-wider text-amber-300">
+          ROCKYOKE!
+        </p>
+        <p className="text-xs italic text-amber-200/80">
+          Come for a fun night of live music, or to sing with the band!
+        </p>
+        <p className="text-sm font-semibold uppercase tracking-wide text-amber-100">
+          {venue} - {date}
+        </p>
+        <p className="text-xs uppercase tracking-wide text-amber-400">
+          {priceAdvance} in advance, {priceDoor} on the door
         </p>
       </div>
     );

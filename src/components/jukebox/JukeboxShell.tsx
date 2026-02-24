@@ -53,15 +53,31 @@ const SLOT_POSITIONS = {
   large: {
     recordPlayer: { x: 192, y: 100, w: 416, h: 320 },
     songRolodex: { x: 240, y: 433, w: 320, h: 106 },
-    buttonPanel: { x: 200, y: 553, w: 400, h: 56 },
+    buttonPanel: { x: 200, y: 559, w: 400, h: 56 },
     songQueue: { x: 148, y: 622, w: 504, h: 174 },
   },
   small: {
     // Mobile layout - fits within jukebox housing
     recordPlayer: { x: 192, y: 120, w: 416, h: 260 },
     songRolodex: { x: 200, y: 420, w: 400, h: 130 },    // Taller to prevent bottom clipping
-    buttonPanel: { x: 200, y: 548, w: 400, h: 90 },     // Expanded to encompass buttons
-    songQueue: { x: 148, y: 645, w: 504, h: 174 },    // Moved down slightly
+    buttonPanel: { x: 200, y: 545, w: 400, h: 100 },    // Taller and moved down
+    songQueue: { x: 148, y: 642, w: 504, h: 154 },    // Moved down 20, height reduced 20
+  },
+} as const;
+
+// Song queue SVG rectangle positions (the chrome-bezelled panel)
+const QUEUE_RECT = {
+  large: {
+    outer: { x: 140, y: 614, w: 520, h: 190 },
+    inner: { x: 148, y: 622, w: 504, h: 174 },
+    topRim: { y: 622 },
+    bottomRim: { y: 790 },
+  },
+  small: {
+    outer: { x: 140, y: 634, w: 520, h: 170 },
+    inner: { x: 148, y: 642, w: 504, h: 154 },
+    topRim: { y: 642 },
+    bottomRim: { y: 790 },
   },
 } as const;
 
@@ -666,15 +682,15 @@ export function JukeboxShell({
         {/* -- SELECTOR BUTTON PANEL -- */}
         <rect
           x="200"
-          y="553"
+          y="560"
           width="400"
-          height="56"
+          height="70"
           rx="7"
           fill="url(#jb-metalPanel)"
         />
         <rect
           x="200"
-          y="553"
+          y="560"
           width="400"
           height="5"
           rx="2"
@@ -683,7 +699,7 @@ export function JukeboxShell({
         />
         <rect
           x="200"
-          y="604"
+          y="625"
           width="400"
           height="5"
           rx="2"
@@ -692,38 +708,37 @@ export function JukeboxShell({
         />
         {/* Decorative circles removed - ButtonPanel component now occupies this area */}
 
-        {/* -- SONG QUEUE SLOT -- chrome-bezelled panel
-            Slot covers: x=148 y=626 w=504 h=162  */}
+        {/* -- SONG QUEUE SLOT -- chrome-bezelled panel */}
         <rect
-          x="140"
-          y="614"
-          width="520"
-          height="190"
+          x={QUEUE_RECT[variant].outer.x}
+          y={QUEUE_RECT[variant].outer.y}
+          width={QUEUE_RECT[variant].outer.w}
+          height={QUEUE_RECT[variant].outer.h}
           rx="9"
           fill="url(#jb-chromeH)"
         />
         <rect
-          x="148"
-          y="622"
-          width="504"
-          height="174"
+          x={QUEUE_RECT[variant].inner.x}
+          y={QUEUE_RECT[variant].inner.y}
+          width={QUEUE_RECT[variant].inner.w}
+          height={QUEUE_RECT[variant].inner.h}
           rx="7"
           fill="url(#jb-queueBg)"
         />
         {/* Subtle inner rim */}
         <rect
-          x="148"
-          y="622"
-          width="504"
+          x={QUEUE_RECT[variant].inner.x}
+          y={QUEUE_RECT[variant].topRim.y}
+          width={QUEUE_RECT[variant].inner.w}
           height="6"
           rx="3"
           fill="url(#jb-chromeH)"
           opacity="0.3"
         />
         <rect
-          x="148"
-          y="790"
-          width="504"
+          x={QUEUE_RECT[variant].inner.x}
+          y={QUEUE_RECT[variant].bottomRim.y}
+          width={QUEUE_RECT[variant].inner.w}
           height="4"
           rx="2"
           fill="url(#jb-chromeH)"
@@ -929,20 +944,21 @@ export function JukeboxShell({
       {/* ================================================================
           BOTTOM ARCH OVERLAY
           Rendered on top of the song queue to prevent content clipping.
+          Starts at y=770 to cover the full arch curve (top at ~779).
           ================================================================ */}
       <div
         style={{
           position: "absolute",
           left: `${((280 - vb.x) / vb.w) * 100}%`,
-          top: `${((840 - vb.y) / vb.h) * 100}%`,
+          top: `${((770 - vb.y) / vb.h) * 100}%`,
           width: `${(240 / vb.w) * 100}%`,
-          height: `${(90 / vb.h) * 100}%`,
+          height: `${(160 / vb.h) * 100}%`,
           pointerEvents: "none",
           zIndex: 4,
         }}
       >
         <svg
-          viewBox="280 840 240 90"
+          viewBox="280 770 240 160"
           width="100%"
           height="100%"
           preserveAspectRatio="xMidYMid meet"
