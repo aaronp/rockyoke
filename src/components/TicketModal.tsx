@@ -18,6 +18,7 @@ type TicketModalProps = {
   ticketsOwned: number;
   ticketsRemaining: number;
   onBuyTickets: (quantity: number) => void;
+  onPurchaseComplete?: (quantity: number) => void;
 };
 
 export function TicketModal({
@@ -30,6 +31,7 @@ export function TicketModal({
   ticketsOwned,
   ticketsRemaining,
   onBuyTickets,
+  onPurchaseComplete,
 }: TicketModalProps) {
   const [quantity, setQuantity] = useState(1);
   const [showToast, setShowToast] = useState(false);
@@ -44,7 +46,11 @@ export function TicketModal({
     setTimeout(() => {
       setShowToast(false);
       onOpenChange(false);
-    }, 1500);
+      // Trigger confirmation modal after a brief delay
+      setTimeout(() => {
+        onPurchaseComplete?.(quantity);
+      }, 100);
+    }, 1000);
   };
 
   // Parse price for total calculation (assumes format like "£12")

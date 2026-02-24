@@ -83,6 +83,7 @@ type Props = {
   codeDisplayState?: DisplayState;
   onBuyTickets?: () => void;
   ticketsRemaining?: number;
+  ticketsOwned?: number;
   previewingSong?: Song | null;
   onPlaySong?: (song: Song) => void;
 };
@@ -103,6 +104,7 @@ export function SignUpWizard({
   codeDisplayState = "normal",
   onBuyTickets,
   ticketsRemaining = 0,
+  ticketsOwned = 0,
   previewingSong,
   onPlaySong,
 }: Props) {
@@ -196,7 +198,7 @@ export function SignUpWizard({
                   onClick={onBuyTickets}
                   className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
                 >
-                  Buy Tickets
+                  {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
                 </Button>
               </div>
             </motion.div>
@@ -259,7 +261,7 @@ export function SignUpWizard({
                     onClick={onBuyTickets}
                     className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
                   >
-                    Buy Tickets
+                    {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
                   </Button>
                 )}
               </div>

@@ -9,6 +9,7 @@ type EventPosterProps = {
   variant: "poster" | "banner";
   className?: string;
   onBuyTickets?: () => void;
+  ticketsOwned?: number;
 };
 
 export function EventPoster({
@@ -20,6 +21,7 @@ export function EventPoster({
   variant,
   className = "",
   onBuyTickets,
+  ticketsOwned = 0,
 }: EventPosterProps) {
   if (variant === "banner") {
     return (
@@ -135,7 +137,7 @@ export function EventPoster({
           onClick={onBuyTickets}
           className="mt-4 rounded-lg bg-amber-500 px-6 py-2 font-bold uppercase tracking-wide text-amber-950 transition-colors hover:bg-amber-400"
         >
-          Buy Tickets
+          {ticketsOwned > 0 ? "Tickets" : "Buy Tickets"}
         </button>
       )}
 

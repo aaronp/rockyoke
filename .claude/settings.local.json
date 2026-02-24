@@ -39,7 +39,9 @@
       "Bash(git -C /Users/aaron/dev/sandbox/rockyoke diff src/components/EventPoster.tsx)",
       "Bash(git -C /Users/aaron/dev/sandbox/rockyoke log --oneline -5)",
       "Bash(git -C /Users/aaron/dev/sandbox/rockyoke add src/components/EventPoster.tsx)",
-      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: add Buy Tickets button to EventPoster\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: add Buy Tickets button to EventPoster\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(bun install:*)",
+      "Bash(bun run tsc:*)"
     ],
     "deny": [],
     "ask": []

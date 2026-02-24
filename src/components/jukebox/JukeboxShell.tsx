@@ -81,6 +81,20 @@ const QUEUE_RECT = {
   },
 } as const;
 
+// Button panel SVG rectangle positions (the dark metal panel behind buttons)
+const BUTTON_RECT = {
+  large: {
+    panel: { x: 200, y: 552, w: 400, h: 70 },  // Moved up 8 from 560
+    topChrome: { y: 552 },
+    bottomChrome: { y: 617 },  // 552 + 70 - 5 = 617
+  },
+  small: {
+    panel: { x: 200, y: 560, w: 400, h: 70 },
+    topChrome: { y: 560 },
+    bottomChrome: { y: 625 },
+  },
+} as const;
+
 // ---------------------------------------------------------------------------
 // Slot placeholder shown when no component is provided
 // ---------------------------------------------------------------------------
@@ -681,26 +695,26 @@ export function JukeboxShell({
 
         {/* -- SELECTOR BUTTON PANEL -- */}
         <rect
-          x="200"
-          y="560"
-          width="400"
-          height="70"
+          x={BUTTON_RECT[variant].panel.x}
+          y={BUTTON_RECT[variant].panel.y}
+          width={BUTTON_RECT[variant].panel.w}
+          height={BUTTON_RECT[variant].panel.h}
           rx="7"
           fill="url(#jb-metalPanel)"
         />
         <rect
-          x="200"
-          y="560"
-          width="400"
+          x={BUTTON_RECT[variant].panel.x}
+          y={BUTTON_RECT[variant].topChrome.y}
+          width={BUTTON_RECT[variant].panel.w}
           height="5"
           rx="2"
           fill="url(#jb-chromeH)"
           opacity="0.7"
         />
         <rect
-          x="200"
-          y="625"
-          width="400"
+          x={BUTTON_RECT[variant].panel.x}
+          y={BUTTON_RECT[variant].bottomChrome.y}
+          width={BUTTON_RECT[variant].panel.w}
           height="5"
           rx="2"
           fill="url(#jb-chromeH)"

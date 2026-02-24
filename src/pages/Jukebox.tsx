@@ -16,6 +16,7 @@ import { EventPoster } from "@/components/EventPoster";
 import { LineupPanel } from "@/components/LineupPanel";
 import { HelpTooltip } from "@/components/HelpTooltip";
 import { TicketModal } from "@/components/TicketModal";
+import { TicketConfirmationModal } from "@/components/TicketConfirmationModal";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
@@ -35,6 +36,10 @@ export default function Jukebox() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [ticketsOwned, setTicketsOwned] = useState(0);
   const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [confirmationTicketIds, setConfirmationTicketIds] = useState<string[]>([]);
+  const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
+  const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const totalPages = 11; // A-K
 
@@ -51,6 +56,33 @@ export default function Jukebox() {
 
   const handleBuyTickets = useCallback((quantity: number) => {
     setTicketsOwned(prev => prev + quantity);
+  }, []);
+
+  // Generate fake ticket IDs and show confirmation modal
+  const handlePurchaseComplete = useCallback((quantity: number) => {
+    const baseNum = Math.floor(Math.random() * 9000) + 1000;
+    const ticketIds = Array.from({ length: quantity }, (_, i) =>
+      `#RC-2025-${String(baseNum + i).padStart(4, "0")}`
+    );
+    setAllTicketIds(prev => [...prev, ...ticketIds]);
+    setConfirmationTicketIds(ticketIds);
+    setIsViewingTickets(false); // Show confetti for new purchase
+    setConfirmationModalOpen(true);
+  }, []);
+
+  // Handle ticket button click - view tickets if owned, otherwise buy
+  const handleTicketButtonClick = useCallback(() => {
+    if (ticketsOwned > 0) {
+      setIsViewingTickets(true); // No confetti, just viewing
+      setConfirmationModalOpen(true);
+    } else {
+      setTicketModalOpen(true);
+    }
+  }, [ticketsOwned]);
+
+  // Handle "Buy More" from the tickets modal
+  const handleBuyMoreTickets = useCallback(() => {
+    setTicketModalOpen(true);
   }, []);
 
   // Common action to play any song preview
@@ -201,7 +233,8 @@ export default function Jukebox() {
               <EventPoster
                 {...EVENT_DETAILS}
                 variant="poster"
-                onBuyTickets={() => setTicketModalOpen(true)}
+                onBuyTickets={handleTicketButtonClick}
+                ticketsOwned={ticketsOwned}
               />
             </div>
           </div>
@@ -262,8 +295,9 @@ export default function Jukebox() {
                   queue={state.queue}
                   codeInput={codeInput}
                   codeDisplayState={codeDisplayState}
-                  onBuyTickets={() => setTicketModalOpen(true)}
+                  onBuyTickets={handleTicketButtonClick}
                   ticketsRemaining={ticketsRemaining}
+                  ticketsOwned={ticketsOwned}
                   previewingSong={previewingSong}
                   onPlaySong={handlePlaySong}
                 />
@@ -279,19 +313,21 @@ export default function Jukebox() {
                 queue={state.queue}
                 variant="panel"
                 className="hidden lg:flex lg:h-[600px]"
-                onBuyTickets={() => setTicketModalOpen(true)}
+                onBuyTickets={handleTicketButtonClick}
                 onPlaySong={handlePlaySong}
                 onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
+                ticketsOwned={ticketsOwned}
               />
               <LineupPanel
                 queue={state.queue}
                 variant="section"
                 className="lg:hidden"
-                onBuyTickets={() => setTicketModalOpen(true)}
+                onBuyTickets={handleTicketButtonClick}
                 onPlaySong={handlePlaySong}
                 onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
+                ticketsOwned={ticketsOwned}
               />
             </div>
           </div>
@@ -306,6 +342,17 @@ export default function Jukebox() {
         ticketsOwned={ticketsOwned}
         ticketsRemaining={ticketsRemaining}
         onBuyTickets={handleBuyTickets}
+        onPurchaseComplete={handlePurchaseComplete}
+      />
+
+      {/* Ticket Confirmation Modal (with confetti for new purchases, without for viewing) */}
+      <TicketConfirmationModal
+        open={confirmationModalOpen}
+        onOpenChange={setConfirmationModalOpen}
+        ticketIds={isViewingTickets ? allTicketIds : confirmationTicketIds}
+        showConfetti={!isViewingTickets}
+        ticketsRemaining={ticketsRemaining}
+        onBuyMore={handleBuyMoreTickets}
       />
     </div>
   );
