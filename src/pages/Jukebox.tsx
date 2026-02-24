@@ -93,6 +93,86 @@ export default function Jukebox() {
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-neutral-950/80" />
 
+      {/* Searchlight effect when playing */}
+      {shouldTriggerPlay && (
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          {/* Beam 1 - from top left */}
+          <div
+            className="absolute opacity-25"
+            style={{
+              width: "200px",
+              height: "150vh",
+              background: "linear-gradient(180deg, rgba(251, 191, 36, 0.5) 0%, rgba(251, 191, 36, 0.2) 30%, transparent 100%)",
+              top: "0",
+              left: "15%",
+              transformOrigin: "top center",
+              clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
+              animation: "searchlight1 4s ease-in-out infinite",
+            }}
+          />
+          {/* Beam 2 - from top right */}
+          <div
+            className="absolute opacity-20"
+            style={{
+              width: "180px",
+              height: "150vh",
+              background: "linear-gradient(180deg, rgba(251, 191, 36, 0.4) 0%, rgba(251, 191, 36, 0.15) 30%, transparent 100%)",
+              top: "0",
+              right: "20%",
+              transformOrigin: "top center",
+              clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
+              animation: "searchlight2 5s ease-in-out infinite",
+            }}
+          />
+          {/* Beam 3 - from top center-left */}
+          <div
+            className="absolute opacity-15"
+            style={{
+              width: "160px",
+              height: "140vh",
+              background: "linear-gradient(180deg, rgba(245, 158, 11, 0.4) 0%, rgba(245, 158, 11, 0.1) 40%, transparent 100%)",
+              top: "0",
+              left: "35%",
+              transformOrigin: "top center",
+              clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
+              animation: "searchlight3 6s ease-in-out infinite",
+            }}
+          />
+          {/* Beam 4 - from top center-right */}
+          <div
+            className="absolute opacity-15"
+            style={{
+              width: "140px",
+              height: "130vh",
+              background: "linear-gradient(180deg, rgba(251, 191, 36, 0.35) 0%, rgba(251, 191, 36, 0.1) 35%, transparent 100%)",
+              top: "0",
+              right: "35%",
+              transformOrigin: "top center",
+              clipPath: "polygon(40% 0%, 60% 0%, 100% 100%, 0% 100%)",
+              animation: "searchlight4 7s ease-in-out infinite",
+            }}
+          />
+          <style>{`
+            @keyframes searchlight1 {
+              0%, 100% { transform: rotate(-25deg); }
+              50% { transform: rotate(15deg); }
+            }
+            @keyframes searchlight2 {
+              0%, 100% { transform: rotate(20deg); }
+              50% { transform: rotate(-20deg); }
+            }
+            @keyframes searchlight3 {
+              0%, 100% { transform: rotate(-10deg); opacity: 0.15; }
+              50% { transform: rotate(25deg); opacity: 0.2; }
+            }
+            @keyframes searchlight4 {
+              0%, 100% { transform: rotate(15deg); opacity: 0.15; }
+              50% { transform: rotate(-15deg); opacity: 0.2; }
+            }
+          `}</style>
+        </div>
+      )}
+
       {/* Main content */}
       <div className="relative z-10 min-h-screen">
         {/* Narrow screens: Banner at top */}
