@@ -272,12 +272,12 @@ export function SignUpWizard({
 
         {wizardState === "complete" && lastEntry && (
           <WizardPanel key="complete">
-            <p className="text-lg text-green-400">You're in the queue!</p>
-            <p className="mt-2 font-mono text-2xl font-bold text-amber-100">
-              {lastEntry.ticketNumber}
+            <p className="text-lg text-green-400">You're singing</p>
+            <p className="mt-1 font-bold text-xl text-amber-100">
+              {lastEntry.song.title}!
             </p>
             <p className="mt-1 text-sm text-amber-300">
-              {lastEntry.name} - {lastEntry.song.title}
+              {lastEntry.name}
             </p>
           </WizardPanel>
         )}
@@ -295,7 +295,7 @@ export function SignUpWizard({
           <div className="min-h-0 flex-1 overflow-y-auto p-2">
             <ul className="space-y-1">
               {queue.map((entry, index) => {
-                const isPlaying = previewingSong?.number === entry.song.number && preview.isPlaying;
+                const isAnythingPlaying = preview.isPlaying;
                 return (
                   <li
                     key={entry.id}
@@ -312,14 +312,14 @@ export function SignUpWizard({
                     </span>
                     {onPlaySong && (
                       <button
-                        onClick={() => isPlaying ? handlePreviewStop() : onPlaySong(entry.song)}
+                        onClick={() => isAnythingPlaying ? handlePreviewStop() : onPlaySong(entry.song)}
                         className={`flex-shrink-0 rounded-full p-1 transition-colors ${
-                          isPlaying
+                          isAnythingPlaying
                             ? "bg-amber-700 text-amber-100 hover:bg-amber-600"
                             : "bg-amber-600/50 text-amber-200 hover:bg-amber-600"
                         }`}
                       >
-                        {isPlaying ? (
+                        {isAnythingPlaying ? (
                           <Square className="h-3 w-3" />
                         ) : (
                           <Play className="h-3 w-3" />

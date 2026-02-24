@@ -56,7 +56,7 @@ export function LineupPanel({
         ) : (
           <ul className="space-y-2">
             {queue.map((entry, index) => {
-              const isPlaying = playingSongId === entry.song?.number;
+              const isAnythingPlaying = !!playingSongId;
               return (
                 <li
                   key={entry.id}
@@ -75,14 +75,14 @@ export function LineupPanel({
                   </div>
                   {onPlaySong && entry.song && (
                     <button
-                      onClick={() => isPlaying && onStopSong ? onStopSong() : onPlaySong(entry.song)}
+                      onClick={() => isAnythingPlaying && onStopSong ? onStopSong() : onPlaySong(entry.song)}
                       className={`flex-shrink-0 rounded-full p-1.5 transition-colors ${
-                        isPlaying
+                        isAnythingPlaying
                           ? "bg-amber-700 text-amber-100 hover:bg-amber-600"
                           : "bg-amber-600/50 text-amber-200 hover:bg-amber-600"
                       }`}
                     >
-                      {isPlaying ? (
+                      {isAnythingPlaying ? (
                         <Square className="h-3 w-3" />
                       ) : (
                         <Play className="h-3 w-3" />
@@ -95,6 +95,15 @@ export function LineupPanel({
           </ul>
         )}
       </div>
+
+      {/* Order disclaimer */}
+      {queue.length > 0 && (
+        <div className="flex-shrink-0 px-3 pb-2">
+          <p className="text-center text-xs text-amber-600/70 italic">
+            Order on the night may vary
+          </p>
+        </div>
+      )}
 
       {/* Buy Tickets Button */}
       {onBuyTickets && isPanel && (
