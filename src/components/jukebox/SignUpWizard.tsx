@@ -270,16 +270,6 @@ export function SignUpWizard({
           </WizardPanel>
         )}
 
-        {wizardState === "playing" && (
-          <WizardPanel key="playing">
-            <p className="text-amber-200">Adding to queue...</p>
-            <div className="mt-2 flex items-center gap-2">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-rose-500" />
-              <span className="text-sm text-amber-300">Watch the Wurlitzer!</span>
-            </div>
-          </WizardPanel>
-        )}
-
         {wizardState === "complete" && lastEntry && (
           <WizardPanel key="complete">
             <p className="text-lg text-green-400">You're in the queue!</p>

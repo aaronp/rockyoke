@@ -27,7 +27,7 @@ export function useJukeboxState() {
       const entry = addToQueue(name, selectedSong);
       setLastEntry(entry);
     }
-    setWizardState("playing");
+    setWizardState("complete");
   }, [selectedSong, addToQueue]);
 
   const onPlayComplete = useCallback(() => {
