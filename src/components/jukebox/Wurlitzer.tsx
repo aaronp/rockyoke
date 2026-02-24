@@ -34,22 +34,22 @@ const LAYOUT = {
     tonearmBaseOffset: 110,
   },
   small: {
-    platterX: 70,
-    stackLeft: "left-2",
-    recordSize: "h-20 w-20",
-    platterSize: "h-20 w-20",
+    platterX: 140,
+    stackLeft: "left-8",
+    recordSize: "h-24 w-24",
+    platterSize: "h-24 w-24",
     tonearmWidth: "w-12",
     tonearmRight: 2,
-    spindleHeight: "h-20",
-    liftColumnHeight: "h-28",
+    spindleHeight: "h-24",
+    liftColumnHeight: "h-32",
     liftColumnWidth: "w-4",
-    centerDotSize: "h-2.5 w-2.5",
+    centerDotSize: "h-3 w-3",
     tonearmHeight: "h-1",
     tonearmHeadSize: "h-2 w-2.5",
     tonearmPivotSize: "h-4 w-4",
-    stackSpacing: 4,
-    liftHeight: 12,
-    tonearmBaseOffset: 62,
+    stackSpacing: 5,
+    liftHeight: 14,
+    tonearmBaseOffset: 72,
   },
 } as const;
 
@@ -219,7 +219,15 @@ export function Wurlitzer({ triggerPlay, triggerReset, onPlayComplete, onReset, 
 
 function Record({ isActive = false, spinning = false, size = "h-36 w-36" }: { isActive?: boolean; spinning?: boolean; size?: string }) {
   // Determine size variant for proportional inner elements
+  const isMedium = size.includes("h-24");
   const isSmall = size.includes("h-20");
+
+  // Size-specific classes for groove rings and label
+  const outerRing = isSmall ? "h-14 w-14" : isMedium ? "h-18 w-18" : "h-28 w-28";
+  const innerRing = isSmall ? "h-10 w-10" : isMedium ? "h-14 w-14" : "h-20 w-20";
+  const labelSize = isSmall ? "h-6 w-6" : isMedium ? "h-8 w-8" : "h-12 w-12";
+  const highlightSize = isSmall || isMedium ? "h-1 w-1" : "h-2 w-2";
+  const holeSize = isSmall || isMedium ? "h-2 w-2" : "h-3 w-3";
 
   return (
     <div
@@ -247,19 +255,19 @@ function Record({ isActive = false, spinning = false, size = "h-36 w-36" }: { is
         />
       ))}
       {/* Outer groove ring */}
-      <div className={`absolute left-1/2 top-1/2 ${isSmall ? "h-14 w-14" : "h-28 w-28"} -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/30`} />
+      <div className={`absolute left-1/2 top-1/2 ${outerRing} -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/30`} />
       {/* Inner groove ring */}
-      <div className={`absolute left-1/2 top-1/2 ${isSmall ? "h-10 w-10" : "h-20 w-20"} -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/20`} />
+      <div className={`absolute left-1/2 top-1/2 ${innerRing} -translate-x-1/2 -translate-y-1/2 rounded-full border border-neutral-700/20`} />
       {/* Label */}
       <div
-        className={`absolute left-1/2 top-1/2 ${isSmall ? "h-6 w-6" : "h-12 w-12"} -translate-x-1/2 -translate-y-1/2 rounded-full ${
+        className={`absolute left-1/2 top-1/2 ${labelSize} -translate-x-1/2 -translate-y-1/2 rounded-full ${
           isActive ? "bg-gradient-to-br from-rose-600 to-rose-800" : "bg-gradient-to-br from-amber-700 to-amber-900"
         }`}
       >
         {/* Label highlight */}
-        <div className={`absolute ${isSmall ? "h-1 w-1" : "h-2 w-2"} rounded-full bg-white/20`} style={{ top: "25%", left: "60%" }} />
+        <div className={`absolute ${highlightSize} rounded-full bg-white/20`} style={{ top: "25%", left: "60%" }} />
         {/* Center hole */}
-        <div className={`absolute left-1/2 top-1/2 ${isSmall ? "h-2 w-2" : "h-3 w-3"} -translate-x-1/2 -translate-y-1/2 rounded-full bg-black`} />
+        <div className={`absolute left-1/2 top-1/2 ${holeSize} -translate-x-1/2 -translate-y-1/2 rounded-full bg-black`} />
       </div>
     </div>
   );

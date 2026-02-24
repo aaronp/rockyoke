@@ -57,11 +57,11 @@ const SLOT_POSITIONS = {
     songQueue: { x: 148, y: 622, w: 504, h: 174 },
   },
   small: {
-    // Mobile layout - fits within jukebox frame
+    // Mobile layout - fits within jukebox housing
     recordPlayer: { x: 192, y: 120, w: 416, h: 260 },
-    songRolodex: { x: 160, y: 390, w: 480, h: 155 },
-    buttonPanel: { x: 160, y: 553, w: 480, h: 56 },
-    songQueue: { x: 148, y: 622, w: 504, h: 174 },
+    songRolodex: { x: 200, y: 420, w: 400, h: 120 },    // Moved down slightly
+    buttonPanel: { x: 200, y: 548, w: 400, h: 70 },     // Taller for bigger buttons
+    songQueue: { x: 148, y: 630, w: 504, h: 174 },
   },
 } as const;
 
@@ -116,11 +116,19 @@ function SlotPlaceholder({ label }: SlotPlaceholderProps): React.ReactElement {
 // ---------------------------------------------------------------------------
 // Slot overlay positioned in SVG-coordinate space
 //
-// All x/y/w/h values are in the SVG's viewBox units (0 0 800 1020).
+// All x/y/w/h values are in the SVG's viewBox units.
 // We convert to percentages so the layout scales with any container size.
 // ---------------------------------------------------------------------------
-const VB_W = 800;
-const VB_H = 1020;
+
+// ViewBox settings per variant - small crops the sides to zoom in
+const VIEWBOX = {
+  large: { x: 0, y: 0, w: 800, h: 1020 },
+  small: { x: 100, y: 0, w: 600, h: 1020 },  // Crop 100px from each side
+} as const;
+
+interface SlotOverlayWithViewBoxProps extends SlotOverlayProps {
+  vb: { x: number; y: number; w: number; h: number };
+}
 
 function SlotOverlay({
   x,
@@ -129,15 +137,17 @@ function SlotOverlay({
   h,
   children,
   zIndex,
-}: SlotOverlayProps): React.ReactElement {
+  vb,
+}: SlotOverlayWithViewBoxProps): React.ReactElement {
+  // Calculate percentage positions relative to the viewBox origin and size
   return (
     <div
       style={{
         position: "absolute",
-        left: `${(x / VB_W) * 100}%`,
-        top: `${(y / VB_H) * 100}%`,
-        width: `${(w / VB_W) * 100}%`,
-        height: `${(h / VB_H) * 100}%`,
+        left: `${((x - vb.x) / vb.w) * 100}%`,
+        top: `${((y - vb.y) / vb.h) * 100}%`,
+        width: `${(w / vb.w) * 100}%`,
+        height: `${(h / vb.h) * 100}%`,
         overflow: "hidden",
         zIndex,
       }}
@@ -158,6 +168,7 @@ export function JukeboxShell({
   variant = "large",
 }: JukeboxShellProps): React.ReactElement {
   const slots = SLOT_POSITIONS[variant];
+  const vb = VIEWBOX[variant];
   return (
     /*
      * Outer wrapper: fixed width OR fluid — set width in the parent.
@@ -165,13 +176,13 @@ export function JukeboxShell({
      * SVG viewBox so the absolute-positioned slots always align perfectly.
      */
     <div style={{ position: "relative", width: variant === "small" ? "100vw" : "100%", maxWidth: variant === "small" ? "none" : 800 }}>
-      {/* Aspect-ratio spacer (800 : 1220) */}
-      <div style={{ paddingBottom: `${(VB_H / VB_W) * 100}%` }} />
+      {/* Aspect-ratio spacer based on viewBox dimensions */}
+      <div style={{ paddingBottom: `${(vb.h / vb.w) * 100}%` }} />
 
       {/* -- SVG decorative shell (pointer-events none so slots receive clicks) */}
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        viewBox={`0 0 ${VB_W} ${VB_H}`}
+        viewBox={`${vb.x} ${vb.y} ${vb.w} ${vb.h}`}
         style={{
           position: "absolute",
           inset: 0,
@@ -890,28 +901,28 @@ export function JukeboxShell({
       {/* ================================================================
           SLOT 1 -- RECORD PLAYER (z-index 1 to appear behind the housing)
           ================================================================ */}
-      <SlotOverlay x={slots.recordPlayer.x} y={slots.recordPlayer.y} w={slots.recordPlayer.w} h={slots.recordPlayer.h} zIndex={1}>
+      <SlotOverlay x={slots.recordPlayer.x} y={slots.recordPlayer.y} w={slots.recordPlayer.w} h={slots.recordPlayer.h} zIndex={1} vb={vb}>
         {recordPlayer}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 2 -- SONG ROLODEX
           ================================================================ */}
-      <SlotOverlay x={slots.songRolodex.x} y={slots.songRolodex.y} w={slots.songRolodex.w} h={slots.songRolodex.h} zIndex={3}>
+      <SlotOverlay x={slots.songRolodex.x} y={slots.songRolodex.y} w={slots.songRolodex.w} h={slots.songRolodex.h} zIndex={3} vb={vb}>
         {songRolodex}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 3 -- BUTTON PANEL
           ================================================================ */}
-      <SlotOverlay x={slots.buttonPanel.x} y={slots.buttonPanel.y} w={slots.buttonPanel.w} h={slots.buttonPanel.h} zIndex={3}>
+      <SlotOverlay x={slots.buttonPanel.x} y={slots.buttonPanel.y} w={slots.buttonPanel.w} h={slots.buttonPanel.h} zIndex={3} vb={vb}>
         {buttonPanel}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 4 -- SONG QUEUE
           ================================================================ */}
-      <SlotOverlay x={slots.songQueue.x} y={slots.songQueue.y} w={slots.songQueue.w} h={slots.songQueue.h} zIndex={3}>
+      <SlotOverlay x={slots.songQueue.x} y={slots.songQueue.y} w={slots.songQueue.w} h={slots.songQueue.h} zIndex={3} vb={vb}>
         {songQueue}
       </SlotOverlay>
 
@@ -922,10 +933,10 @@ export function JukeboxShell({
       <div
         style={{
           position: "absolute",
-          left: `${(280 / VB_W) * 100}%`,
-          top: `${(840 / VB_H) * 100}%`,
-          width: `${(240 / VB_W) * 100}%`,
-          height: `${(90 / VB_H) * 100}%`,
+          left: `${((280 - vb.x) / vb.w) * 100}%`,
+          top: `${((840 - vb.y) / vb.h) * 100}%`,
+          width: `${(240 / vb.w) * 100}%`,
+          height: `${(90 / vb.h) * 100}%`,
           pointerEvents: "none",
           zIndex: 4,
         }}
