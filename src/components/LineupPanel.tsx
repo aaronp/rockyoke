@@ -5,12 +5,14 @@ type LineupPanelProps = {
   queue: QueueEntry[];
   variant: "panel" | "section";
   className?: string;
+  onBuyTickets?: () => void;
 };
 
 export function LineupPanel({
   queue,
   variant,
   className = "",
+  onBuyTickets,
 }: LineupPanelProps) {
   const isPanel = variant === "panel";
   const title = isPanel ? "The Lineup!" : "Up Next";
@@ -67,6 +69,18 @@ export function LineupPanel({
           </ul>
         )}
       </div>
+
+      {/* Buy Tickets Button */}
+      {onBuyTickets && isPanel && (
+        <div className="flex-shrink-0 border-t border-amber-900/30 p-3">
+          <button
+            onClick={onBuyTickets}
+            className="w-full rounded-lg bg-amber-500 px-4 py-2 font-bold uppercase tracking-wide text-amber-950 transition-colors hover:bg-amber-400"
+          >
+            Buy Tickets
+          </button>
+        </div>
+      )}
     </div>
   );
 }
