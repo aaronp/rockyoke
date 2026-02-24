@@ -57,9 +57,10 @@ const SLOT_POSITIONS = {
     songQueue: { x: 148, y: 622, w: 504, h: 174 },
   },
   small: {
-    recordPlayer: { x: 192, y: 100, w: 416, h: 280 },  // Shorter to make room
-    songRolodex: { x: 200, y: 393, w: 400, h: 150 },   // Wider and taller, moved up
-    buttonPanel: { x: 200, y: 553, w: 400, h: 56 },
+    // Mobile layout - fits within jukebox frame
+    recordPlayer: { x: 192, y: 120, w: 416, h: 260 },
+    songRolodex: { x: 160, y: 390, w: 480, h: 155 },
+    buttonPanel: { x: 160, y: 553, w: 480, h: 56 },
     songQueue: { x: 148, y: 622, w: 504, h: 174 },
   },
 } as const;
@@ -163,7 +164,7 @@ export function JukeboxShell({
      * The paddingBottom trick gives the div the exact aspect ratio of the
      * SVG viewBox so the absolute-positioned slots always align perfectly.
      */
-    <div style={{ position: "relative", width: "100%", maxWidth: 800 }}>
+    <div style={{ position: "relative", width: variant === "small" ? "100vw" : "100%", maxWidth: variant === "small" ? "none" : 800 }}>
       {/* Aspect-ratio spacer (800 : 1220) */}
       <div style={{ paddingBottom: `${(VB_H / VB_W) * 100}%` }} />
 

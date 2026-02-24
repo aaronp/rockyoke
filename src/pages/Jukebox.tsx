@@ -96,7 +96,7 @@ export default function Jukebox() {
 
   return (
     <div
-      className="relative min-h-screen text-neutral-100 overflow-auto bg-cover bg-center bg-no-repeat"
+      className="relative min-h-screen text-neutral-100 overflow-x-hidden overflow-y-auto bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       {/* Dark overlay */}
@@ -193,7 +193,7 @@ export default function Jukebox() {
         </div>
 
         {/* Grid layout */}
-        <div className="grid min-h-screen grid-cols-1 gap-4 px-4 py-4 lg:grid-cols-[1fr_max-content_1fr] lg:items-center lg:py-2">
+        <div className="grid min-h-screen grid-cols-1 gap-0 py-0 sm:gap-4 sm:px-4 sm:py-4 lg:grid-cols-[1fr_max-content_1fr] lg:items-center lg:py-2">
           {/* Wide screens: Poster on left */}
           <div className="hidden lg:flex lg:justify-end lg:self-center">
             <div className="w-[280px]">
@@ -205,9 +205,9 @@ export default function Jukebox() {
             </div>
           </div>
 
-          {/* Jukebox (center) - responsive width */}
-          <div className="flex items-center justify-center w-full">
-            <div className="relative w-full max-w-[800px] px-1 sm:px-4 lg:w-[800px] lg:px-0">
+          {/* Jukebox (center) - full viewport width on mobile */}
+          <div className="w-screen sm:w-full sm:flex sm:items-center sm:justify-center">
+            <div className="relative w-full sm:max-w-[800px] sm:px-4 lg:w-[800px] lg:px-0">
               <HelpTooltip />
               <JukeboxShell
                 variant={isMobile ? "small" : "large"}
