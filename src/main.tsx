@@ -6,7 +6,7 @@ import Jukebox from './pages/Jukebox.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter basename="/rockyoke">
+    <BrowserRouter basename="/">
       <Routes>
         <Route path="/" element={<Jukebox />} />
       </Routes>
