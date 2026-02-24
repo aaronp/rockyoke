@@ -188,6 +188,7 @@ export default function Jukebox() {
                 className="hidden lg:flex lg:h-[600px]"
                 onBuyTickets={() => setTicketModalOpen(true)}
                 onPlaySong={handlePlaySong}
+                onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
               />
               <LineupPanel
@@ -196,6 +197,7 @@ export default function Jukebox() {
                 className="lg:hidden"
                 onBuyTickets={() => setTicketModalOpen(true)}
                 onPlaySong={handlePlaySong}
+                onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
               />
             </div>

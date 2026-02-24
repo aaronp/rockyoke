@@ -8,6 +8,7 @@ type LineupPanelProps = {
   className?: string;
   onBuyTickets?: () => void;
   onPlaySong?: (song: Song) => void;
+  onStopSong?: () => void;
   playingSongId?: string;
 };
 
@@ -17,6 +18,7 @@ export function LineupPanel({
   className = "",
   onBuyTickets,
   onPlaySong,
+  onStopSong,
   playingSongId,
 }: LineupPanelProps) {
   const isPanel = variant === "panel";
@@ -73,7 +75,7 @@ export function LineupPanel({
                   </div>
                   {onPlaySong && entry.song && (
                     <button
-                      onClick={() => onPlaySong(entry.song)}
+                      onClick={() => isPlaying && onStopSong ? onStopSong() : onPlaySong(entry.song)}
                       className={`flex-shrink-0 rounded-full p-1.5 transition-colors ${
                         isPlaying
                           ? "bg-amber-700 text-amber-100 hover:bg-amber-600"

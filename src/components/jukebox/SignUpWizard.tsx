@@ -285,13 +285,13 @@ export function SignUpWizard({
 
       {/* Queue list - scrollable */}
       {queue.length > 0 && (
-        <div className="mt-3 flex-1 overflow-hidden rounded-lg bg-neutral-900/50">
-          <div className="sticky top-0 border-b border-amber-900/30 bg-neutral-900/80 px-3 py-1.5">
+        <div className="mt-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-neutral-900/50">
+          <div className="flex-shrink-0 border-b border-amber-900/30 bg-neutral-900/80 px-3 py-1.5">
             <p className="text-xs font-semibold uppercase tracking-wide text-amber-400">
               Up Next ({queue.length})
             </p>
           </div>
-          <div className="h-full overflow-y-auto p-2">
+          <div className="min-h-0 flex-1 overflow-y-auto p-2">
             <ul className="space-y-1">
               {queue.map((entry, index) => {
                 const isPlaying = previewingSong?.number === entry.song.number && preview.isPlaying;
