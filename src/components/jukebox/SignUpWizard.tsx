@@ -81,6 +81,7 @@ type Props = {
   queue?: QueueEntry[];
   codeInput?: string;
   codeDisplayState?: DisplayState;
+  onBuyTickets?: () => void;
 };
 
 export function SignUpWizard({
@@ -97,6 +98,7 @@ export function SignUpWizard({
   queue = [],
   codeInput = "",
   codeDisplayState = "normal",
+  onBuyTickets,
 }: Props) {
   const [nameInput, setNameInput] = useState("");
   const preview = useItunesPreview(onPreviewEnd);
@@ -201,7 +203,7 @@ export function SignUpWizard({
                 ) : null}
                 <Button
                   size="sm"
-                  onClick={onStartSignUp}
+                  onClick={onBuyTickets ?? onStartSignUp}
                   className="h-8 bg-rose-600 px-3 text-xs hover:bg-rose-500"
                 >
                   Sign Up
