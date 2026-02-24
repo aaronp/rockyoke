@@ -166,13 +166,13 @@ export function SignUpWizard({
   }, [wizardState, onReset]);
 
   return (
-    <div className="relative flex h-full flex-col p-3">
+    <div className="relative flex h-full flex-col p-1.5 sm:p-3">
       {/* Top action area */}
       <div className="flex-shrink-0">
         <AnimatePresence mode="wait">
           {wizardState === "idle" && (
             <WizardPanel key="idle">
-              <p className="text-center text-amber-100">Pick a song to get started!</p>
+              <p className="text-center text-xs sm:text-base text-amber-100">Pick a song to get started!</p>
             </WizardPanel>
           )}
 
@@ -183,21 +183,21 @@ export function SignUpWizard({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center gap-3 rounded-lg bg-neutral-800/50 p-2"
+              className="flex items-center gap-1.5 sm:gap-3 rounded-lg bg-neutral-800/50 p-1.5 sm:p-2"
             >
               {/* LED Display - shows selected song code */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 hidden sm:block">
                 <LEDDisplay value={codeInput} state={codeDisplayState} />
               </div>
 
               {/* Song info */}
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-bold text-amber-50">{selectedSong.title}</p>
-                <p className="truncate text-xs text-amber-300">{selectedSong.artist}</p>
+                <p className="truncate text-xs sm:text-sm font-bold text-amber-50">{selectedSong.title}</p>
+                <p className="truncate text-[10px] sm:text-xs text-amber-300">{selectedSong.artist}</p>
               </div>
 
               {/* Action buttons */}
-              <div className="flex flex-shrink-0 items-center gap-2">
+              <div className="flex flex-shrink-0 items-center gap-1 sm:gap-2">
                 {preview.isLoading ? (
                   <span className="text-xs text-amber-400">...</span>
                 ) : preview.previewUrl ? (
@@ -205,17 +205,17 @@ export function SignUpWizard({
                     <Button
                       size="sm"
                       onClick={handlePreviewPlay}
-                      className="h-8 w-8 rounded-full bg-amber-600 p-0 text-amber-950 hover:bg-amber-500"
+                      className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-600 p-0 text-amber-950 hover:bg-amber-500"
                     >
-                      <Play className="h-3 w-3" />
+                      <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     </Button>
                   ) : (
                     <Button
                       size="sm"
                       onClick={handlePreviewStop}
-                      className="h-8 w-8 rounded-full bg-amber-700 p-0 text-amber-100 hover:bg-amber-600"
+                      className="h-6 w-6 sm:h-8 sm:w-8 rounded-full bg-amber-700 p-0 text-amber-100 hover:bg-amber-600"
                     >
-                      <Square className="h-3 w-3" />
+                      <Square className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                     </Button>
                   )
                 ) : null}
@@ -223,7 +223,7 @@ export function SignUpWizard({
                   <Button
                     size="sm"
                     onClick={onStartSignUp}
-                    className="h-8 bg-rose-600 px-3 text-xs hover:bg-rose-500"
+                    className="h-6 sm:h-8 bg-rose-600 px-2 sm:px-3 text-[10px] sm:text-xs hover:bg-rose-500"
                   >
                     Sign Up
                   </Button>
@@ -231,7 +231,7 @@ export function SignUpWizard({
                   <Button
                     size="sm"
                     onClick={onBuyTickets}
-                    className="h-8 bg-amber-500 px-3 text-xs text-amber-950 hover:bg-amber-400"
+                    className="h-6 sm:h-8 bg-amber-500 px-2 sm:px-3 text-[10px] sm:text-xs text-amber-950 hover:bg-amber-400"
                   >
                     Buy Tickets
                   </Button>
@@ -242,7 +242,7 @@ export function SignUpWizard({
 
           {wizardState === "enter-name" && (
           <WizardPanel key="enter-name">
-            <p className="mb-3 text-amber-100">Enter your name(s):</p>
+            <p className="mb-2 sm:mb-3 text-xs sm:text-base text-amber-100">Enter your name(s):</p>
             <form
               onSubmit={(e) => {
                 e.preventDefault();
@@ -250,18 +250,18 @@ export function SignUpWizard({
                   onSubmitName(nameInput.trim());
                 }
               }}
-              className="flex items-center gap-2"
+              className="flex items-center gap-1.5 sm:gap-2"
             >
               <Input
                 value={nameInput}
                 onChange={(e) => setNameInput(e.target.value)}
                 placeholder="Your name"
-                className="flex-1 bg-neutral-800 border-amber-600 text-amber-50"
+                className="flex-1 bg-neutral-800 border-amber-600 text-amber-50 text-xs sm:text-sm h-7 sm:h-9"
                 autoFocus
               />
               <Button
                 type="submit"
-                className="bg-amber-500 text-amber-950 hover:bg-amber-400"
+                className="bg-amber-500 text-amber-950 hover:bg-amber-400 text-xs sm:text-sm h-7 sm:h-9 px-2 sm:px-4"
                 disabled={!nameInput.trim()}
               >
                 Register
@@ -272,11 +272,11 @@ export function SignUpWizard({
 
         {wizardState === "complete" && lastEntry && (
           <WizardPanel key="complete">
-            <p className="text-lg text-green-400">You're singing</p>
-            <p className="mt-1 font-bold text-xl text-amber-100">
+            <p className="text-sm sm:text-lg text-green-400">You're singing</p>
+            <p className="mt-0.5 sm:mt-1 font-bold text-base sm:text-xl text-amber-100">
               {lastEntry.song.title}!
             </p>
-            <p className="mt-1 text-sm text-amber-300">
+            <p className="mt-0.5 sm:mt-1 text-xs sm:text-sm text-amber-300">
               {lastEntry.name}
             </p>
           </WizardPanel>
@@ -286,43 +286,43 @@ export function SignUpWizard({
 
       {/* Queue list - scrollable */}
       {queue.length > 0 && (
-        <div className="mt-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-neutral-900/50">
-          <div className="flex-shrink-0 border-b border-amber-900/30 bg-neutral-900/80 px-3 py-1.5">
-            <p className="text-xs font-semibold uppercase tracking-wide text-amber-400">
+        <div className="mt-1.5 sm:mt-3 flex min-h-0 flex-1 flex-col overflow-hidden rounded-lg bg-neutral-900/50">
+          <div className="flex-shrink-0 border-b border-amber-900/30 bg-neutral-900/80 px-2 sm:px-3 py-1">
+            <p className="text-[10px] sm:text-xs font-semibold uppercase tracking-wide text-amber-400">
               Up Next ({queue.length})
             </p>
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto p-2">
-            <ul className="space-y-1">
+          <div className="min-h-0 flex-1 overflow-y-auto p-1 sm:p-2">
+            <ul className="space-y-0.5 sm:space-y-1">
               {queue.map((entry, index) => {
                 const isAnythingPlaying = preview.isPlaying;
                 return (
                   <li
                     key={entry.id}
-                    className="flex items-center gap-2 rounded bg-neutral-800/50 px-2 py-1.5 text-sm"
+                    className="flex items-center gap-1 sm:gap-2 rounded bg-neutral-800/50 px-1.5 sm:px-2 py-1 text-[10px] sm:text-sm"
                   >
-                    <span className="flex-shrink-0 font-mono text-xs text-amber-500">
+                    <span className="flex-shrink-0 font-mono text-[9px] sm:text-xs text-amber-500">
                       {index + 1}.
                     </span>
                     <span className="min-w-0 flex-1 truncate text-amber-100">
                       {entry.name}
                     </span>
-                    <span className="flex-shrink-0 truncate text-xs text-amber-400">
+                    <span className="flex-shrink-0 truncate text-[9px] sm:text-xs text-amber-400 max-w-[60px] sm:max-w-none">
                       {entry.song.title}
                     </span>
                     {onPlaySong && (
                       <button
                         onClick={() => isAnythingPlaying ? handlePreviewStop() : onPlaySong(entry.song)}
-                        className={`flex-shrink-0 rounded-full p-1 transition-colors ${
+                        className={`flex-shrink-0 rounded-full p-0.5 sm:p-1 transition-colors ${
                           isAnythingPlaying
                             ? "bg-amber-700 text-amber-100 hover:bg-amber-600"
                             : "bg-amber-600/50 text-amber-200 hover:bg-amber-600"
                         }`}
                       >
                         {isAnythingPlaying ? (
-                          <Square className="h-3 w-3" />
+                          <Square className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         ) : (
-                          <Play className="h-3 w-3" />
+                          <Play className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
                         )}
                       </button>
                     )}

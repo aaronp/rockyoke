@@ -1,5 +1,5 @@
 // src/pages/Jukebox.tsx
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   JukeboxShell,
   Wurlitzer,
@@ -35,7 +35,16 @@ export default function Jukebox() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [ticketsOwned, setTicketsOwned] = useState(0);
   const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
   const totalPages = 11; // A-K
+
+  // Detect mobile screen size for Wurlitzer variant
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   // Calculate remaining sign-ups (tickets owned minus queue entries)
   const ticketsRemaining = ticketsOwned - state.queue.length;
@@ -196,11 +205,12 @@ export default function Jukebox() {
             </div>
           </div>
 
-          {/* Jukebox (center) - fixed size, no shrink */}
-          <div className="flex flex-shrink-0 items-center justify-center">
-            <div className="relative w-[800px]">
+          {/* Jukebox (center) - responsive width */}
+          <div className="flex items-center justify-center w-full">
+            <div className="relative w-full max-w-[800px] px-1 sm:px-4 lg:w-[800px] lg:px-0">
               <HelpTooltip />
               <JukeboxShell
+                variant={isMobile ? "small" : "large"}
                 recordPlayer={
                 <Wurlitzer
                   triggerPlay={shouldTriggerPlay}
@@ -209,6 +219,7 @@ export default function Jukebox() {
                   onReset={state.reset}
                   onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
                   showControls={state.wizardState === "idle"}
+                  variant={isMobile ? "small" : "large"}
                 />
               }
               songRolodex={
@@ -219,6 +230,7 @@ export default function Jukebox() {
                   }}
                   pageIndex={rolodexPage}
                   onPageChange={setRolodexPage}
+                  variant={isMobile ? "small" : "large"}
                 />
               }
               buttonPanel={

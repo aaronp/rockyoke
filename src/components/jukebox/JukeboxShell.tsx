@@ -45,7 +45,24 @@ interface JukeboxShellProps {
   songRolodex?: React.ReactNode;
   buttonPanel?: React.ReactNode;
   songQueue?: React.ReactNode;
+  variant?: "large" | "small";
 }
+
+// Slot positions for different variants (in SVG viewBox coordinates)
+const SLOT_POSITIONS = {
+  large: {
+    recordPlayer: { x: 192, y: 100, w: 416, h: 320 },
+    songRolodex: { x: 240, y: 433, w: 320, h: 106 },
+    buttonPanel: { x: 200, y: 553, w: 400, h: 56 },
+    songQueue: { x: 148, y: 622, w: 504, h: 174 },
+  },
+  small: {
+    recordPlayer: { x: 192, y: 100, w: 416, h: 280 },  // Shorter to make room
+    songRolodex: { x: 200, y: 393, w: 400, h: 150 },   // Wider and taller, moved up
+    buttonPanel: { x: 200, y: 553, w: 400, h: 56 },
+    songQueue: { x: 148, y: 622, w: 504, h: 174 },
+  },
+} as const;
 
 // ---------------------------------------------------------------------------
 // Slot placeholder shown when no component is provided
@@ -137,7 +154,9 @@ export function JukeboxShell({
   songRolodex = <SlotPlaceholder label="Song Rolodex" />,
   buttonPanel = <SlotPlaceholder label="Button Panel" />,
   songQueue = <SlotPlaceholder label="Song Queue" />,
+  variant = "large",
 }: JukeboxShellProps): React.ReactElement {
+  const slots = SLOT_POSITIONS[variant];
   return (
     /*
      * Outer wrapper: fixed width OR fluid — set width in the parent.
@@ -869,37 +888,29 @@ export function JukeboxShell({
 
       {/* ================================================================
           SLOT 1 -- RECORD PLAYER (z-index 1 to appear behind the housing)
-          Positioned inside the arch interior opening.
-          Slot box: x=192 y=100 w=416 h=320 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={192} y={100} w={416} h={320} zIndex={1}>
+      <SlotOverlay x={slots.recordPlayer.x} y={slots.recordPlayer.y} w={slots.recordPlayer.w} h={slots.recordPlayer.h} zIndex={1}>
         {recordPlayer}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 2 -- SONG ROLODEX
-          Fits between the illuminated columns.
-          Slot box: x=240 y=433 w=320 h=106 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={240} y={433} w={320} h={106} zIndex={3}>
+      <SlotOverlay x={slots.songRolodex.x} y={slots.songRolodex.y} w={slots.songRolodex.w} h={slots.songRolodex.h} zIndex={3}>
         {songRolodex}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 3 -- BUTTON PANEL
-          Positioned below the rolodex, in the button area.
-          Slot box: x=200 y=553 w=400 h=56 (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={200} y={553} w={400} h={56} zIndex={3}>
+      <SlotOverlay x={slots.buttonPanel.x} y={slots.buttonPanel.y} w={slots.buttonPanel.w} h={slots.buttonPanel.h} zIndex={3}>
         {buttonPanel}
       </SlotOverlay>
 
       {/* ================================================================
           SLOT 4 -- SONG QUEUE
-          Positioned inside the large lower panel bezel.
-          Slot box: x=148 y=622 w=504 h={174} (in SVG coords)
           ================================================================ */}
-      <SlotOverlay x={148} y={622} w={504} h={174} zIndex={3}>
+      <SlotOverlay x={slots.songQueue.x} y={slots.songQueue.y} w={slots.songQueue.w} h={slots.songQueue.h} zIndex={3}>
         {songQueue}
       </SlotOverlay>
 

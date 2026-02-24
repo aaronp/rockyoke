@@ -190,9 +190,10 @@ type Props = {
   onSelectSong?: (song: Song) => void;
   pageIndex?: number;           // Controlled page index
   onPageChange?: (index: number) => void;  // Callback when page changes
+  variant?: "large" | "small";  // Size variant for responsive layouts
 };
 
-export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageChange }: Props) {
+export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageChange, variant = "large" }: Props) {
   const pages = getPages(SONGS);
   const [internalPageIndex, setInternalPageIndex] = useState(0);
 
@@ -242,7 +243,7 @@ export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageCh
 
   return (
     <div className="w-full h-full" style={{ perspective: "1200px" }}>
-      <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} />
+      <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} variant={variant} />
     </div>
   );
 }
@@ -250,21 +251,23 @@ export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageCh
 function SplitFlapPanel({
   page,
   pageIndex,
-  onSongClick
+  onSongClick,
+  variant = "large"
 }: {
   page: { top: InternalSong[]; bottom: InternalSong[] };
   pageIndex: number;
   onSongClick: (song: InternalSong, indexOnPage: number) => void;
+  variant?: "large" | "small";
 }) {
   return (
     <div className="relative select-none h-full">
       <div className="relative rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] h-full">
         <div className="bg-gradient-to-b from-amber-100 to-amber-50 h-[calc(50%-2px)]">
-          <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} />
+          <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} variant={variant} />
         </div>
         <div className="h-1 bg-gradient-to-b from-amber-800/60 via-amber-900/80 to-amber-800/60" />
         <div className="bg-gradient-to-b from-amber-50 to-amber-100 h-[calc(50%-2px)]">
-          <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} />
+          <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} variant={variant} />
         </div>
       </div>
 
@@ -283,7 +286,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-100 to-amber-50 shadow-lg">
-              <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} />
+              <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} variant={variant} />
             </div>
           </motion.div>
 
@@ -300,7 +303,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.35, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-50 to-amber-100 shadow-lg">
-              <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} />
+              <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} variant={variant} />
             </div>
           </motion.div>
         </motion.div>
@@ -313,32 +316,48 @@ function SongStrips({
   songs,
   pageIndex,
   indexOffset,
-  onSongClick
+  onSongClick,
+  variant = "large"
 }: {
   songs: InternalSong[];
   pageIndex: number;
   indexOffset: number;
   onSongClick: (song: InternalSong, indexOnPage: number) => void;
+  variant?: "large" | "small";
 }) {
   const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
+  const isSmall = variant === "small";
+
+  // Small variant: always show 2 columns with larger text
+  // Large variant: 2 cols on mobile, 3 on desktop
+  const gridCols = isSmall ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3";
+  const padding = isSmall ? "p-1" : "p-0.5 sm:p-1.5";
 
   return (
-    <div className="grid grid-cols-3 gap-px bg-amber-300/50 p-1.5 h-full">
+    <div className={`grid ${gridCols} gap-px bg-amber-300/50 ${padding} h-full`}>
       {songs.map((song, i) => {
         const indexOnPage = indexOffset + i;
         const displayNumber = `${letter}${String(indexOnPage + 1).padStart(2, '0')}`;
+        const isThirdInRow = i === 2;
+        // Small variant: always hide 3rd song (2 columns only)
+        // Large variant: hide 3rd on mobile, show on desktop
+        const hideClass = isThirdInRow
+          ? (isSmall ? "hidden" : "hidden sm:block")
+          : "";
         return (
-          <SongCard
-            key={song.no}
-            song={song}
-            displayNumber={displayNumber}
-            onClick={() => onSongClick(song, indexOnPage)}
-          />
+          <div key={song.no} className={`h-full ${hideClass}`}>
+            <SongCard
+              song={song}
+              displayNumber={displayNumber}
+              onClick={() => onSongClick(song, indexOnPage)}
+              variant={variant}
+            />
+          </div>
         );
       })}
-      {songs.length < 3 &&
+      {songs.length < 3 && !isSmall &&
         Array.from({ length: 3 - songs.length }).map((_, i) => (
-          <div key={`empty-${i}`} className="rounded bg-amber-100/50" />
+          <div key={`empty-${i}`} className="rounded bg-amber-100/50 hidden sm:block" />
         ))}
     </div>
   );
@@ -347,34 +366,47 @@ function SongStrips({
 function SongCard({
   song,
   displayNumber,
-  onClick
+  onClick,
+  variant = "large"
 }: {
   song: InternalSong;
   displayNumber: string;
   onClick: () => void;
+  variant?: "large" | "small";
 }) {
+  const isSmall = variant === "small";
+
+  // Small variant uses larger, fixed text sizes since slot is bigger
+  const codeSize = isSmall ? "text-[10px]" : "text-[7px] sm:text-[10px]";
+  const titleSize = isSmall ? "text-[9px]" : "text-[6px] sm:text-[9px]";
+  const artistSize = isSmall ? "text-[9px]" : "text-[6px] sm:text-[9px]";
+  const padding = isSmall ? "px-1.5" : "px-0.5 sm:px-1.5";
+  const gap = isSmall ? "gap-1" : "gap-0.5 sm:gap-1";
+  const playIconSize = isSmall ? "h-3 w-4" : "h-2 sm:h-3 w-3 sm:w-4";
+  const playTriangle = isSmall ? "border-y-[4px] border-l-[6px]" : "border-y-[3px] sm:border-y-[4px] border-l-[4px] sm:border-l-[6px]";
+
   return (
     <button
       type="button"
       onClick={onClick}
-      className="relative overflow-hidden rounded bg-gradient-to-b from-amber-50 via-amber-100 to-amber-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.2)] flex flex-col text-left cursor-pointer hover:from-amber-100 hover:via-amber-150 hover:to-amber-100 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_rgba(0,0,0,0.25)] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1"
+      className="relative overflow-hidden rounded bg-gradient-to-b from-amber-50 via-amber-100 to-amber-50 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_1px_3px_rgba(0,0,0,0.2)] flex flex-col text-left cursor-pointer hover:from-amber-100 hover:via-amber-150 hover:to-amber-100 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_2px_6px_rgba(0,0,0,0.25)] transition-all duration-150 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-1 h-full w-full"
     >
-      <div className="border-b border-amber-200/80 px-1.5 py-0.5 flex-1">
-        <div className="flex items-start gap-1">
-          <span className="font-mono text-[10px] font-bold text-amber-900">{displayNumber}</span>
-          <span className="flex-1 truncate text-[9px] font-semibold uppercase tracking-tight text-amber-950 leading-tight">
+      <div className={`border-b border-amber-200/80 ${padding} py-0.5 flex-1`}>
+        <div className={`flex items-start ${gap}`}>
+          <span className={`font-mono ${codeSize} font-bold text-amber-900`}>{displayNumber}</span>
+          <span className={`flex-1 truncate ${titleSize} font-semibold uppercase tracking-tight text-amber-950 leading-tight`}>
             {song.title}
           </span>
         </div>
       </div>
-      <div className="flex items-center gap-1 bg-amber-200/40 px-1.5 py-0.5">
-        <div className="flex h-3 w-4 items-center justify-center">
+      <div className={`flex items-center ${gap} bg-amber-200/40 ${padding} py-0.5`}>
+        <div className={`flex ${playIconSize} items-center justify-center`}>
           <div
-            className="h-0 w-0 border-y-[4px] border-l-[6px] border-y-transparent border-l-red-600"
+            className={`h-0 w-0 ${playTriangle} border-y-transparent border-l-red-600`}
             style={{ filter: "drop-shadow(1px 1px 1px rgba(0,0,0,0.3))" }}
           />
         </div>
-        <span className="flex-1 truncate text-[9px] font-bold uppercase text-amber-900">
+        <span className={`flex-1 truncate ${artistSize} font-bold uppercase text-amber-900`}>
           {song.artist}
         </span>
       </div>

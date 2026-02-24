@@ -104,7 +104,9 @@ type VintageButtonProps = {
 
 function VintageButton({ label, onClick, disabled, variant = "letter", wide }: VintageButtonProps) {
   const baseStyles = "font-mono font-bold uppercase transition-all duration-75 select-none";
-  const sizeStyles = wide ? "px-2 py-0.5 text-[10px]" : "w-5 h-5 text-[10px]";
+  const sizeStyles = wide
+    ? "px-1 sm:px-2 py-0.5 text-[7px] sm:text-[10px]"
+    : "w-3 h-3 sm:w-5 sm:h-5 text-[6px] sm:text-[10px]";
 
   const variantStyles = {
     letter: "bg-gradient-to-b from-amber-50 to-amber-100 text-amber-900 border-amber-300",
@@ -119,7 +121,7 @@ function VintageButton({ label, onClick, disabled, variant = "letter", wide }: V
       disabled={disabled}
       className={`
         ${baseStyles} ${sizeStyles} ${variantStyles[variant]}
-        rounded border-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_2px_0_rgba(0,0,0,0.2),0_3px_3px_rgba(0,0,0,0.1)]
+        rounded border sm:border-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.8),0_2px_0_rgba(0,0,0,0.2),0_3px_3px_rgba(0,0,0,0.1)]
         hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_1px_0_rgba(0,0,0,0.2),0_2px_2px_rgba(0,0,0,0.1)]
         active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.2)]
         active:translate-y-0.5
@@ -282,12 +284,12 @@ export function ButtonPanel({
   }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, handleNavigateUp, handleNavigateDown]);
 
   return (
-    <div className="flex items-center justify-center h-full w-full p-2">
-      <div className="flex items-center gap-3">
+    <div className="flex items-center justify-center h-full w-full p-1 sm:p-2">
+      <div className="flex items-center gap-1 sm:gap-3">
         {/* Button grid - letters above numbers, aligned */}
-        <div className="flex flex-col gap-0.5">
+        <div className="flex flex-col gap-px sm:gap-0.5">
           {/* Letter row: A-K (11 buttons) */}
-          <div className="flex gap-0.5">
+          <div className="flex gap-px sm:gap-0.5">
             {LETTERS.map(letter => (
               <VintageButton
                 key={letter}
@@ -299,7 +301,7 @@ export function ButtonPanel({
           </div>
 
           {/* Number row: 0-6 aligned under A-G, then spacers */}
-          <div className="flex gap-0.5">
+          <div className="flex gap-px sm:gap-0.5">
             {NUMBERS.map(num => (
               <VintageButton
                 key={num}
@@ -309,20 +311,20 @@ export function ButtonPanel({
               />
             ))}
             {/* 4 empty spacers to align with H I J K above */}
-            <div className="w-5" />
-            <div className="w-5" />
-            <div className="w-5" />
-            <div className="w-5" />
+            <div className="w-3 sm:w-5" />
+            <div className="w-3 sm:w-5" />
+            <div className="w-3 sm:w-5" />
+            <div className="w-3 sm:w-5" />
           </div>
         </div>
 
         {/* Navigation + Actions */}
-        <div className="flex flex-col gap-0.5 items-end">
-          <div className="flex gap-0.5">
+        <div className="flex flex-col gap-px sm:gap-0.5 items-end">
+          <div className="flex gap-px sm:gap-0.5">
             <VintageButton label="▲" onClick={handleNavigateUp} variant="action" disabled={!canNavigateUp} />
             <VintageButton label="▼" onClick={handleNavigateDown} variant="action" disabled={!canNavigateDown} />
           </div>
-          <div className="flex gap-0.5">
+          <div className="flex gap-px sm:gap-0.5">
             <VintageButton label="CLR" onClick={handleClear} variant="action" wide />
             <VintageButton label="OK" onClick={handleEnter} variant="action" wide />
           </div>
