@@ -138,13 +138,24 @@ export function SignUpWizard({
     }
   }, [wizardState, selectedSong, previewingSong, preview.fetchPreview]);
 
+  // Track previous previewingSong to detect when it's cleared
+  const prevPreviewingSongRef = useRef<Song | null>(null);
+
   // Stop preview when leaving song-selected state (and not previewing a queue song)
   useEffect(() => {
     if (wizardState !== "song-selected" && !previewingSong) {
       preview.stop();
-      onPreviewEnd?.();
     }
-  }, [wizardState, previewingSong, preview.stop, onPreviewEnd]);
+  }, [wizardState, previewingSong, preview.stop]);
+
+  // Stop audio when previewingSong is cleared externally (e.g., from LineupPanel stop button)
+  useEffect(() => {
+    // If previewingSong went from a song to null, stop the audio
+    if (prevPreviewingSongRef.current && !previewingSong) {
+      preview.stop();
+    }
+    prevPreviewingSongRef.current = previewingSong;
+  }, [previewingSong, preview.stop]);
 
   // Auto-reset after complete
   useEffect(() => {

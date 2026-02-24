@@ -93,8 +93,8 @@ export default function Jukebox() {
       {/* Dark overlay */}
       <div className="absolute inset-0 bg-neutral-950/80" />
 
-      {/* Searchlight effect when playing */}
-      {shouldTriggerPlay && (
+      {/* Searchlight effect when music is playing (synced with needle drop) */}
+      {needleDown && (
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           {/* Beam 1 - from top left */}
           <div

@@ -897,11 +897,154 @@ export function JukeboxShell({
       {/* ================================================================
           SLOT 4 -- SONG QUEUE
           Positioned inside the large lower panel bezel.
-          Slot box: x=148 y=622 w=504 h=174 (in SVG coords)
+          Slot box: x=148 y=622 w=504 h={174} (in SVG coords)
           ================================================================ */}
       <SlotOverlay x={148} y={622} w={504} h={174} zIndex={3}>
         {songQueue}
       </SlotOverlay>
+
+      {/* ================================================================
+          BOTTOM ARCH OVERLAY
+          Rendered on top of the song queue to prevent content clipping.
+          ================================================================ */}
+      <div
+        style={{
+          position: "absolute",
+          left: `${(280 / VB_W) * 100}%`,
+          top: `${(840 / VB_H) * 100}%`,
+          width: `${(240 / VB_W) * 100}%`,
+          height: `${(90 / VB_H) * 100}%`,
+          pointerEvents: "none",
+          zIndex: 4,
+        }}
+      >
+        <svg
+          viewBox="280 840 240 90"
+          width="100%"
+          height="100%"
+          preserveAspectRatio="xMidYMid meet"
+          style={{ display: "block" }}
+        >
+          <defs>
+            <linearGradient id="arch-btmArchPeach" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#E8C4A0" />
+              <stop offset="100%" stopColor="#B8956C" />
+            </linearGradient>
+            <linearGradient id="arch-chromeH" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#9A9A9A" />
+              <stop offset="35%" stopColor="#F5F5F5" />
+              <stop offset="50%" stopColor="#FFFFFF" />
+              <stop offset="65%" stopColor="#F0F0F0" />
+              <stop offset="100%" stopColor="#8A8A8A" />
+            </linearGradient>
+            <linearGradient id="arch-chromeV" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#A0A0A0" />
+              <stop offset="30%" stopColor="#F8F8F8" />
+              <stop offset="50%" stopColor="#FFFFFF" />
+              <stop offset="70%" stopColor="#E8E8E8" />
+              <stop offset="100%" stopColor="#909090" />
+            </linearGradient>
+            <radialGradient id="arch-redGem" cx="40%" cy="30%" r="60%">
+              <stop offset="0%" stopColor="#FF6666" />
+              <stop offset="50%" stopColor="#CC0000" />
+              <stop offset="100%" stopColor="#660000" />
+            </radialGradient>
+            <radialGradient id="arch-redGemSm" cx="35%" cy="35%" r="65%">
+              <stop offset="0%" stopColor="#FF6666" />
+              <stop offset="60%" stopColor="#CC0000" />
+              <stop offset="100%" stopColor="#550000" />
+            </radialGradient>
+            <radialGradient id="arch-yellowGem" cx="40%" cy="30%" r="60%">
+              <stop offset="0%" stopColor="#FFE066" />
+              <stop offset="40%" stopColor="#FFCC00" />
+              <stop offset="100%" stopColor="#996600" />
+            </radialGradient>
+          </defs>
+          {/* Bottom decorative arch */}
+          <path
+            fillRule="evenodd"
+            fill="url(#arch-btmArchPeach)"
+            d="M 308 915 L 308 871  A 92 92 0 0 1 492 871  L 492 915 Z
+               M 328 915 L 328 879  A 72 72 0 0 1 472 879  L 472 915 Z"
+          />
+          <path
+            fill="#1A0806"
+            d="M 328 915 L 328 879 A 72 72 0 0 1 472 879 L 472 915 Z"
+          />
+          {/* Decorative medallion */}
+          <circle cx="400" cy="904" r="55" fill="url(#arch-chromeH)" />
+          <circle cx="400" cy="904" r="44" fill="#1A0806" />
+          <path
+            d="M 400 849 L 392 868 L 400 864 L 408 868 Z"
+            fill="url(#arch-chromeV)"
+          />
+          <ellipse
+            cx="366"
+            cy="900"
+            rx="24"
+            ry="10"
+            fill="url(#arch-chromeH)"
+            transform="rotate(-15 366 900)"
+          />
+          <ellipse
+            cx="434"
+            cy="900"
+            rx="24"
+            ry="10"
+            fill="url(#arch-chromeH)"
+            transform="rotate(15 434 900)"
+          />
+          <path
+            d="M 345 904 L 355 898 L 355 910 Z"
+            fill="url(#arch-chromeV)"
+          />
+          <path
+            d="M 455 904 L 445 898 L 445 910 Z"
+            fill="url(#arch-chromeV)"
+          />
+          <ellipse
+            cx="400"
+            cy="853"
+            rx="10"
+            ry="12"
+            fill="url(#arch-redGem)"
+            stroke="#880000"
+            strokeWidth="1.5"
+          />
+          <ellipse
+            cx="397"
+            cy="849"
+            rx="3.5"
+            ry="4"
+            fill="rgba(255,180,180,0.6)"
+          />
+          <circle cx="360" cy="890" r="6" fill="url(#arch-redGemSm)" />
+          <circle cx="440" cy="890" r="6" fill="url(#arch-redGemSm)" />
+          <circle
+            cx="400"
+            cy="906"
+            r="20"
+            fill="url(#arch-yellowGem)"
+            stroke="#9B7000"
+            strokeWidth="2"
+          />
+          <ellipse
+            cx="394"
+            cy="899"
+            rx="7"
+            ry="9"
+            fill="rgba(255,255,200,0.55)"
+          />
+          <circle
+            cx="400"
+            cy="906"
+            r="24"
+            fill="none"
+            stroke="url(#arch-chromeH)"
+            strokeWidth="4"
+          />
+        </svg>
+      </div>
     </div>
   );
 }
