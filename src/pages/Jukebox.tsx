@@ -20,7 +20,7 @@ import { TicketConfirmationModal } from "@/components/TicketConfirmationModal";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
-  venue: "The Mechanics",
+  venue: "The VeeCee",
   date: "2nd May",
   priceAdvance: "£12",
   priceDoor: "£15",
@@ -246,62 +246,62 @@ export default function Jukebox() {
               <JukeboxShell
                 variant={isMobile ? "small" : "large"}
                 recordPlayer={
-                <Wurlitzer
-                  triggerPlay={shouldTriggerPlay}
-                  triggerReset={shouldTriggerReset}
-                  onPlayComplete={previewPlaying ? undefined : state.onPlayComplete}
-                  onReset={state.reset}
-                  onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
-                  showControls={state.wizardState === "idle"}
-                  variant={isMobile ? "small" : "large"}
-                />
-              }
-              songRolodex={
-                <Rolodex
-                  onSelectSong={(song) => {
-                    state.selectSong(song);
-                    setCodeInput(song.number);
-                  }}
-                  pageIndex={rolodexPage}
-                  onPageChange={setRolodexPage}
-                  variant={isMobile ? "small" : "large"}
-                />
-              }
-              buttonPanel={
-                <ButtonPanel
-                  onSelectSong={handleCodeEntry}
-                  onNavigateUp={handleNavigateUp}
-                  onNavigateDown={handleNavigateDown}
-                  canNavigateUp={rolodexPage > 0}
-                  canNavigateDown={rolodexPage < totalPages - 1}
-                  input={codeInput}
-                  onInputChange={setCodeInput}
-                  displayState={codeDisplayState}
-                  onDisplayStateChange={setCodeDisplayState}
-                />
-              }
-              songQueue={
-                <SignUpWizard
-                  wizardState={state.wizardState}
-                  selectedSong={state.selectedSong}
-                  lastEntry={state.lastEntry}
-                  onStartSignUp={state.startSignUp}
-                  onSubmitName={state.submitName}
-                  onSubmitPayment={state.submitPayment}
-                  onReset={state.reset}
-                  onPreviewStart={handlePreviewStart}
-                  onPreviewEnd={handlePreviewEnd}
-                  triggerPlayAudio={needleDown}
-                  queue={state.queue}
-                  codeInput={codeInput}
-                  codeDisplayState={codeDisplayState}
-                  onBuyTickets={handleTicketButtonClick}
-                  ticketsRemaining={ticketsRemaining}
-                  ticketsOwned={ticketsOwned}
-                  previewingSong={previewingSong}
-                  onPlaySong={handlePlaySong}
-                />
-              }
+                  <Wurlitzer
+                    triggerPlay={shouldTriggerPlay}
+                    triggerReset={shouldTriggerReset}
+                    onPlayComplete={previewPlaying ? undefined : state.onPlayComplete}
+                    onReset={state.reset}
+                    onNeedleDown={previewPlaying ? handleNeedleDown : undefined}
+                    showControls={state.wizardState === "idle"}
+                    variant={isMobile ? "small" : "large"}
+                  />
+                }
+                songRolodex={
+                  <Rolodex
+                    onSelectSong={(song) => {
+                      state.selectSong(song);
+                      setCodeInput(song.number);
+                    }}
+                    pageIndex={rolodexPage}
+                    onPageChange={setRolodexPage}
+                    variant={isMobile ? "small" : "large"}
+                  />
+                }
+                buttonPanel={
+                  <ButtonPanel
+                    onSelectSong={handleCodeEntry}
+                    onNavigateUp={handleNavigateUp}
+                    onNavigateDown={handleNavigateDown}
+                    canNavigateUp={rolodexPage > 0}
+                    canNavigateDown={rolodexPage < totalPages - 1}
+                    input={codeInput}
+                    onInputChange={setCodeInput}
+                    displayState={codeDisplayState}
+                    onDisplayStateChange={setCodeDisplayState}
+                  />
+                }
+                songQueue={
+                  <SignUpWizard
+                    wizardState={state.wizardState}
+                    selectedSong={state.selectedSong}
+                    lastEntry={state.lastEntry}
+                    onStartSignUp={state.startSignUp}
+                    onSubmitName={state.submitName}
+                    onSubmitPayment={state.submitPayment}
+                    onReset={state.reset}
+                    onPreviewStart={handlePreviewStart}
+                    onPreviewEnd={handlePreviewEnd}
+                    triggerPlayAudio={needleDown}
+                    queue={state.queue}
+                    codeInput={codeInput}
+                    codeDisplayState={codeDisplayState}
+                    onBuyTickets={handleTicketButtonClick}
+                    ticketsRemaining={ticketsRemaining}
+                    ticketsOwned={ticketsOwned}
+                    previewingSong={previewingSong}
+                    onPlaySong={handlePlaySong}
+                  />
+                }
               />
             </div>
           </div>
