@@ -105,8 +105,8 @@ type VintageButtonProps = {
 function VintageButton({ label, onClick, disabled, variant = "letter", wide }: VintageButtonProps) {
   const baseStyles = "font-mono font-bold uppercase transition-all duration-75 select-none";
   const sizeStyles = wide
-    ? "px-2 sm:px-2 py-1 text-[8px] sm:text-[10px]"
-    : "w-5 h-5 sm:w-5 sm:h-5 text-[8px] sm:text-[10px]";
+    ? "px-1.5 sm:px-2 py-0.5 sm:py-1 text-[7px] sm:text-[10px]"
+    : "w-4 h-4 sm:w-5 sm:h-5 text-[7px] sm:text-[10px]";
 
   const variantStyles = {
     letter: "bg-gradient-to-b from-amber-50 to-amber-100 text-amber-900 border-amber-300",
@@ -284,8 +284,8 @@ export function ButtonPanel({
   }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, handleNavigateUp, handleNavigateDown]);
 
   return (
-    <div className="flex items-center justify-center h-full w-full py-3 px-1 sm:p-2">
-      <div className="flex items-center gap-px sm:gap-3 ml-4 sm:ml-0">
+    <div className="flex items-center justify-center h-full w-full py-0 px-1 sm:p-2">
+      <div className="flex items-center gap-px sm:gap-3">
         {/* Button grid - letters above numbers, aligned */}
         <div className="flex flex-col gap-px sm:gap-0.5">
           {/* Letter row: A-K (11 buttons) */}
@@ -311,10 +311,10 @@ export function ButtonPanel({
               />
             ))}
             {/* 4 empty spacers to align with H I J K above */}
-            <div className="w-5" />
-            <div className="w-5" />
-            <div className="w-5" />
-            <div className="w-5" />
+            <div className="w-4 sm:w-5" />
+            <div className="w-4 sm:w-5" />
+            <div className="w-4 sm:w-5" />
+            <div className="w-4 sm:w-5" />
           </div>
         </div>
 

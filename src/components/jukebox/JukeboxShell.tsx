@@ -59,9 +59,9 @@ const SLOT_POSITIONS = {
   small: {
     // Mobile layout - fits within jukebox housing
     recordPlayer: { x: 192, y: 120, w: 416, h: 260 },
-    songRolodex: { x: 200, y: 420, w: 400, h: 120 },    // Moved down slightly
-    buttonPanel: { x: 200, y: 548, w: 400, h: 70 },     // Taller for bigger buttons
-    songQueue: { x: 148, y: 630, w: 504, h: 174 },
+    songRolodex: { x: 200, y: 420, w: 400, h: 130 },    // Taller to prevent bottom clipping
+    buttonPanel: { x: 200, y: 548, w: 400, h: 90 },     // Expanded to encompass buttons
+    songQueue: { x: 148, y: 645, w: 504, h: 174 },    // Moved down slightly
   },
 } as const;
 
