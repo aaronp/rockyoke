@@ -82,6 +82,7 @@ type Props = {
   codeInput?: string;
   codeDisplayState?: DisplayState;
   onBuyTickets?: () => void;
+  ticketsRemaining?: number;
 };
 
 export function SignUpWizard({
@@ -99,6 +100,7 @@ export function SignUpWizard({
   codeInput = "",
   codeDisplayState = "normal",
   onBuyTickets,
+  ticketsRemaining = 0,
 }: Props) {
   const [nameInput, setNameInput] = useState("");
   const preview = useItunesPreview(onPreviewEnd);
@@ -201,13 +203,23 @@ export function SignUpWizard({
                     </Button>
                   )
                 ) : null}
-                <Button
-                  size="sm"
-                  onClick={onBuyTickets ?? onStartSignUp}
-                  className="h-8 bg-rose-600 px-3 text-xs hover:bg-rose-500"
-                >
-                  Sign Up
-                </Button>
+                {ticketsRemaining > 0 ? (
+                  <Button
+                    size="sm"
+                    onClick={onStartSignUp}
+                    className="h-8 bg-rose-600 px-3 text-xs hover:bg-rose-500"
+                  >
+                    Sign Up
+                  </Button>
+                ) : (
+                  <Button
+                    size="sm"
+                    onClick={onBuyTickets}
+                    className="h-8 bg-amber-500 px-3 text-xs text-amber-950 hover:bg-amber-400"
+                  >
+                    Buy Tickets
+                  </Button>
+                )}
               </div>
             </motion.div>
           )}

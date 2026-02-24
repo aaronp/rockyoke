@@ -703,12 +703,12 @@ export function JukeboxShell({
         <path
           fillRule="evenodd"
           fill="url(#jb-btmArchPeach)"
-          d="M 308 892 L 308 848  A 92 92 0 0 1 492 848  L 492 892 Z
-             M 328 892 L 328 856  A 72 72 0 0 1 472 856  L 472 892 Z"
+          d="M 308 915 L 308 871  A 92 92 0 0 1 492 871  L 492 915 Z
+             M 328 915 L 328 879  A 72 72 0 0 1 472 879  L 472 915 Z"
         />
         <path
           fill="#1A0806"
-          d="M 328 892 L 328 856 A 72 72 0 0 1 472 856 L 472 892 Z"
+          d="M 328 915 L 328 879 A 72 72 0 0 1 472 879 L 472 915 Z"
         />
 
         {/* -- DECORATIVE MEDALLION -- */}

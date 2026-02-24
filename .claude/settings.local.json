@@ -31,7 +31,15 @@
       "Bash(npx tsc:*)",
       "Bash(npm run build:*)",
       "Bash(git stash:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke status)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke log --oneline -3)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke add src/components/TicketModal.tsx)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: add TicketModal component with QR code\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke diff src/components/EventPoster.tsx)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke log --oneline -5)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke add src/components/EventPoster.tsx)",
+      "Bash(git -C /Users/aaron/dev/sandbox/rockyoke commit -m \"$\\(cat <<''EOF''\nfeat: add Buy Tickets button to EventPoster\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
     ],
     "deny": [],
     "ask": []

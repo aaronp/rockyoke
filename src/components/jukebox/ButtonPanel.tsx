@@ -221,6 +221,20 @@ export function ButtonPanel({
     }, 500);
   }, [input, onSelectSong, sfx, setInput, setDisplayState]);
 
+  const handleNavigateUp = useCallback(() => {
+    if (canNavigateUp) {
+      sfx.clack(0.6);
+      onNavigateUp();
+    }
+  }, [sfx, canNavigateUp, onNavigateUp]);
+
+  const handleNavigateDown = useCallback(() => {
+    if (canNavigateDown) {
+      sfx.clack(0.6);
+      onNavigateDown();
+    }
+  }, [sfx, canNavigateDown, onNavigateDown]);
+
   // Keyboard support
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -255,17 +269,17 @@ export function ButtonPanel({
       // Arrow keys = Navigate
       else if (e.key === "ArrowUp") {
         e.preventDefault();
-        if (canNavigateUp) onNavigateUp();
+        handleNavigateUp();
       }
       else if (e.key === "ArrowDown") {
         e.preventDefault();
-        if (canNavigateDown) onNavigateDown();
+        handleNavigateDown();
       }
     }
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, onNavigateUp, onNavigateDown, canNavigateUp, canNavigateDown]);
+  }, [handleLetterPress, handleNumberPress, handleClear, handleEnter, handleNavigateUp, handleNavigateDown]);
 
   return (
     <div className="flex items-center justify-center h-full w-full p-2">
@@ -305,8 +319,8 @@ export function ButtonPanel({
         {/* Navigation + Actions */}
         <div className="flex flex-col gap-0.5 items-end">
           <div className="flex gap-0.5">
-            <VintageButton label="▲" onClick={onNavigateUp} variant="action" disabled={!canNavigateUp} />
-            <VintageButton label="▼" onClick={onNavigateDown} variant="action" disabled={!canNavigateDown} />
+            <VintageButton label="▲" onClick={handleNavigateUp} variant="action" disabled={!canNavigateUp} />
+            <VintageButton label="▼" onClick={handleNavigateDown} variant="action" disabled={!canNavigateDown} />
           </div>
           <div className="flex gap-0.5">
             <VintageButton label="CLR" onClick={handleClear} variant="action" wide />

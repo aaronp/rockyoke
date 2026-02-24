@@ -1,5 +1,5 @@
 // src/components/TicketModal.tsx
-import { QRCodeSVG } from "qrcode.react";
+import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -15,7 +15,9 @@ type TicketModalProps = {
   date: string;
   priceAdvance: string;
   priceDoor: string;
-  paymentLinkUrl: string;
+  ticketsOwned: number;
+  ticketsRemaining: number;
+  onBuyTickets: (quantity: number) => void;
 };
 
 export function TicketModal({
@@ -25,12 +27,30 @@ export function TicketModal({
   venue,
   date,
   priceAdvance,
-  priceDoor,
-  paymentLinkUrl,
+  ticketsOwned,
+  ticketsRemaining,
+  onBuyTickets,
 }: TicketModalProps) {
+  const [quantity, setQuantity] = useState(1);
+  const [showToast, setShowToast] = useState(false);
+
   const nameParts = eventName.split(" ");
   const firstWord = nameParts[0];
   const remainingWords = nameParts.slice(1).join(" ");
+
+  const handleBuy = () => {
+    onBuyTickets(quantity);
+    setShowToast(true);
+    setTimeout(() => {
+      setShowToast(false);
+      onOpenChange(false);
+    }, 1500);
+  };
+
+  // Parse price for total calculation (assumes format like "£12")
+  const priceNum = parseFloat(priceAdvance.replace(/[^0-9.]/g, "")) || 0;
+  const currencySymbol = priceAdvance.replace(/[0-9.]/g, "") || "£";
+  const total = `${currencySymbol}${(priceNum * quantity).toFixed(0)}`;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -46,7 +66,7 @@ export function TicketModal({
         {/* Hidden but accessible title for screen readers */}
         <DialogTitle className="sr-only">Buy Tickets</DialogTitle>
         <DialogDescription className="sr-only">
-          Scan the QR code to purchase tickets for {eventName}
+          Purchase tickets for {eventName}
         </DialogDescription>
 
         <div className="flex flex-col items-center p-6">
@@ -93,30 +113,62 @@ export function TicketModal({
           {/* Divider */}
           <div className="mb-4 h-px w-1/2 bg-gradient-to-r from-transparent via-amber-700 to-transparent" />
 
-          {/* QR Code */}
-          <div className="mb-4 rounded-lg bg-white p-4">
-            <QRCodeSVG
-              value={paymentLinkUrl}
-              size={160}
-              level="M"
-              includeMargin={false}
-            />
+          {/* Ticket status */}
+          {ticketsOwned > 0 && (
+            <div className="mb-4 rounded-lg bg-green-900/50 px-4 py-2 text-center">
+              <p className="text-sm font-semibold text-green-300">
+                You have {ticketsOwned} ticket{ticketsOwned !== 1 ? "s" : ""}
+              </p>
+              <p className="text-xs text-green-400">
+                {ticketsRemaining} sign-up{ticketsRemaining !== 1 ? "s" : ""} remaining
+              </p>
+            </div>
+          )}
+
+          {/* Quantity selector */}
+          <div className="mb-4 flex items-center gap-4">
+            <button
+              onClick={() => setQuantity(q => Math.max(1, q - 1))}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-900/50 text-xl font-bold text-amber-200 transition-colors hover:bg-amber-800/50"
+            >
+              −
+            </button>
+            <span className="min-w-[3rem] text-center text-3xl font-bold text-amber-100">
+              {quantity}
+            </span>
+            <button
+              onClick={() => setQuantity(q => Math.min(10, q + 1))}
+              className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-900/50 text-xl font-bold text-amber-200 transition-colors hover:bg-amber-800/50"
+            >
+              +
+            </button>
           </div>
 
-          {/* Instructions */}
-          <p className="mb-2 text-center text-sm font-semibold uppercase tracking-wide text-amber-200">
-            Scan to buy tickets
+          {/* Price info */}
+          <p className="mb-2 text-sm uppercase tracking-wide text-amber-400">
+            {priceAdvance} each
+          </p>
+          <p className="mb-4 text-lg font-bold uppercase tracking-wide text-amber-200">
+            Total: {total}
           </p>
 
-          {/* Pricing */}
-          <div className="text-center">
-            <p className="text-sm uppercase tracking-wide text-amber-400">
-              {priceAdvance} advance
-            </p>
-            <p className="text-sm uppercase tracking-wide text-amber-400">
-              {priceDoor} on the door
-            </p>
-          </div>
+          {/* Buy button */}
+          <button
+            onClick={handleBuy}
+            className="w-full rounded-lg bg-amber-500 px-6 py-3 font-bold uppercase tracking-wide text-amber-950 transition-colors hover:bg-amber-400"
+          >
+            Buy {quantity} Ticket{quantity !== 1 ? "s" : ""}
+          </button>
+
+          {/* Toast */}
+          {showToast && (
+            <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/80">
+              <div className="rounded-lg bg-amber-500 px-6 py-4 text-center">
+                <p className="text-lg font-bold text-amber-950">TODO: Payment Integration</p>
+                <p className="text-sm text-amber-900">Tickets added for demo</p>
+              </div>
+            </div>
+          )}
 
           {/* Decorative bottom border */}
           <div className="mt-4 flex items-center gap-2">

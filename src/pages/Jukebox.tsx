@@ -22,7 +22,6 @@ const EVENT_DETAILS = {
   date: "2nd May",
   priceAdvance: "£12",
   priceDoor: "£15",
-  paymentLinkUrl: "https://buy.stripe.com/test_placeholder",
 } as const;
 
 export default function Jukebox() {
@@ -33,7 +32,15 @@ export default function Jukebox() {
   const [codeInput, setCodeInput] = useState("");
   const [codeDisplayState, setCodeDisplayState] = useState<DisplayState>("normal");
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
+  const [ticketsOwned, setTicketsOwned] = useState(0);
   const totalPages = 11; // A-K
+
+  // Calculate remaining sign-ups (tickets owned minus queue entries)
+  const ticketsRemaining = ticketsOwned - state.queue.length;
+
+  const handleBuyTickets = useCallback((quantity: number) => {
+    setTicketsOwned(prev => prev + quantity);
+  }, []);
 
   const handleNavigateUp = useCallback(() => {
     setRolodexPage(p => Math.max(0, p - 1));
@@ -153,6 +160,7 @@ export default function Jukebox() {
                   codeInput={codeInput}
                   codeDisplayState={codeDisplayState}
                   onBuyTickets={() => setTicketModalOpen(true)}
+                  ticketsRemaining={ticketsRemaining}
                 />
               }
               />
@@ -184,6 +192,9 @@ export default function Jukebox() {
         open={ticketModalOpen}
         onOpenChange={setTicketModalOpen}
         {...EVENT_DETAILS}
+        ticketsOwned={ticketsOwned}
+        ticketsRemaining={ticketsRemaining}
+        onBuyTickets={handleBuyTickets}
       />
     </div>
   );

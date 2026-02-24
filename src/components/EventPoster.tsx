@@ -77,7 +77,7 @@ export function EventPoster({
       </h1>
       {remainingWords && (
         <h2
-          className="mb-6 text-center font-bold uppercase tracking-wider text-amber-200"
+          className="mb-4 text-center font-bold uppercase tracking-wider text-amber-200"
           style={{
             fontSize: "clamp(1rem, 2.5vw, 1.5rem)",
             textShadow: "1px 1px 3px rgba(0, 0, 0, 0.5)",
@@ -86,6 +86,11 @@ export function EventPoster({
           {remainingWords}
         </h2>
       )}
+
+      {/* Tagline */}
+      <p className="mb-6 max-w-[220px] text-center text-sm italic text-amber-300/80">
+        Come for a fun night of live music, or to sing with the band!
+      </p>
 
       {/* Divider */}
       <div className="mb-6 h-px w-3/4 bg-gradient-to-r from-transparent via-amber-700 to-transparent" />
