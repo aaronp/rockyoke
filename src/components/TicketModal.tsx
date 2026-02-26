@@ -1,5 +1,5 @@
 // src/components/TicketModal.tsx
-import { useState } from "react";
+import { useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,12 +14,25 @@ type TicketModalProps = {
   venue: string;
   date: string;
   priceAdvance: string;
-  priceDoor: string;
   ticketsOwned: number;
   ticketsRemaining: number;
-  onBuyTickets: (quantity: number) => void;
-  onPurchaseComplete?: (quantity: number) => void;
 };
+
+// Load Ticket Tailor widget script
+function loadTicketTailorScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector('script[src*="tickettailor.com"]')) {
+      resolve();
+      return;
+    }
+    const script = document.createElement("script");
+    script.src = "https://cdn.tickettailor.com/js/widgets/min/widget.js";
+    script.async = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error("Failed to load Ticket Tailor script"));
+    document.head.appendChild(script);
+  });
+}
 
 export function TicketModal({
   open,
@@ -30,33 +43,45 @@ export function TicketModal({
   priceAdvance,
   ticketsOwned,
   ticketsRemaining,
-  onBuyTickets,
-  onPurchaseComplete,
 }: TicketModalProps) {
-  const [quantity, setQuantity] = useState(1);
-  const [showToast, setShowToast] = useState(false);
-
   const nameParts = eventName.split(" ");
   const firstWord = nameParts[0];
   const remainingWords = nameParts.slice(1).join(" ");
 
-  const handleBuy = () => {
-    onBuyTickets(quantity);
-    setShowToast(true);
-    setTimeout(() => {
-      setShowToast(false);
-      onOpenChange(false);
-      // Trigger confirmation modal after a brief delay
-      setTimeout(() => {
-        onPurchaseComplete?.(quantity);
-      }, 100);
-    }, 1000);
-  };
+  // Load Ticket Tailor script when modal opens
+  useEffect(() => {
+    if (open) {
+      loadTicketTailorScript();
+    }
+  }, [open]);
 
-  // Parse price for total calculation (assumes format like "£12")
-  const priceNum = parseFloat(priceAdvance.replace(/[^0-9.]/g, "")) || 0;
-  const currencySymbol = priceAdvance.replace(/[0-9.]/g, "") || "£";
-  const total = `${currencySymbol}${(priceNum * quantity).toFixed(0)}`;
+  const handleBuyTickets = async () => {
+    try {
+      await loadTicketTailorScript();
+    } catch (error) {
+      console.error("Failed to load Ticket Tailor:", error);
+      // Open Ticket Tailor page directly as fallback
+      window.open("https://www.tickettailor.com/events/rockyoke/ev_7722196", "_blank");
+      onOpenChange(false);
+      return;
+    }
+
+    // Close our modal first
+    onOpenChange(false);
+
+    // Trigger Ticket Tailor widget
+    // @ts-expect-error - Ticket Tailor adds this to window
+    if (window.TT && window.TT.widget) {
+      // @ts-expect-error - Ticket Tailor widget API
+      window.TT.widget.open({
+        eventId: "ev_7722196",
+        callback: "https://rockyoke.eyam.fun/order-complete",
+      });
+    } else {
+      // Widget not available, open Ticket Tailor page directly
+      window.open("https://www.tickettailor.com/events/rockyoke/ev_7722196", "_blank");
+    }
+  };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -131,50 +156,18 @@ export function TicketModal({
             </div>
           )}
 
-          {/* Quantity selector */}
-          <div className="mb-4 flex items-center gap-4">
-            <button
-              onClick={() => setQuantity(q => Math.max(1, q - 1))}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-900/50 text-xl font-bold text-amber-200 transition-colors hover:bg-amber-800/50"
-            >
-              −
-            </button>
-            <span className="min-w-[3rem] text-center text-3xl font-bold text-amber-100">
-              {quantity}
-            </span>
-            <button
-              onClick={() => setQuantity(q => Math.min(10, q + 1))}
-              className="flex h-10 w-10 items-center justify-center rounded-full bg-amber-900/50 text-xl font-bold text-amber-200 transition-colors hover:bg-amber-800/50"
-            >
-              +
-            </button>
-          </div>
-
           {/* Price info */}
-          <p className="mb-2 text-sm uppercase tracking-wide text-amber-400">
-            {priceAdvance} each
-          </p>
-          <p className="mb-4 text-lg font-bold uppercase tracking-wide text-amber-200">
-            Total: {total}
+          <p className="mb-4 text-sm uppercase tracking-wide text-amber-400">
+            {priceAdvance} advance
           </p>
 
-          {/* Buy button */}
+          {/* Buy button - triggers Ticket Tailor widget */}
           <button
-            onClick={handleBuy}
+            onClick={handleBuyTickets}
             className="w-full rounded-lg bg-amber-500 px-6 py-3 font-bold uppercase tracking-wide text-amber-950 transition-colors hover:bg-amber-400"
           >
-            Buy {quantity} Ticket{quantity !== 1 ? "s" : ""}
+            Buy Tickets
           </button>
-
-          {/* Toast */}
-          {showToast && (
-            <div className="absolute inset-0 flex items-center justify-center rounded-lg bg-black/80">
-              <div className="rounded-lg bg-amber-500 px-6 py-4 text-center">
-                <p className="text-lg font-bold text-amber-950">TODO: Payment Integration</p>
-                <p className="text-sm text-amber-900">Tickets added for demo</p>
-              </div>
-            </div>
-          )}
 
           {/* Decorative bottom border */}
           <div className="mt-4 flex items-center gap-2">
