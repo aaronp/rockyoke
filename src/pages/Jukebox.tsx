@@ -9,6 +9,7 @@ import {
 } from "@/components/jukebox";
 import { findSongByCode } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
+import { useTickets } from "@/hooks/useTickets";
 import type { DisplayState } from "@/components/jukebox/ButtonPanel";
 import type { Song } from "@/types/jukebox";
 import backgroundImage from "../background.png";
@@ -28,18 +29,16 @@ const EVENT_DETAILS = {
 
 export default function Jukebox() {
   const state = useJukeboxState();
+  const { ticketIds, ticketCount, pendingConfirmation, clearPendingConfirmation } = useTickets();
+  const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [needleDown, setNeedleDown] = useState(false);
   const [rolodexPage, setRolodexPage] = useState(0);
   const [codeInput, setCodeInput] = useState("");
   const [codeDisplayState, setCodeDisplayState] = useState<DisplayState>("normal");
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
-  const [ticketsOwned, setTicketsOwned] = useState(0);
   const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
-  const [confirmationTicketIds, setConfirmationTicketIds] = useState<string[]>([]);
-  const [allTicketIds, setAllTicketIds] = useState<string[]>([]);
-  const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const totalPages = 12; // A-L (last page has "Request a Song")
 
@@ -51,34 +50,27 @@ export default function Jukebox() {
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
+  // Show confirmation modal for new purchases (from OrderComplete redirect)
+  useEffect(() => {
+    if (pendingConfirmation && ticketIds.length > 0) {
+      setIsViewingTickets(false);
+      setConfirmationModalOpen(true);
+      clearPendingConfirmation();
+    }
+  }, [pendingConfirmation, ticketIds.length, clearPendingConfirmation]);
+
   // Calculate remaining sign-ups (tickets owned minus queue entries)
-  const ticketsRemaining = ticketsOwned - state.queue.length;
-
-  const handleBuyTickets = useCallback((quantity: number) => {
-    setTicketsOwned(prev => prev + quantity);
-  }, []);
-
-  // Generate fake ticket IDs and show confirmation modal
-  const handlePurchaseComplete = useCallback((quantity: number) => {
-    const baseNum = Math.floor(Math.random() * 9000) + 1000;
-    const ticketIds = Array.from({ length: quantity }, (_, i) =>
-      `#RC-2025-${String(baseNum + i).padStart(4, "0")}`
-    );
-    setAllTicketIds(prev => [...prev, ...ticketIds]);
-    setConfirmationTicketIds(ticketIds);
-    setIsViewingTickets(false); // Show confetti for new purchase
-    setConfirmationModalOpen(true);
-  }, []);
+  const ticketsRemaining = ticketCount - state.queue.length;
 
   // Handle ticket button click - view tickets if owned, otherwise buy
   const handleTicketButtonClick = useCallback(() => {
-    if (ticketsOwned > 0) {
+    if (ticketCount > 0) {
       setIsViewingTickets(true); // No confetti, just viewing
       setConfirmationModalOpen(true);
     } else {
       setTicketModalOpen(true);
     }
-  }, [ticketsOwned]);
+  }, [ticketCount]);
 
   // Handle "Buy More" from the tickets modal
   const handleBuyMoreTickets = useCallback(() => {
@@ -234,7 +226,7 @@ export default function Jukebox() {
                 {...EVENT_DETAILS}
                 variant="poster"
                 onBuyTickets={handleTicketButtonClick}
-                ticketsOwned={ticketsOwned}
+                ticketsOwned={ticketCount}
               />
             </div>
           </div>
@@ -297,7 +289,7 @@ export default function Jukebox() {
                     codeDisplayState={codeDisplayState}
                     onBuyTickets={handleTicketButtonClick}
                     ticketsRemaining={ticketsRemaining}
-                    ticketsOwned={ticketsOwned}
+                    ticketsOwned={ticketCount}
                     previewingSong={previewingSong}
                     onPlaySong={handlePlaySong}
                   />
@@ -317,7 +309,7 @@ export default function Jukebox() {
                 onPlaySong={handlePlaySong}
                 onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
-                ticketsOwned={ticketsOwned}
+                ticketsOwned={ticketCount}
               />
               <LineupPanel
                 queue={state.queue}
@@ -327,7 +319,7 @@ export default function Jukebox() {
                 onPlaySong={handlePlaySong}
                 onStopSong={handlePreviewEnd}
                 playingSongId={previewingSong?.number}
-                ticketsOwned={ticketsOwned}
+                ticketsOwned={ticketCount}
               />
             </div>
           </div>
@@ -339,17 +331,15 @@ export default function Jukebox() {
         open={ticketModalOpen}
         onOpenChange={setTicketModalOpen}
         {...EVENT_DETAILS}
-        ticketsOwned={ticketsOwned}
+        ticketsOwned={ticketCount}
         ticketsRemaining={ticketsRemaining}
-        onBuyTickets={handleBuyTickets}
-        onPurchaseComplete={handlePurchaseComplete}
       />
 
       {/* Ticket Confirmation Modal (with confetti for new purchases, without for viewing) */}
       <TicketConfirmationModal
         open={confirmationModalOpen}
         onOpenChange={setConfirmationModalOpen}
-        ticketIds={isViewingTickets ? allTicketIds : confirmationTicketIds}
+        ticketIds={ticketIds}
         showConfetti={!isViewingTickets}
         ticketsRemaining={ticketsRemaining}
         onBuyMore={handleBuyMoreTickets}
