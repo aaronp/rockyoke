@@ -1,6 +1,6 @@
 // src/hooks/useTickets.ts
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { SelectedSong } from "@/types/jukebox";
+import type { SelectedSong } from "@/types/jukebox";
 
 const STORAGE_KEY = "rockyoke-tickets";
 
@@ -104,9 +104,15 @@ export function useTickets() {
     setSelectedSongs((prev) => {
       let updated: SelectedSong[];
       if (song.kind === "custom") {
-        // Remove any existing custom song, then add the new one
-        const withoutCustom = prev.filter((s) => s.kind !== "custom");
-        updated = [...withoutCustom, song];
+        const existing = prev.find((s) => s.kind === "custom");
+        if (existing && existing.title === song.title && existing.artist === song.artist) {
+          // Same custom song — toggle off (remove)
+          updated = prev.filter((s) => s.kind !== "custom");
+        } else {
+          // Different or new custom song — replace
+          const withoutCustom = prev.filter((s) => s.kind !== "custom");
+          updated = [...withoutCustom, song];
+        }
       } else {
         const exists = prev.some((s) => s.number === song.number);
         if (exists) {
