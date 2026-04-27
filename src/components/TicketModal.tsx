@@ -92,7 +92,7 @@ export function TicketModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="border-amber-900/50 p-0 sm:max-w-md"
+        className="border-amber-900/50 p-0 sm:max-w-md max-h-[90vh] overflow-y-auto"
         style={{
           background: `
             linear-gradient(135deg, rgba(60, 20, 10, 0.98) 0%, rgba(40, 15, 8, 0.99) 50%, rgba(30, 10, 5, 0.98) 100%)
