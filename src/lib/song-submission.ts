@@ -2,12 +2,11 @@
 import type { SelectedSong } from "@/types/jukebox";
 
 // Google Form configuration
-// Replace these with actual values after creating the form
-const GOOGLE_FORM_RESPONSE_URL = "https://docs.google.com/forms/d/e/FORM_ID/formResponse";
-const FIELD_CLIENT_ID = "entry.REPLACE_ME_1";
-const FIELD_ORDER_IDS = "entry.REPLACE_ME_2";
-const FIELD_SONGS = "entry.REPLACE_ME_3";
-const FIELD_TIMESTAMP = "entry.REPLACE_ME_4";
+const GOOGLE_FORM_RESPONSE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf3q45SqucfORu-71UJOnsMBsjHpbRiHS0C-GUunwt0RsBaXA/formResponse";
+const FIELD_CLIENT_ID = "entry.1314282448";
+const FIELD_ORDER_IDS = "entry.714062364";
+const FIELD_SONGS = "entry.2069328495";
+const FIELD_TIMESTAMP = "entry.672528189";
 
 export function serializeSongs(songs: SelectedSong[]): string {
   return songs
