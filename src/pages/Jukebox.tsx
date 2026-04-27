@@ -18,6 +18,9 @@ import { LineupPanel } from "@/components/LineupPanel";
 import { HelpTooltip } from "@/components/HelpTooltip";
 import { TicketModal } from "@/components/TicketModal";
 import { TicketConfirmationModal } from "@/components/TicketConfirmationModal";
+import { SongRequestBanner } from "@/components/SongRequestBanner";
+import { SongChecklistModal } from "@/components/SongChecklistModal";
+import { useSongSubmission } from "@/hooks/useSongSubmission";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
@@ -29,7 +32,7 @@ const EVENT_DETAILS = {
 
 export default function Jukebox() {
   const state = useJukeboxState();
-  const { ticketIds, ticketCount, pendingConfirmation, clearPendingConfirmation, selectedSongs, toggleSong } = useTickets();
+  const { ticketIds, ticketCount, pendingConfirmation, clearPendingConfirmation, selectedSongs, toggleSong, clientRequestId } = useTickets();
   const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [needleDown, setNeedleDown] = useState(false);
@@ -39,6 +42,7 @@ export default function Jukebox() {
   const [ticketModalOpen, setTicketModalOpen] = useState(false);
   const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const [songChecklistOpen, setSongChecklistOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const variant = isMobile ? "small" : "large";
   const totalPages = getTotalPages(variant);
@@ -50,6 +54,9 @@ export default function Jukebox() {
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Song submission to Google Forms
+  useSongSubmission({ clientRequestId, ticketIds, selectedSongs });
 
   // Show confirmation modal for new purchases (from OrderComplete redirect)
   useEffect(() => {
@@ -218,6 +225,12 @@ export default function Jukebox() {
           />
         </div>
 
+        {/* Song request banner */}
+        <SongRequestBanner
+          selectedSongs={selectedSongs}
+          onClick={() => setSongChecklistOpen(true)}
+        />
+
         {/* Grid layout */}
         <div className="grid min-h-screen grid-cols-1 gap-0 py-0 sm:gap-4 sm:px-4 sm:py-4 lg:grid-cols-[1fr_max-content_1fr] lg:items-center lg:py-2">
           {/* Wide screens: Poster on left */}
@@ -254,6 +267,14 @@ export default function Jukebox() {
                     onSelectSong={(song) => {
                       state.selectSong(song);
                       setCodeInput(song.number);
+                      // Auto-add to song requests if not already selected
+                      if (!selectedSongs.some((s) => s.number === song.number)) {
+                        toggleSong(
+                          song.isRequest
+                            ? { kind: "custom", number: "L01" as const, title: song.title, artist: song.artist }
+                            : { kind: "catalog", number: song.number, title: song.title, artist: song.artist }
+                        );
+                      }
                     }}
                     pageIndex={rolodexPage}
                     onPageChange={setRolodexPage}
@@ -334,6 +355,14 @@ export default function Jukebox() {
         {...EVENT_DETAILS}
         ticketsOwned={ticketCount}
         ticketsRemaining={ticketsRemaining}
+        selectedSongs={selectedSongs}
+        onToggleSong={toggleSong}
+      />
+
+      {/* Song Checklist Modal (standalone, from banner) */}
+      <SongChecklistModal
+        open={songChecklistOpen}
+        onOpenChange={setSongChecklistOpen}
         selectedSongs={selectedSongs}
         onToggleSong={toggleSong}
       />
