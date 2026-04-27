@@ -45,13 +45,18 @@ export function buildFormParams(
 }
 
 export function submitSnapshot(params: URLSearchParams): void {
+  console.log("[song-submission] POST to Google Forms:", Object.fromEntries(params));
   fetch(GOOGLE_FORM_RESPONSE_URL, {
     method: "POST",
     mode: "no-cors",
     body: params,
-  });
+  }).then(
+    () => console.log("[song-submission] POST sent (no-cors, opaque response)"),
+    (err) => console.error("[song-submission] POST failed:", err),
+  );
 }
 
 export function submitSnapshotBeacon(params: URLSearchParams): void {
+  console.log("[song-submission] sendBeacon to Google Forms:", Object.fromEntries(params));
   navigator.sendBeacon(GOOGLE_FORM_RESPONSE_URL, params);
 }

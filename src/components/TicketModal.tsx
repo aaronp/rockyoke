@@ -92,7 +92,7 @@ export function TicketModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
-        className="border-amber-900/50 p-0 sm:max-w-md max-h-[90vh] overflow-y-auto"
+        className="border-amber-900/50 p-0 sm:max-w-2xl max-h-[90vh] overflow-y-auto"
         style={{
           background: `
             linear-gradient(135deg, rgba(60, 20, 10, 0.98) 0%, rgba(40, 15, 8, 0.99) 50%, rgba(30, 10, 5, 0.98) 100%)
@@ -140,10 +140,10 @@ export function TicketModal({
           <div className="mb-4 h-px w-3/4 bg-gradient-to-r from-transparent via-amber-700 to-transparent" />
 
           {/* Venue & Date */}
-          <p className="mb-1 text-center font-semibold uppercase tracking-wide text-amber-100">
+          <p className="mb-1 text-center text-lg font-semibold uppercase tracking-wide text-amber-100">
             {venue}
           </p>
-          <p className="mb-4 text-center font-bold uppercase tracking-widest text-amber-300">
+          <p className="mb-4 text-center text-xl font-bold uppercase tracking-widest text-amber-300">
             {date}
           </p>
 
@@ -163,7 +163,7 @@ export function TicketModal({
           )}
 
           {/* Price info */}
-          <p className="mb-4 text-sm uppercase tracking-wide text-amber-400">
+          <p className="mb-4 text-base uppercase tracking-wide text-amber-400">
             {priceAdvance} advance
           </p>
 

@@ -27,13 +27,21 @@ export function useSongSubmission({
   const latestParamsRef = useRef<URLSearchParams | null>(null);
 
   useEffect(() => {
-    if (!clientRequestId) return;
+    if (!clientRequestId) {
+      console.log("[song-submission] Skipping: no clientRequestId yet");
+      return;
+    }
 
     const orderIds = ticketIds.join(",");
     const songsSerialized = serializeSongs(selectedSongs);
     const hash = computeSnapshotHash(clientRequestId, orderIds, songsSerialized);
 
-    if (hash === lastHashRef.current) return;
+    if (hash === lastHashRef.current) {
+      console.log("[song-submission] Skipping: hash unchanged", hash);
+      return;
+    }
+
+    console.log("[song-submission] Change detected, debouncing 4s...", { songs: selectedSongs.length, orderIds, hash });
 
     const params = buildFormParams(clientRequestId, orderIds, songsSerialized);
     latestParamsRef.current = params;

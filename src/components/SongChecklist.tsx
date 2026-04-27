@@ -97,13 +97,13 @@ export function SongChecklist({ selectedSongs, onToggleSong }: SongChecklistProp
         value={filter}
         onChange={(e) => setFilter(e.target.value)}
         placeholder="Filter by title or artist..."
-        className="w-full rounded-md border px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-amber-600
+        className="w-full rounded-md border px-3 py-2.5 text-base outline-none focus:ring-1 focus:ring-amber-600
           bg-neutral-900/80 border-amber-700/50 text-amber-100 placeholder:text-amber-700"
       />
 
       {/* Scrollable song list */}
       <div
-        className="max-h-60 overflow-y-auto rounded-md border
+        className="max-h-80 overflow-y-auto rounded-md border
           bg-neutral-950/50 border-amber-900/30"
       >
         {catalogItems.map(({ song, idx }) => {
@@ -112,7 +112,7 @@ export function SongChecklist({ selectedSongs, onToggleSong }: SongChecklistProp
           return (
             <label
               key={code}
-              className={`flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm transition-colors
+              className={`flex cursor-pointer items-center gap-3 px-3 py-2.5 text-base transition-colors
                 ${selected
                   ? "bg-amber-900/30 text-amber-100"
                   : "text-amber-300 hover:bg-amber-900/15"
@@ -124,9 +124,9 @@ export function SongChecklist({ selectedSongs, onToggleSong }: SongChecklistProp
                 onChange={() => handleCatalogToggle(idx)}
                 className="accent-amber-500 shrink-0"
               />
-              <span className="font-mono text-xs text-amber-500 shrink-0 w-8">{code}</span>
+              <span className="font-mono text-sm text-amber-500 shrink-0 w-10">{code}</span>
               <span className="truncate font-medium">{song.title}</span>
-              <span className="ml-auto shrink-0 truncate text-xs text-amber-500/70">{song.artist}</span>
+              <span className="ml-auto shrink-0 truncate text-sm text-amber-500/70">{song.artist}</span>
             </label>
           );
         })}
@@ -141,7 +141,7 @@ export function SongChecklist({ selectedSongs, onToggleSong }: SongChecklistProp
               }`}
           >
             <label
-              className={`flex cursor-pointer items-center gap-2 px-3 py-1.5 text-sm transition-colors
+              className={`flex cursor-pointer items-center gap-3 px-3 py-2.5 text-base transition-colors
                 ${isCustomSelected
                   ? "text-rose-200 hover:bg-rose-900/20"
                   : "text-amber-300 hover:bg-amber-900/15"
