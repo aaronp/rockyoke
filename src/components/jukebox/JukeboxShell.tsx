@@ -52,16 +52,16 @@ interface JukeboxShellProps {
 const SLOT_POSITIONS = {
   large: {
     recordPlayer: { x: 192, y: 100, w: 416, h: 320 },
-    songRolodex: { x: 240, y: 433, w: 320, h: 106 },
-    buttonPanel: { x: 200, y: 559, w: 400, h: 56 },
+    songRolodex: { x: 210, y: 420, w: 380, h: 130 },
+    buttonPanel: { x: 148, y: 548, w: 504, h: 75 },
     songQueue: { x: 148, y: 622, w: 504, h: 174 },
   },
   small: {
     // Mobile layout - fits within jukebox housing
-    recordPlayer: { x: 192, y: 120, w: 416, h: 260 },
-    songRolodex: { x: 200, y: 420, w: 400, h: 130 },    // Taller to prevent bottom clipping
-    buttonPanel: { x: 200, y: 545, w: 400, h: 100 },    // Taller and moved down
-    songQueue: { x: 148, y: 642, w: 504, h: 154 },    // Moved down 20, height reduced 20
+    recordPlayer: { x: 192, y: 120, w: 416, h: 240 },
+    songRolodex: { x: 200, y: 390, w: 400, h: 160 },    // Taller for larger song cards
+    buttonPanel: { x: 148, y: 540, w: 504, h: 110 },    // Match song queue width
+    songQueue: { x: 148, y: 642, w: 504, h: 154 },
   },
 } as const;
 
@@ -84,14 +84,14 @@ const QUEUE_RECT = {
 // Button panel SVG rectangle positions (the dark metal panel behind buttons)
 const BUTTON_RECT = {
   large: {
-    panel: { x: 200, y: 552, w: 400, h: 70 },  // Moved up 8 from 560
-    topChrome: { y: 552 },
-    bottomChrome: { y: 617 },  // 552 + 70 - 5 = 617
+    panel: { x: 148, y: 548, w: 504, h: 75 },
+    topChrome: { y: 548 },
+    bottomChrome: { y: 618 },
   },
   small: {
-    panel: { x: 200, y: 560, w: 400, h: 70 },
-    topChrome: { y: 560 },
-    bottomChrome: { y: 625 },
+    panel: { x: 148, y: 540, w: 504, h: 110 },
+    topChrome: { y: 540 },
+    bottomChrome: { y: 645 },
   },
 } as const;
 

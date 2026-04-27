@@ -7,7 +7,7 @@ import {
   SignUpWizard,
   ButtonPanel,
 } from "@/components/jukebox";
-import { findSongByCode } from "@/components/jukebox/Rolodex";
+import { findSongByCode, getTotalPages } from "@/components/jukebox/Rolodex";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 import { useTickets } from "@/hooks/useTickets";
 import type { DisplayState } from "@/components/jukebox/ButtonPanel";
@@ -22,7 +22,7 @@ import { TicketConfirmationModal } from "@/components/TicketConfirmationModal";
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
   venue: "The VeeCee",
-  date: "2nd May",
+  date: "20th June",
   priceAdvance: "£12",
   priceDoor: "£15",
 } as const;
@@ -40,7 +40,8 @@ export default function Jukebox() {
   const [previewingSong, setPreviewingSong] = useState<Song | null>(null);
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  const totalPages = 12; // A-L (last page has "Request a Song")
+  const variant = isMobile ? "small" : "large";
+  const totalPages = getTotalPages(variant);
 
   // Detect mobile screen size for Wurlitzer variant
   useEffect(() => {

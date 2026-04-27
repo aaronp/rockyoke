@@ -81,34 +81,19 @@ export const SONGS: InternalSong[] = [
   { no: 99, title: "Request a Song", artist: "Your choice!", year: 0, isRequest: true },
 ];
 
-export function findSongByCode(code: string): Song | null {
-  if (code.length !== 3) return null;
-
-  const letter = code[0];
-  const num = parseInt(code.slice(1), 10);
-  const pageIndex = letter.charCodeAt(0) - 65;
-
-  if (pageIndex < 0 || pageIndex > 10 || num < 1 || num > 6) return null;
-
-  const songIndex = pageIndex * 6 + (num - 1);
-  const internal = SONGS[songIndex];
-
-  if (!internal) return null;
-
-  return {
-    id: code,
-    number: code,
-    title: internal.title,
-    artist: internal.artist,
-    year: internal.year,
-  };
+/** Compute song code from absolute index in the master SONGS list */
+function songCode(absoluteIndex: number): string {
+  const pageIdx = Math.floor(absoluteIndex / 6);
+  const posInPage = absoluteIndex % 6;
+  const letter = String.fromCharCode(65 + pageIdx);
+  return `${letter}${String(posInPage + 1).padStart(2, '0')}`;
 }
 
-function toSong(internal: InternalSong, pageIndex: number, indexOnPage: number): Song {
-  const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
-  const number = String(indexOnPage + 1).padStart(2, '0'); // 01-06
-  const code = `${letter}${number}`;
-  return {
+// Build a single lookup map from code → Song, used by both display and input
+const SONG_BY_CODE: Record<string, Song> = {};
+SONGS.forEach((internal, absoluteIndex) => {
+  const code = songCode(absoluteIndex);
+  SONG_BY_CODE[code] = {
     id: code,
     number: code,
     title: internal.title,
@@ -116,17 +101,36 @@ function toSong(internal: InternalSong, pageIndex: number, indexOnPage: number):
     year: internal.year,
     isRequest: internal.isRequest,
   };
+});
+
+export function findSongByCode(code: string): Song | null {
+  return SONG_BY_CODE[code.toUpperCase()] ?? null;
 }
 
-function getPages(songs: InternalSong[]): { top: InternalSong[]; bottom: InternalSong[] }[] {
-  const pages: { top: InternalSong[]; bottom: InternalSong[] }[] = [];
-  for (let i = 0; i < songs.length; i += 6) {
+function toSong(absoluteIndex: number): Song {
+  const code = songCode(absoluteIndex);
+  return SONG_BY_CODE[code];
+}
+
+type PageEntry = { song: InternalSong; absoluteIndex: number };
+type Page = { top: PageEntry[]; bottom: PageEntry[] };
+
+function getPages(songs: InternalSong[], songsPerRow: number = 3): Page[] {
+  const perPage = songsPerRow * 2;
+  const pages: Page[] = [];
+  for (let i = 0; i < songs.length; i += perPage) {
     pages.push({
-      top: songs.slice(i, i + 3),
-      bottom: songs.slice(i + 3, i + 6),
+      top: songs.slice(i, i + songsPerRow).map((song, j) => ({ song, absoluteIndex: i + j })),
+      bottom: songs.slice(i + songsPerRow, i + perPage).map((song, j) => ({ song, absoluteIndex: i + songsPerRow + j })),
     });
   }
   return pages;
+}
+
+export function getTotalPages(variant: "large" | "small" = "large"): number {
+  const songsPerRow = variant === "small" ? 2 : 3;
+  const perPage = songsPerRow * 2;
+  return Math.ceil(SONGS.length / perPage);
 }
 
 function useClackSfx() {
@@ -198,7 +202,8 @@ type Props = {
 };
 
 export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageChange, variant = "large" }: Props) {
-  const pages = getPages(SONGS);
+  const songsPerRow = variant === "small" ? 2 : 3;
+  const pages = getPages(SONGS, songsPerRow);
   const [internalPageIndex, setInternalPageIndex] = useState(0);
 
   // Use controlled if provided, otherwise internal
@@ -239,44 +244,42 @@ export function Rolodex({ onSelectSong, pageIndex: controlledPageIndex, onPageCh
 
   const currentPage = pages[pageIndex];
 
-  const handleSongClick = useCallback((internal: InternalSong, indexOnPage: number) => {
+  const handleSongClick = useCallback((entry: PageEntry) => {
     if (onSelectSong) {
-      onSelectSong(toSong(internal, pageIndex, indexOnPage));
+      onSelectSong(toSong(entry.absoluteIndex));
     }
-  }, [onSelectSong, pageIndex]);
+  }, [onSelectSong]);
 
   return (
     <div className="w-full h-full" style={{ perspective: "1200px" }}>
-      <SplitFlapPanel page={currentPage} pageIndex={pageIndex} onSongClick={handleSongClick} variant={variant} />
+      <SplitFlapPanel page={currentPage} onSongClick={handleSongClick} variant={variant} />
     </div>
   );
 }
 
 function SplitFlapPanel({
   page,
-  pageIndex,
   onSongClick,
   variant = "large"
 }: {
-  page: { top: InternalSong[]; bottom: InternalSong[] };
-  pageIndex: number;
-  onSongClick: (song: InternalSong, indexOnPage: number) => void;
+  page: Page;
+  onSongClick: (entry: PageEntry) => void;
   variant?: "large" | "small";
 }) {
   return (
     <div className="relative select-none h-full">
       <div className="relative rounded-xl overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.5)] h-full">
         <div className="bg-gradient-to-b from-amber-100 to-amber-50 h-[calc(50%-2px)]">
-          <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} variant={variant} />
+          <SongStrips songs={page.top} onSongClick={onSongClick} variant={variant} />
         </div>
         <div className="h-1 bg-gradient-to-b from-amber-800/60 via-amber-900/80 to-amber-800/60" />
         <div className="bg-gradient-to-b from-amber-50 to-amber-100 h-[calc(50%-2px)]">
-          <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} variant={variant} />
+          <SongStrips songs={page.bottom} onSongClick={onSongClick} variant={variant} />
         </div>
       </div>
 
       <AnimatePresence mode="popLayout" initial={false}>
-        <motion.div key={page.top[0]?.no ?? "empty"} className="absolute inset-0 pointer-events-none">
+        <motion.div key={page.top[0]?.song.no ?? "empty"} className="absolute inset-0 pointer-events-none">
           <motion.div
             className="absolute inset-x-0 top-0 overflow-hidden rounded-t-xl"
             style={{
@@ -290,7 +293,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-100 to-amber-50 shadow-lg">
-              <SongStrips songs={page.top} pageIndex={pageIndex} indexOffset={0} onSongClick={onSongClick} variant={variant} />
+              <SongStrips songs={page.top} onSongClick={onSongClick} variant={variant} />
             </div>
           </motion.div>
 
@@ -307,7 +310,7 @@ function SplitFlapPanel({
             transition={{ duration: 0.35, delay: 0.15, ease: [0.32, 0.72, 0, 1] }}
           >
             <div className="h-full bg-gradient-to-b from-amber-50 to-amber-100 shadow-lg">
-              <SongStrips songs={page.bottom} pageIndex={pageIndex} indexOffset={3} onSongClick={onSongClick} variant={variant} />
+              <SongStrips songs={page.bottom} onSongClick={onSongClick} variant={variant} />
             </div>
           </motion.div>
         </motion.div>
@@ -318,50 +321,41 @@ function SplitFlapPanel({
 
 function SongStrips({
   songs,
-  pageIndex,
-  indexOffset,
   onSongClick,
   variant = "large"
 }: {
-  songs: InternalSong[];
-  pageIndex: number;
-  indexOffset: number;
-  onSongClick: (song: InternalSong, indexOnPage: number) => void;
+  songs: PageEntry[];
+  onSongClick: (entry: PageEntry) => void;
   variant?: "large" | "small";
 }) {
-  const letter = String.fromCharCode(65 + pageIndex); // A=0, B=1, etc.
   const isSmall = variant === "small";
+  const cols = isSmall ? 2 : 3;
 
-  // Small variant: always show 2 columns with larger text
-  // Large variant: 2 cols on mobile, 3 on desktop
   const gridCols = isSmall ? "grid-cols-2" : "grid-cols-2 sm:grid-cols-3";
-  const padding = isSmall ? "p-1" : "p-0.5 sm:p-1.5";
+  const padding = isSmall ? "p-0.5" : "p-0.5 sm:p-1";
 
   return (
-    <div className={`grid ${gridCols} gap-px bg-amber-300/50 ${padding} h-full`}>
-      {songs.map((song, i) => {
-        const indexOnPage = indexOffset + i;
-        const displayNumber = `${letter}${String(indexOnPage + 1).padStart(2, '0')}`;
+    <div className={`grid ${gridCols} gap-px sm:gap-0.5 bg-amber-300/50 ${padding} h-full`}>
+      {songs.map((entry, i) => {
+        const displayNumber = songCode(entry.absoluteIndex);
         const isThirdInRow = i === 2;
-        // Small variant: always hide 3rd song (2 columns only)
         // Large variant: hide 3rd on mobile, show on desktop
-        const hideClass = isThirdInRow
-          ? (isSmall ? "hidden" : "hidden sm:block")
-          : "";
+        // Small variant: only 2 per row, so i===2 never occurs
+        const hideClass = isThirdInRow ? "hidden sm:block" : "";
         return (
-          <div key={song.no} className={`h-full ${hideClass}`}>
+          <div key={entry.song.no} className={`h-full ${hideClass}`}>
             <SongCard
-              song={song}
+              song={entry.song}
               displayNumber={displayNumber}
-              onClick={() => onSongClick(song, indexOnPage)}
+              onClick={() => onSongClick(entry)}
               variant={variant}
             />
           </div>
         );
       })}
-      {songs.length < 3 && !isSmall &&
-        Array.from({ length: 3 - songs.length }).map((_, i) => (
-          <div key={`empty-${i}`} className="rounded bg-amber-100/50 hidden sm:block" />
+      {songs.length < cols &&
+        Array.from({ length: cols - songs.length }).map((_, i) => (
+          <div key={`empty-${i}`} className={`rounded bg-amber-100/50 ${isSmall ? "" : "hidden sm:block"}`} />
         ))}
     </div>
   );
@@ -381,14 +375,14 @@ function SongCard({
   const isSmall = variant === "small";
   const isRequest = song.isRequest;
 
-  // Small variant uses larger, fixed text sizes since slot is bigger
-  const codeSize = isSmall ? "text-[10px]" : "text-[7px] sm:text-[10px]";
-  const titleSize = isSmall ? "text-[9px]" : "text-[6px] sm:text-[9px]";
-  const artistSize = isSmall ? "text-[9px]" : "text-[6px] sm:text-[9px]";
-  const padding = isSmall ? "px-1.5" : "px-0.5 sm:px-1.5";
-  const gap = isSmall ? "gap-1" : "gap-0.5 sm:gap-1";
-  const playIconSize = isSmall ? "h-3 w-4" : "h-2 sm:h-3 w-3 sm:w-4";
-  const playTriangle = isSmall ? "border-y-[4px] border-l-[6px]" : "border-y-[3px] sm:border-y-[4px] border-l-[4px] sm:border-l-[6px]";
+  // Small variant uses larger text sizes than the default mobile breakpoint
+  const codeSize = isSmall ? "text-[10px]" : "text-[7px] sm:text-[14px]";
+  const titleSize = isSmall ? "text-[8px]" : "text-[6px] sm:text-[12px]";
+  const artistSize = isSmall ? "text-[9px]" : "text-[6px] sm:text-[13px]";
+  const padding = isSmall ? "px-1" : "px-0.5 sm:px-2";
+  const gap = isSmall ? "gap-0.5" : "gap-0.5 sm:gap-1.5";
+  const playIconSize = isSmall ? "h-3 w-4" : "h-2 sm:h-4 w-3 sm:w-5";
+  const playTriangle = isSmall ? "border-y-[4px] border-l-[6px]" : "border-y-[3px] sm:border-y-[5px] border-l-[4px] sm:border-l-[8px]";
 
   // Request song has red background styling
   const bgClasses = isRequest
