@@ -7,7 +7,7 @@ import {
   SignUpWizard,
   ButtonPanel,
 } from "@/components/jukebox";
-import { findSongByCode, getTotalPages } from "@/components/jukebox/Rolodex";
+import { findSongByCode, getTotalPages } from "@/data/songs";
 import { useJukeboxState } from "@/hooks/useJukeboxState";
 import { useTickets } from "@/hooks/useTickets";
 import type { DisplayState } from "@/components/jukebox/ButtonPanel";
