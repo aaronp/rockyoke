@@ -6,6 +6,8 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import { SongChecklist } from "@/components/SongChecklist";
+import type { SelectedSong } from "@/types/jukebox";
 
 type TicketModalProps = {
   open: boolean;
@@ -16,6 +18,8 @@ type TicketModalProps = {
   priceAdvance: string;
   ticketsOwned: number;
   ticketsRemaining: number;
+  selectedSongs: SelectedSong[];
+  onToggleSong: (song: SelectedSong) => void;
 };
 
 // Load Ticket Tailor widget script
@@ -43,6 +47,8 @@ export function TicketModal({
   priceAdvance,
   ticketsOwned,
   ticketsRemaining,
+  selectedSongs,
+  onToggleSong,
 }: TicketModalProps) {
   const nameParts = eventName.split(" ");
   const firstWord = nameParts[0];
@@ -160,6 +166,20 @@ export function TicketModal({
           <p className="mb-4 text-sm uppercase tracking-wide text-amber-400">
             {priceAdvance} advance
           </p>
+
+          {/* Song selection */}
+          <div className="mb-4 w-full">
+            <p className="mb-2 text-center text-xs font-semibold uppercase tracking-wide text-amber-400">
+              Pick your songs
+            </p>
+            <SongChecklist
+              selectedSongs={selectedSongs}
+              onToggleSong={onToggleSong}
+            />
+            <p className="mt-2 text-center text-[10px] italic text-amber-600">
+              Song choices are requests only and not guaranteed. The band will do their best to accommodate your preferences on the night.
+            </p>
+          </div>
 
           {/* Buy button - triggers Ticket Tailor widget */}
           <button

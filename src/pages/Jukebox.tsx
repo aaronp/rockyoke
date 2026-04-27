@@ -29,7 +29,7 @@ const EVENT_DETAILS = {
 
 export default function Jukebox() {
   const state = useJukeboxState();
-  const { ticketIds, ticketCount, pendingConfirmation, clearPendingConfirmation } = useTickets();
+  const { ticketIds, ticketCount, pendingConfirmation, clearPendingConfirmation, selectedSongs, toggleSong } = useTickets();
   const [isViewingTickets, setIsViewingTickets] = useState(false);
   const [previewPlaying, setPreviewPlaying] = useState(false);
   const [needleDown, setNeedleDown] = useState(false);
@@ -334,6 +334,8 @@ export default function Jukebox() {
         {...EVENT_DETAILS}
         ticketsOwned={ticketCount}
         ticketsRemaining={ticketsRemaining}
+        selectedSongs={selectedSongs}
+        onToggleSong={toggleSong}
       />
 
       {/* Ticket Confirmation Modal (with confetti for new purchases, without for viewing) */}
