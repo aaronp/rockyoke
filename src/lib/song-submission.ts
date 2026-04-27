@@ -38,8 +38,8 @@ export function buildFormParams(
 ): URLSearchParams {
   return new URLSearchParams({
     [FIELD_CLIENT_ID]: clientRequestId,
-    [FIELD_ORDER_IDS]: orderIds,
-    [FIELD_SONGS]: songsSerialized,
+    [FIELD_ORDER_IDS]: orderIds || "(none)",
+    [FIELD_SONGS]: songsSerialized || "(none)",
     [FIELD_TIMESTAMP]: new Date().toISOString(),
   });
 }
