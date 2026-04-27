@@ -67,7 +67,7 @@ export function TicketModal({
     } catch (error) {
       console.error("Failed to load Ticket Tailor:", error);
       // Open Ticket Tailor page directly as fallback
-      window.open("https://www.tickettailor.com/events/rockyoke/ev_7722196", "_blank");
+      window.open("https://buytickets.at/eyam/2091260", "_blank");
       onOpenChange(false);
       return;
     }
@@ -80,12 +80,12 @@ export function TicketModal({
     if (window.TT && window.TT.widget) {
       // @ts-expect-error - Ticket Tailor widget API
       window.TT.widget.open({
-        eventId: "ev_7722196",
+        eventId: "2091260",
         callback: "https://rockyoke.eyam.fun/order-complete",
       });
     } else {
       // Widget not available, open Ticket Tailor page directly
-      window.open("https://www.tickettailor.com/events/rockyoke/ev_7722196", "_blank");
+      window.open("https://buytickets.at/eyam/2091260", "_blank");
     }
   };
 
