@@ -138,7 +138,9 @@ export default function About() {
           <p className="text-base leading-relaxed text-amber-100/90">
             Got a question about the event, tickets, or song requests?{" "}
             <a
-              href="mailto:rockyoke@example.com"
+              href="https://forms.gle/hpEs9GvF9FwfEGFw6"
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-semibold text-amber-400 underline decoration-amber-600 underline-offset-2 hover:text-amber-300"
             >
               Get in touch
