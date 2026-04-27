@@ -1,4 +1,5 @@
 // src/components/EventPoster.tsx
+import { Link } from "react-router-dom";
 
 type EventPosterProps = {
   eventName: string;
@@ -40,6 +41,9 @@ export function EventPoster({
         <p className="text-xs uppercase tracking-wide text-amber-400">
           {priceAdvance} in advance, {priceDoor} on the door
         </p>
+        <Link to="/about" className="mt-1 inline-block text-xs text-amber-500 underline underline-offset-2 hover:text-amber-400">
+          About this event
+        </Link>
       </div>
     );
   }
@@ -130,6 +134,11 @@ export function EventPoster({
           {priceDoor} on the door
         </p>
       </div>
+
+      {/* About link */}
+      <Link to="/about" className="mt-2 text-xs text-amber-500 underline underline-offset-2 hover:text-amber-400">
+        About this event
+      </Link>
 
       {/* Buy Tickets Button */}
       {onBuyTickets && (

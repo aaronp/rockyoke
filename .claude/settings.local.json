@@ -45,7 +45,8 @@
       "Bash(git check-ignore:*)",
       "Bash(git -C /Users/aaron/dev/sandbox/rockyoke/.worktrees/ticket-tailor log --oneline -5)",
       "Bash(npm run typecheck:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "WebFetch(domain:docs.google.com)"
     ],
     "deny": [],
     "ask": []

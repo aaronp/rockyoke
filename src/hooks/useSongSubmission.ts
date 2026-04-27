@@ -15,12 +15,14 @@ type UseSongSubmissionArgs = {
   clientRequestId: string;
   ticketIds: string[];
   selectedSongs: SelectedSong[];
+  onSyncError?: (err: Error) => void;
 };
 
 export function useSongSubmission({
   clientRequestId,
   ticketIds,
   selectedSongs,
+  onSyncError,
 }: UseSongSubmissionArgs) {
   const lastHashRef = useRef<string>("");
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -54,7 +56,7 @@ export function useSongSubmission({
     if (timerRef.current) clearTimeout(timerRef.current);
 
     timerRef.current = setTimeout(() => {
-      submitSnapshot(params);
+      submitSnapshot(params, onSyncError);
       lastHashRef.current = hash;
       latestParamsRef.current = null;
     }, DEBOUNCE_MS);
@@ -62,7 +64,7 @@ export function useSongSubmission({
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
-  }, [clientRequestId, ticketIds, selectedSongs]);
+  }, [clientRequestId, ticketIds, selectedSongs, onSyncError]);
 
   useEffect(() => {
     const handleUnload = () => {

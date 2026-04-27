@@ -21,6 +21,7 @@ import { TicketConfirmationModal } from "@/components/TicketConfirmationModal";
 import { SongRequestBanner } from "@/components/SongRequestBanner";
 import { SongChecklistModal } from "@/components/SongChecklistModal";
 import { useSongSubmission } from "@/hooks/useSongSubmission";
+import { useToast } from "@/components/Toast";
 
 const EVENT_DETAILS = {
   eventName: "Rockyoke Night!",
@@ -56,7 +57,11 @@ export default function Jukebox() {
   }, []);
 
   // Song submission to Google Forms
-  useSongSubmission({ clientRequestId, ticketIds, selectedSongs });
+  const { showToast } = useToast();
+  const handleSyncError = useCallback(() => {
+    showToast("Failed to sync song requests. Your selections are saved locally — they'll sync when you're back online.", "error");
+  }, [showToast]);
+  useSongSubmission({ clientRequestId, ticketIds, selectedSongs, onSyncError: handleSyncError });
 
   // Show confirmation modal for new purchases (from OrderComplete redirect)
   useEffect(() => {

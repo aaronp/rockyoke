@@ -130,6 +130,23 @@ export default function About() {
           </p>
         </section>
 
+        {/* Contact */}
+        <section className="mb-8">
+          <h2 className="mb-3 text-xl font-bold uppercase tracking-wide text-amber-400">
+            Questions?
+          </h2>
+          <p className="text-base leading-relaxed text-amber-100/90">
+            Got a question about the event, tickets, or song requests?{" "}
+            <a
+              href="mailto:rockyoke@example.com"
+              className="font-semibold text-amber-400 underline decoration-amber-600 underline-offset-2 hover:text-amber-300"
+            >
+              Get in touch
+            </a>
+            {" "}and we'll get back to you.
+          </p>
+        </section>
+
         {/* CTA */}
         <div className="mt-10 text-center">
           <Link
