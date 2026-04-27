@@ -176,7 +176,7 @@ export function TicketModal({
               selectedSongs={selectedSongs}
               onToggleSong={onToggleSong}
             />
-            <p className="mt-2 text-center text-[10px] italic text-amber-600">
+            <p className="mt-3 text-center text-sm italic text-amber-600">
               Song choices are requests only and not guaranteed. The band will do their best to accommodate your preferences on the night.
             </p>
           </div>

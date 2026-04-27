@@ -3,10 +3,10 @@ import type { SelectedSong } from "@/types/jukebox";
 
 // Google Form configuration
 const GOOGLE_FORM_RESPONSE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSf3q45SqucfORu-71UJOnsMBsjHpbRiHS0C-GUunwt0RsBaXA/formResponse";
-const FIELD_CLIENT_ID = "entry.1314282448";
-const FIELD_ORDER_IDS = "entry.714062364";
-const FIELD_SONGS = "entry.2069328495";
-const FIELD_TIMESTAMP = "entry.672528189";
+const FIELD_CLIENT_ID = "entry.1065633612";
+const FIELD_ORDER_IDS = "entry.2018504124";
+const FIELD_SONGS = "entry.1466122746";
+const FIELD_TIMESTAMP = "entry.1237600709";
 
 export function serializeSongs(songs: SelectedSong[]): string {
   return songs

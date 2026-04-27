@@ -32,6 +32,11 @@ export function useSongSubmission({
       return;
     }
 
+    if (selectedSongs.length === 0) {
+      console.log("[song-submission] Skipping: no songs selected");
+      return;
+    }
+
     const orderIds = ticketIds.join(",");
     const songsSerialized = serializeSongs(selectedSongs);
     const hash = computeSnapshotHash(clientRequestId, orderIds, songsSerialized);
