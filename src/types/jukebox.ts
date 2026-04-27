@@ -24,3 +24,17 @@ export type WizardState =
   | "playing"
   | "payment"
   | "complete";
+
+export type SelectedSong =
+  | {
+      kind: "catalog";
+      number: string;   // e.g. "A01"
+      title: string;
+      artist: string;
+    }
+  | {
+      kind: "custom";
+      number: "L01";
+      title: string;
+      artist?: string;
+    };
