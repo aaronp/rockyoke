@@ -8,6 +8,10 @@ export default function OrderComplete() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    // Log all callback parameters for debugging
+    const allParams = Object.fromEntries(searchParams.entries());
+    console.log("[order-complete] Ticket Tailor callback params:", allParams);
+
     const orderId = searchParams.get("oid");
 
     if (orderId) {
